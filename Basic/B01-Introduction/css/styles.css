@@ -1,0 +1,53 @@
+/* =========================================
+   ¿Qué es CSS y su sintaxis básica?
+   =========================================
+   Regla de CSS:
+   selector {
+       propiedad: valor;
+       propiedad: valor;
+   }
+   
+   Características básicas:
+   Teniendo en cuenta que todos los elementos de html 
+   tienen estilos por defecto.
+*/
+
+
+/* =========================================
+   HERENCIA
+   =========================================
+   El body le pasa la fuente y el color a sus elementos hijos.
+*/
+body {
+   font-family: arial;
+   color: #00ff00; /* Color verde heredado por defecto */
+}
+
+h1 {
+   color: red; /* Este H1 sobrescribe el color verde heredado */
+}
+
+
+/* =========================================
+   REGLA DE LA CASCADA
+   =========================================
+   Si dos reglas afectan al mismo elemento, se aplica la última.
+*/
+p {
+   color: green;
+}
+
+p {
+   color: blue; /* Esta regla gana por estar más abajo en el archivo */
+   font-size: 20px; /* Sintaxis básica aplicada al párrafo */
+}
+
+
+/* =========================================
+   REGLA DE ESPECIFICIDAD
+   =========================================
+   Un ID (#miIdentificador) es más específico que una etiqueta (p).
+*/
+p#miIdentificador {
+    color: green; /* Esta regla gana sobre el color azul del 'p' */
+}

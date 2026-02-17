@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introducción</title>
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>Introducción a CSS</h1>
+        <hr>
+    </header>
+
+    <section>
+        <h2>¿Qué es CSS y su sintaxis básica?</h2>
+        <div>
+            <strong>Regla de CSS:</strong>
+            <pre>
+selector {
+    propiedad: valor;
+    propiedad: valor;
+}
+            </pre>
+        </div>
+
+        <h2>Características básicas</h2>
+        <ul>
+            <li>Teniendo en cuenta que todos los elementos de HTML tienen estilos por defecto.</li>
+            <li><strong>Regla de la cascada:</strong> El navegador lee de arriba hacia abajo. Si hay conflicto, gana la última regla.</li>
+            <li><strong>Regla de especificidad:</strong> Un identificador (ID) tiene más peso que una etiqueta normal.</li>
+            <li><strong>Herencia:</strong> Algunas propiedades (como la fuente y el color) pasan del padre (ej. body) a los hijos.</li>
+        </ul>
+    </section>
+
+    <hr>
+
+    <section>
+        <h2>Resultados de nuestro CSS:</h2>
+        
+        <p>Soy un párrafo normal. La regla de cascada me hizo azul y tengo un tamaño de 20px.</p>
+
+        <p id="miIdentificador">Soy un párrafo con el id="miIdentificador". La regla de especificidad me hizo verde.</p>
+
+        <div>
+            No soy un párrafo, soy un simple div. No tengo un color específico asignado, así que heredé el color verde (#00ff00) y la fuente Arial de la etiqueta body.
+        </div>
+    </section>
+
+</body>
+</html>
