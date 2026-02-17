@@ -1,52 +1,80 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Introducción</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Introducción a CSS — Apuntes</title>
     <link rel="stylesheet" href="./css/styles.css">
 </head>
-<body>
 
+<body>
     <header>
         <h1>Introducción a CSS</h1>
+        <p class="lead">Apuntes breves con ejemplos de herencia, cascada y especificidad.</p>
         <hr>
     </header>
 
-    <section>
-        <h2>¿Qué es CSS y su sintaxis básica?</h2>
-        <div>
-            <strong>Regla de CSS:</strong>
-            <pre>
-selector {
-    propiedad: valor;
-    propiedad: valor;
-}
-            </pre>
-        </div>
+    <main>
+        <article class="notes">
 
-        <h2>Características básicas</h2>
-        <ul>
-            <li>Teniendo en cuenta que todos los elementos de HTML tienen estilos por defecto.</li>
-            <li><strong>Regla de la cascada:</strong> El navegador lee de arriba hacia abajo. Si hay conflicto, gana la última regla.</li>
-            <li><strong>Regla de especificidad:</strong> Un identificador (ID) tiene más peso que una etiqueta normal.</li>
-            <li><strong>Herencia:</strong> Algunas propiedades (como la fuente y el color) pasan del padre (ej. body) a los hijos.</li>
-        </ul>
-    </section>
+            <section aria-labelledby="que-es">
+                <h2 id="que-es">¿Qué es CSS y su sintaxis básica?</h2>
+                <p>CSS (<em>Cascading Style Sheets</em>) es el lenguaje que define la presentación de documentos HTML. Su sintaxis básica:</p>
+                <pre><code class="language-css">selector {
+  propiedad: valor;
+  propiedad: valor;
+}</code></pre>
+            </section>
 
-    <hr>
+            <section aria-labelledby="caracteristicas">
+                <h2 id="caracteristicas">Características básicas</h2>
+                <ul>
+                    <li>Todos los elementos tienen estilos por defecto del navegador (user agent styles).</li>
+                    <li><strong>Cascada:</strong> cuando hay conflicto, gana la regla que se aplica después (u otra más específica).</li>
+                    <li><strong>Especificidad:</strong> IDs &gt; clases &gt; etiquetas; inline &gt; ID &gt; clase &gt; etiqueta (en general).</li>
+                    <li><strong>Herencia:</strong> propiedades como <code>color</code> o <code>font-family</code> se heredan de los ancestros.</li>
+                </ul>
+            </section>
 
-    <section>
-        <h2>Resultados de nuestro CSS:</h2>
-        
-        <p>Soy un párrafo normal. La regla de cascada me hizo azul y tengo un tamaño de 20px.</p>
+            <section aria-labelledby="resultado">
+                <h2 id="resultado">Resultados de ejemplo</h2>
 
-        <p id="miIdentificador">Soy un párrafo con el id="miIdentificador". La regla de especificidad me hizo verde.</p>
+                <div class="example">
+                    <p class="normal">Soy un párrafo normal. Debe aparecer con la regla de párrafo (color azul y tamaño aumentado).</p>
 
-        <div>
-            No soy un párrafo, soy un simple div. No tengo un color específico asignado, así que heredé el color verde (#00ff00) y la fuente Arial de la etiqueta body.
-        </div>
-    </section>
+                    <p id="miIdentificador">Soy un párrafo con <code>id="miIdentificador"</code>. La regla por especificidad aplica aquí y me hace de otro color.</p>
 
+                    <div class="box">No soy un párrafo, soy un <code>&lt;div&gt;</code>. No tengo color explícito, así que heredo la tipografía y (si aplica) el color del ancestro.</div>
+                </div>
+            </section>
+
+            <section aria-labelledby="uso">
+                <h2 id="uso">Cómo usamos CSS en HTML</h2>
+                <p>Preferir <strong>hojas externas</strong> y clases. Evitar estilos inline salvo para casos puntuales.
+                </p>
+
+                <pre><code class="language-html">&lt;!-- Inline (no recomendado) --&gt;
+&lt;p style="color: blue;"&gt;Texto&lt;/p&gt;
+
+&lt;!-- Externo (recomendado) --&gt;
+&lt;p class="azul"&gt;Texto&lt;/p&gt;
+</code></pre>
+
+                <p class="note" style="font-style: italic;">Los siguientes párrafos muestran ejemplos inline solo para demostración.</p>
+
+                <p style="color: blueviolet; font-size: 1rem;">Ejemplo inline: color <code>blueviolet</code>, tamaño 1rem.</p>
+                <p style="color: orange; font-size: 1.25rem;">Otro ejemplo inline: <code>orange</code>, 1.25rem.
+                </p>
+
+            </section>
+
+        </article>
+    </main>
+    
+    <footer>
+        <p>CSS - Nivel básico - 2026</p>
+    </footer>
 </body>
+
 </html>

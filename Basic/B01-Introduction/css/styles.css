@@ -1,53 +1,132 @@
-/* =========================================
-   ¿Qué es CSS y su sintaxis básica?
-   =========================================
-   Regla de CSS:
-   selector {
-       propiedad: valor;
-       propiedad: valor;
-   }
-   
-   Características básicas:
-   Teniendo en cuenta que todos los elementos de html 
-   tienen estilos por defecto.
+/*
+=========================================
+styles.css
+Objetivos: semántica, accesibilidad,
+ejemplos claros de 
+herencia/cascada/especificidad
+========================================= 
 */
 
+:root {
+  --bg: #ffffff;
+  --text: #102a43;         /* color de texto principal */
+  --heading: #b22222;      /* color para títulos */
+  --accent: #0aa74a;       /* color para ejemplos (especificidad) */
+  --muted: #6b7280;        /* texto secundario */
+  --code-bg: #f3f4f6;      /* fondo para bloques de código */
+  --base-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono-font: "Courier New", Courier, monospace;
+}
 
-/* =========================================
-   HERENCIA
-   =========================================
-   El body le pasa la fuente y el color a sus elementos hijos.
-*/
+html {
+   font-size: 16px;
+}
+
 body {
-   font-family: arial;
-   color: #00ff00; /* Color verde heredado por defecto */
+   margin: 0;
+   font-family: var(--base-font);
+   color: var(--text);
+   background: var(--bg);
+   line-height: 1.6;
+   padding: clamp(1rem,2vw,2rem);
 }
 
-h1 {
-   color: red; /* Este H1 sobrescribe el color verde heredado */
+/* Encabezados */
+header h1 {
+   font-size: clamp(1.5rem,2.5vw,2rem);
+   color: var(--heading);
+   margin: 0;
 }
 
+.lead {
+   color: var(--muted);
+   margin: .25rem 0 .5rem-,
+}
+
+h2 {
+   font-size: 1.125rem;
+   color: var(--heading);
+   margin: 0 0 .5rem;
+}
+
+section {
+   margin: 1rem 0;
+}
+
+/* Bloques de código */
+pre {
+   background: var(--code-bg);
+   padding: .75rem;
+   border-radius: 8px;
+   overflow: auto;
+}
+
+code {
+   font-family: var(--mono-font);
+   font-size: .9rem;
+   display:block;
+}
+
+/* Ejemplo visual */
+.example {
+   display: block;
+   gap: .75rem;
+}
+
+.box {
+   padding: .6rem;
+   border: 1px dashed var(--muted);
+   border-radius: 6px;
+   background:#ffffff;
+}
 
 /* =========================================
-   REGLA DE LA CASCADA
-   =========================================
-   Si dos reglas afectan al mismo elemento, se aplica la última.
-*/
-p {
-   color: green;
+   EJEMPLOS: HERENCIA, CASCADA Y ESPECIFICIDAD
+   ========================================= */
+
+/* HERENCIA: definimos tipografía y color base en body */
+body {
+  /* font-family ya definido arriba */
+  color:var(--text);
 }
 
+/* CASCADA: dos reglas para <p>, la segunda sobrescribe a la primera
+   — ilustra que el orden importa (última regla aplicada gana) */
+/* Primera regla (sería la primera en el archivo o en otra hoja cargada antes) */
 p {
-   color: blue; /* Esta regla gana por estar más abajo en el archivo */
-   font-size: 20px; /* Sintaxis básica aplicada al párrafo */
+   color: #0077cc; /* azul claro */
 }
 
+/* Segunda regla (gana por estar después) */
+p {
+   color: #0047ab; /* azul más oscuro */; font-size:1.25rem;
+}
 
-/* =========================================
-   REGLA DE ESPECIFICIDAD
-   =========================================
-   Un ID (#miIdentificador) es más específico que una etiqueta (p).
-*/
+/* ESPECIFICIDAD: un ID vence a una regla de etiqueta */
 p#miIdentificador {
-    color: green; /* Esta regla gana sobre el color azul del 'p' */
+   color:var(--accent);
+   font-weight:600;
+}
+
+/* Recomendación: evitar estilos inline cuando sea posible */
+.note {
+   color:var(--muted);
+}
+
+/* Utilidades */
+hr {
+   border: 0;
+   border-top: 1px solid #e6e9ee;
+   margin:1rem 0;
+}
+
+
+/* Footer */
+footer {
+   background-color: beige;
+   text-align: center;
+}
+
+footer p {
+   color: black;
 }
