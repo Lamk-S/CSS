@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
     <meta charset="utf-8">
@@ -27,6 +27,33 @@
 }</code></pre>
             </section>
 
+            <section aria-labelledby="selectores">
+                <h2 id="selectores">Selectores de elementos, grupales, ID y Class</h2>
+                <p>Los selectores nos permiten indicar a qué elementos HTML queremos aplicar estilos.</p>
+                
+                <h3>Selector grupal</h3>
+                <p>Podemos agrupar varios selectores separándolos por comas para que compartan la misma regla:</p>
+                <pre><code class="language-css">h1, h2, h3, h4, h5, h6 {
+  font-family: monospace;
+  color: black;
+}</code></pre>
+
+                <h3>ID y Clase</h3>
+                <p><strong>Selector de identificador (ID):</strong> Se usa para un elemento único en todo el HTML (no puede repetirse). Se referencia con <code>#</code>.</p>
+                <pre><code class="language-html">&lt;!-- HTML --&gt;
+&lt;div id="miIdentificador"&gt;&lt;/div&gt;
+
+/* CSS */
+#miIdentificador { color: blue; }</code></pre>
+
+                <p><strong>Selector de clase (Class):</strong> Se usa para identificar uno o varios elementos. Se referencia con <code>.</code>.</p>
+                <pre><code class="language-html">&lt;!-- HTML --&gt;
+&lt;div class="miClase"&gt;&lt;/div&gt;
+
+/* CSS */
+.miClase { color: blue; }</code></pre>
+            </section>
+
             <section aria-labelledby="caracteristicas">
                 <h2 id="caracteristicas">Características básicas</h2>
                 <ul>
@@ -51,27 +78,32 @@
 
             <section aria-labelledby="uso">
                 <h2 id="uso">Cómo usamos CSS en HTML</h2>
-                <p>Preferir <strong>hojas externas</strong> y clases. Evitar estilos inline salvo para casos puntuales.
-                </p>
+                <p>Preferir <strong>hojas externas</strong> y clases. Evitar estilos inline salvo para casos puntuales.</p>
 
                 <pre><code class="language-html">&lt;!-- Inline (no recomendado) --&gt;
 &lt;p style="color: blue;"&gt;Texto&lt;/p&gt;
 
 &lt;!-- Externo (recomendado) --&gt;
-&lt;p class="azul"&gt;Texto&lt;/p&gt;
-</code></pre>
+&lt;p class="azul"&gt;Texto&lt;/p&gt;</code></pre>
 
                 <p class="note" style="font-style: italic;">Los siguientes párrafos muestran ejemplos inline solo para demostración.</p>
-
                 <p style="color: blueviolet; font-size: 1rem;">Ejemplo inline: color <code>blueviolet</code>, tamaño 1rem.</p>
-                <p style="color: orange; font-size: 1.25rem;">Otro ejemplo inline: <code>orange</code>, 1.25rem.
-                </p>
+                <p style="color: orange; font-size: 1.25rem;">Otro ejemplo inline: <code>orange</code>, 1.25rem.</p>
+            </section>
 
+            <section aria-labelledby="comentarios">
+                <h2 id="comentarios">Comentarios en CSS</h2>
+                <p>Sirven para documentar el código y son ignorados por el navegador.</p>
+                <pre><code class="language-html">&lt;!-- Esto es un comentario en HTML --&gt;
+
+/* Esto es un comentario en CSS */</code></pre>
+                <p>Ejemplo de bloque organizador:</p>
+                <pre><code class="language-css">/*************************** Acá van los estilos del header ****************************/</code></pre>
             </section>
 
         </article>
     </main>
-    
+
     <footer>
         <p>CSS - Nivel básico - 2026</p>
     </footer>
