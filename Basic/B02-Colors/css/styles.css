@@ -1,0 +1,274 @@
+/*
+=========================================
+styles.css - Colores
+Objetivo:
+Demostrar modelos de color, variables CSS
+y diferencias entre transparencia con
+canal alfa y opacity.
+=========================================
+*/
+
+/*
+--------------------------------------------------
+Variables globales
+Usar :root permite centralizar los colores base
+y facilita mantener consistencia en todo el sitio.
+--------------------------------------------------
+*/
+:root {
+    /* Paleta base usando distintos modelos de color */
+    --color-text: #1f2937;               /* HEX */
+    --color-bg: hsl(220, 25%, 97%);      /* HSL */
+    --color-surface: #ffffff;            /* HEX */
+    --color-primary: rgb(37, 99, 235);   /* RGB */
+    --color-primary-soft: rgba(37, 99, 235, 0.12);
+    --color-border: rgba(15, 23, 42, 0.10);
+    --color-muted: #6b7280;
+    --color-code: #b91c1c;
+
+    /* Variables para el ejemplo de transparencias */
+    --bg-transparente-rgba: rgba(37, 99, 235, 0.18); /* Fondo con canal alfa */
+    --bg-solido-rgb: rgb(37, 99, 235);               /* Fondo sólido */
+    
+    /* Variables de forma y profundidad */
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --shadow-soft: 0 20px 60px rgba(15, 23, 42, 0.08);
+    --shadow-card: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+/*
+--------------------------------------------------
+Base del documento
+Creamos una experiencia visual moderna:
+- fondo suave
+- contenido centrado
+- espaciado cómodo
+--------------------------------------------------
+*/
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--color-text);
+    background:
+        radial-gradient(circle at top, rgba(37, 99, 235, 0.08), transparent 35%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+    line-height: 1.65;
+    padding: clamp(1rem, 2vw, 2rem);
+}
+
+/*
+--------------------------------------------------
+Estructura principal
+El contenido se presenta dentro de una tarjeta
+centrada, para dar sensación de app o panel moderno.
+--------------------------------------------------
+*/
+header,
+footer,
+.notes {
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+header {
+    margin-bottom: 1.5rem;
+}
+
+.notes {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: clamp(1.25rem, 3vw, 2.25rem);
+}
+
+/* Encabezados con jerarquía visual clara */
+h1, h2, h3 {
+    color: var(--color-primary);
+    line-height: 1.2;
+    margin-top: 0;
+}
+
+h1 {
+    font-size: clamp(2rem, 3vw, 3rem);
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+}
+
+h2 {
+    font-size: clamp(1.35rem, 2vw, 1.7rem);
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+}
+
+h3 {
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Texto auxiliar del encabezado */
+.lead {
+    color: var(--color-muted);
+    max-width: 65ch;
+    margin: 0 0 1rem;
+}
+
+/* Separador decorativo */
+header hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(37, 99, 235, 0.35),
+        transparent
+    );
+    margin: 1.25rem 0 0;
+}
+
+/*
+--------------------------------------------------
+Secciones
+Separación visual entre bloques sin saturar la interfaz.
+--------------------------------------------------
+*/
+section + section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+}
+
+p {
+    margin: 0 0 1rem;
+}
+
+/* Listas limpias y legibles */
+ul {
+    padding-left: 1.25rem;
+    margin: 0;
+}
+
+li + li {
+    margin-top: 0.75rem;
+}
+
+/*
+--------------------------------------------------
+Texto en línea y bloques de código
+El objetivo es que el código sea legible y destaque
+sin romper el diseño general.
+--------------------------------------------------
+*/
+code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    color: var(--color-code);
+    background: rgba(185, 28, 28, 0.06);
+    padding: 0.15rem 0.35rem;
+    border-radius: 0.35rem;
+    font-size: 0.95em;
+}
+
+pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 1.1rem 1.2rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--shadow-card);
+    overflow-x: auto;
+    margin: 1rem 0 0;
+}
+
+pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border-radius: 0;
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+/*
+--------------------------------------------------
+Cajas demostrativas
+Estas son las protagonistas del tema:
+una usa canal alfa y la otra usa opacity.
+--------------------------------------------------
+*/
+.box {
+    padding: 1.25rem 1.25rem;
+    margin: 1rem 0 0;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Pequeño detalle visual para dar sensación más moderna */
+.box::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.28), transparent 45%);
+    pointer-events: none;
+}
+
+/*
+Solo el fondo es semitransparente.
+El texto sigue completamente legible porque no usamos opacity.
+*/
+.bg-alfa {
+    background-color: var(--bg-transparente-rgba);
+    color: #0f172a;
+}
+
+/*
+Aquí sí se aplica opacity al elemento completo.
+Eso afecta también al texto, bordes y cualquier hijo dentro de la caja.
+*/
+.bg-opacity {
+    background-color: var(--bg-solido-rgb);
+    color: white;
+    opacity: 0.42;
+}
+
+/*
+--------------------------------------------------
+Footer
+Sutil y limpio, para cerrar la página sin ruido visual.
+--------------------------------------------------
+*/
+footer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    text-align: center;
+    color: var(--color-muted);
+    font-size: 0.95rem;
+    border-top: 1px solid var(--color-border);
+}
+
+/* Ajustes responsivos suaves */
+@media (max-width: 640px) {
+    .notes {
+        border-radius: 16px;
+        padding: 1rem;
+    }
+
+    pre {
+        padding: 1rem;
+    }
+
+    .box {
+        padding: 1rem;
+    }
+}

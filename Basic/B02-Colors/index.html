@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Colores en CSS — Apuntes</title>
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Coloreando nuestra página</h1>
+        <p class="lead">Guía de modelos de color, manejo de transparencias y aplicación práctica en CSS.</p>
+        <hr>
+    </header>
+
+    <main>
+        <article class="notes">
+
+            <section aria-labelledby="modelos-color">
+                <h2 id="modelos-color">1. Modelos de color</h2>
+                <p>En CSS podemos definir colores de varias formas dependiendo de lo que necesitemos:</p>
+
+                <ul>
+                    <li><strong>Keywords (Palabras clave):</strong> Colores predefinidos como <code>red</code>, <code>blue</code> o <code>transparent</code>.</li>
+                    <li><strong>HEX (Hexadecimal):</strong> Sistema base 16, por ejemplo <code>#FF0000</code>.</li>
+                    <li><strong>RGB / RGBA:</strong> Basado en los canales Rojo, Verde y Azul. Ejemplo: <code>rgb(255, 0, 0)</code>.</li>
+                    <li><strong>HSL / HSLA:</strong> Basado en Matiz, Saturación y Luminosidad. Muy útil para crear paletas consistentes.</li>
+                </ul>
+            </section>
+
+            <section aria-labelledby="transparencia">
+                <h2 id="transparencia">2. Transparencia - Modelos vs Opacity</h2>
+                <p>Existen dos formas principales de hacer que un elemento sea transparente o semitransparente, pero tienen comportamientos distintos:</p>
+
+                <h3>a-. Usando el Canal Alfa (RGBA / HSLA / HEX con 8 dígitos)</h3>
+                <p>Afecta <strong>solo al color</strong> que estamos definiendo (por ejemplo, el fondo), sin afectar a los elementos hijos (como el texto).</p>
+                <div class="box bg-alfa">
+                    Fondo con transparencia (RGBA). ¡Mi texto se lee perfectamente!
+                </div><br>
+
+                <h3>b-. Usando la propiedad <code>opacity</code></h3>
+                <p>Afecta a <strong>todo el elemento y a sus hijos</strong>. Si le das opacidad a una caja, el texto dentro de ella también se volverá transparente.</p>
+                <div class="box bg-opacity">
+                    Caja con Opacity. ¡Todo dentro de mí se vuelve transparente!
+                </div>
+            </section>
+
+            <section aria-labelledby="aplicacion">
+                <h2 id="aplicacion">3. Aplicación de colores</h2>
+                <p>Las principales propiedades de CSS para aplicar color son:</p>
+
+                <pre><code class="language-css">.elemento {
+  color: #333333;
+  background-color: hsl(200, 50%, 90%);
+  border: 2px solid rgb(0, 100, 255);
+}</code></pre>
+            </section>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>CSS - Nivel básico - 2026</p>
+    </footer>
+</body>
+</html>
