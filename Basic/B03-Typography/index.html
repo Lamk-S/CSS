@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tipografía en CSS — Apuntes</title>
+    <link rel="stylesheet" href="./css/style.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Merriweather:ital@0;1&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>Dominando la Tipografía</h1>
+        <p class="lead">Guía completa sobre el manejo de fuentes locales, externas, tamaños accesibles y configuración de legibilidad en CSS.</p>
+        <hr>
+    </header>
+
+    <main>
+        <article class="notes">
+
+            <section aria-labelledby="fuentes-seguras">
+                <h2 id="fuentes-seguras">1. Fuentes seguras de web (Web Safe Fonts)</h2>
+                <p>Antes de descargar fuentes externas, debemos conocer las <strong>Web Safe Fonts</strong>. Son tipografías preinstaladas en la inmensa mayoría de sistemas operativos (Windows, macOS, Linux, Android).</p>
+                <p>Su mayor ventaja es el rendimiento: al no tener que descargar nada, la página carga instantáneamente. Siempre debemos incluirlas como "plan de respaldo" (fallback) en nuestra propiedad <code>font-family</code>.</p>
+                
+                <ul>
+                    <li><strong>Sans-serif (Sin remates):</strong> Arial, Helvetica, Verdana, Trebuchet MS. Dan un aspecto limpio y moderno.</li>
+                    <li><strong>Serif (Con remates):</strong> Times New Roman, Georgia, Garamond. Excelentes para textos largos y formales.</li>
+                    <li><strong>Monospace:</strong> Courier New, Consolas, Monaco. Todos los caracteres miden lo mismo de ancho; perfectas para mostrar código.</li>
+                </ul>
+
+                <pre><code class="language-css">/* Ejemplo de un 'font stack' moderno de sistema */
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}</code></pre>
+            </section>
+
+            <section aria-labelledby="fuentes-propias">
+                <h2 id="fuentes-propias">2. Uso de fuentes locales con <code>@font-face</code></h2>
+                <p>Alojamos las fuentes en nuestro propio servidor (carpeta <code>/fonts</code>) para no depender de servicios externos y personalizar nuestro diseño al máximo. En este documento estamos cargando dos tipografías locales distintas:</p>
+                
+                <ul>
+                    <li><strong>Atkinson-hyperlegible:</strong> Cargada en formato <code>.woff2</code>. La hemos configurado para todo el texto base de la página por su alta legibilidad.</li>
+                    <li><strong>Grandstander:</strong> Cargada en formato <code>.woff</code>. La hemos aplicado a todos los encabezados (h1, h2, h3) para darle personalidad a los títulos.</li>
+                </ul>
+                
+                <div class="box font-local-1">
+                    Esta caja muestra la fuente <strong>Atkinson-hyperlegible</strong>. <br>
+                    <strong>Este texto está usando su variante Bold (Negrita).</strong>
+                </div>
+
+                <div class="box font-local-2">
+                    ¡Y esta caja muestra la fuente Grandstander en acción!
+                </div>
+                
+                <p>Así configuramos nuestros archivos en CSS:</p>
+                <pre><code class="language-css">@font-face {
+  font-family: 'Atkinson-hyperlegible';
+  src: url('../fonts/Atkinson-hyperlegible-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}</code></pre>
+            </section>
+
+            <section aria-labelledby="google-fonts">
+                <h2 id="google-fonts">3. Usar fuentes de Google Fonts</h2>
+                <p><a href="https://fonts.google.com/" target="_blank" rel="noopener noreferrer">Google Fonts</a> es un catálogo gratuito de tipografías. En lugar de descargar los archivos, vinculamos una hoja de estilos que Google nos proporciona directamente en el <code>&lt;head&gt;</code> de nuestro HTML.</p>
+
+                <div class="box font-google">
+                    El veloz murciélago hindú comía feliz cardillo y kiwi. (Fuente externa: Merriweather)
+                </div>
+            </section>
+
+            <section aria-labelledby="tamanos">
+                <h2 id="tamanos">4. Tamaño de la tipografía (Unidades)</h2>
+                <p>Elegir la unidad correcta para <code>font-size</code> es crítico para la accesibilidad. Evitamos los píxeles para el texto principal porque impiden que el navegador escale la letra si el usuario tiene configurada una fuente más grande en su sistema.</p>
+                
+                <ul>
+                    <li><strong>px (Píxeles):</strong> Unidad estática. Útil para bordes o sombras, mala idea para texto.</li>
+                    <li><strong>em:</strong> Se basa en el tamaño del contenedor padre. Puede causar problemas si anidamos muchos elementos.</li>
+                    <li><strong>rem (Root em):</strong> Se basa en el tamaño raíz del documento (el <code>html</code>, que suele ser 16px). Es la <strong>unidad reina</strong> para textos. <code>1.5rem</code> equivale a 24px si la raíz es 16px.</li>
+                </ul>
+
+                <div class="box sizes-demo">
+                    <p class="size-px">Texto en 16px (Estático)</p>
+                    <p class="size-rem">Texto en 1.5rem (Dinámico y accesible, usando Atkinson Bold)</p>
+                </div>
+            </section>
+
+            <section aria-labelledby="parrafos">
+                <h2 id="parrafos">5. Configuración de párrafos y legibilidad</h2>
+                <p>Una buena fuente no sirve de nada si el texto está amontonado. Para que el usuario no se fatigue al leer, controlamos tres factores principales en CSS:</p>
+                
+                <ol>
+                    <li><strong>Interlineado (line-height):</strong> Espacio vertical entre líneas. Un valor entre 1.5 y 1.75 es ideal.</li>
+                    <li><strong>Ancho de línea (max-width):</strong> Si una línea es muy larga, el ojo se pierde al volver al inicio. Usamos la unidad <code>ch</code> (caracteres) para limitarlo a ~65 caracteres.</li>
+                    <li><strong>Alineación (text-align):</strong> En la web, justificar el texto (<code>justify</code>) suele crear "ríos blancos" horribles entre palabras. Es mejor alinear a la izquierda.</li>
+                </ol>
+
+                <div class="box parrafo-demo">
+                    <p>Este es el ejemplo de un párrafo perfectamente configurado. Observa cómo el texto respira gracias a un interlineado generoso. Además, hemos limitado su ancho máximo; no importa qué tan ancha sea tu pantalla, esta línea nunca crecerá tanto como para que te pierdas al saltar a la siguiente. Pequeños detalles hacen grandes interfaces.</p>
+                </div>
+            </section>
+
+            <section aria-labelledby="iconos">
+                <h2 id="iconos">6. Incluir íconos con CSS</h2>
+                <p>Librerías como <a href="https://fontawesome.com/" target="_blank" rel="noopener noreferrer">FontAwesome</a> empaquetan vectores (imágenes escalables) dentro de un archivo de fuente tipográfica. Al ser tratados como texto, ¡podemos estilizarlos usando CSS básico!</p>
+                
+                <div class="box icons-demo">
+                    <i class="fa-brands fa-html5 icon-html"></i>
+                    <i class="fa-brands fa-css3-alt icon-css"></i>
+                    <i class="fa-brands fa-js icon-js"></i>
+                    <span>¡Podemos cambiar su <code>color</code> y su <code>font-size</code> libremente!</span>
+                </div>
+            </section>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>CSS - Nivel básico - 2026</p>
+    </footer>
+</body>
+</html>
