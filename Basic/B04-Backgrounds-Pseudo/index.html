@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fondos y Pseudoclases en CSS — Apuntes</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Fondos, Enlaces y Pseudoclases</h1>
+        <p class="lead">Guía para el manejo de fondos, decoraciones interactivas y estilización avanzada de elementos sin ensuciar el HTML.</p>
+        <hr>
+    </header>
+
+    <main>
+        <article class="notes">
+
+            <section aria-labelledby="fondos-repeticion">
+                <h2 id="fondos-repeticion">1. Imágenes de fondo y repetición</h2>
+                <p>La propiedad <code>background-image</code> permite colocar imágenes detrás del contenido. Por defecto, si la imagen es más pequeña que el contenedor, se repetirá infinitamente (en mosaico) para rellenarlo.</p>
+                <p>Controlamos este comportamiento con <code>background-repeat</code>:</p>
+                <ul>
+                    <li><code>repeat</code> (por defecto)</li>
+                    <li><code>repeat-x</code> (solo horizontal) / <code>repeat-y</code> (solo vertical)</li>
+                    <li><code>no-repeat</code> (se muestra solo una vez)</li>
+                </ul>
+
+                <div class="demo-grid">
+                    <div class="box bg-repeat-yes">
+                        <code>repeat</code>
+                    </div>
+                    <div class="box bg-repeat-no">
+                        <code>no-repeat</code>
+                    </div>
+                </div>
+            </section>
+
+            <section aria-labelledby="fondos-tamanopos">
+                <h2 id="fondos-tamanopos">2. Posición y Tamaño del Fondo</h2>
+                <p>Cuando evitamos que la imagen se repita, podemos decirle exactamente dónde ubicarse y cómo ajustarse al contenedor.</p>
+                <ul>
+                    <li><strong><code>background-position</code>:</strong> Usa palabras clave (<code>center</code>, <code>top right</code>) o valores (<code>50% 50%</code>, <code>10px 20px</code>).</li>
+                    <li><strong><code>background-size</code>:</strong>
+                        <ul>
+                            <li><code>cover</code>: Cubre todo el contenedor, recortando la imagen si es necesario, pero manteniendo la proporción. (Ideal para portadas).</li>
+                            <li><code>contain</code>: Escala la imagen para que se vea completa, aunque queden espacios vacíos.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <div class="box bg-cover-demo">
+                    <p class="overlay-text">Fondo centrado con <code>cover</code></p>
+                </div>
+            </section>
+
+            <section aria-labelledby="multiples-fondos">
+                <h2 id="multiples-fondos">3. Trabajando con más de una imagen</h2>
+                <p>CSS permite apilar múltiples fondos en un solo elemento separándolos por comas. El primer fondo de la lista es el que estará "más arriba" (más cerca del usuario).</p>
+                <p>Esto es increíblemente útil para aplicar un gradiente oscuro semi-transparente sobre una fotografía para que el texto blanco sea legible.</p>
+
+                <div class="box bg-multiple-demo">
+                    <p class="overlay-text">Gradiente + Imagen Fotográfica</p>
+                </div>
+            </section>
+
+            <section aria-labelledby="pseudo">
+                <h2 id="pseudo">4. Pseudoclases y Pseudoelementos</h2>
+                <p>Nos permiten seleccionar estados específicos de un elemento o partes del mismo sin necesidad de agregar clases extra en el HTML.</p>
+                
+                <h3>Pseudoclases (El "Estado")</h3>
+                <p>Seleccionan elementos según su estado de interacción o posición (ej: <code>:hover</code>, <code>:focus</code>, <code>:active</code>, <code>:first-child</code>).</p>
+                <button class="btn-demo">Pasa el mouse sobre mí (:hover)</button>
+
+                <h3>Pseudoelementos (La "Estructura virtual")</h3>
+                <p>Permiten insertar contenido virtual antes (<code>::before</code>) o después (<code>::after</code>) del contenido de un elemento, usando CSS. <strong>Requieren la propiedad <code>content</code> para funcionar.</strong></p>
+                <div class="box pseudo-element-demo">
+                    Este texto tiene una decoración a la izquierda creada puramente con <code>::before</code>.
+                </div>
+            </section>
+
+            <section aria-labelledby="enlaces">
+                <h2 id="enlaces">5. Estilos y fondos en Enlaces</h2>
+                <p>Los enlaces (<code>&lt;a&gt;</code>) interactúan mucho con las pseudoclases. El orden recomendado para definirlos en CSS es <strong>LoVe HAte</strong> (<code>:link</code>, <code>:visited</code>, <code>:hover</code>, <code>:active</code>).</p>
+                <p>Además, podemos usar <code>background-image</code> en un enlace para colocarle un pequeño ícono (muy común para indicar que es un enlace externo o de descarga).</p>
+
+                <div class="box links-demo">
+                    <p>Un enlace normal: <a href="#" class="link-simple">Leer más</a></p>
+                    <p>Un enlace con ícono de fondo: <a href="#" class="link-icon">Descargar PDF</a></p>
+                </div>
+            </section>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>CSS - Nivel básico - 2026</p>
+    </footer>
+</body>
+</html>
