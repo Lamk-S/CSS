@@ -1,0 +1,193 @@
+/*
+=========================================
+style.css - Unidades de Medida
+Objetivo:
+Comprender visualmente la diferencia entre
+unidades absolutas (px) y relativas (em, 
+rem, vw, vh, ch) y sus casos de uso.
+=========================================
+*/
+
+:root {
+    /* Paleta base (Manteniendo la consistencia visual de tus apuntes) */
+    --color-text: #1f2937;
+    --color-bg: hsl(220, 25%, 97%);
+    --color-surface: #ffffff;
+    --color-primary: rgb(37, 99, 235);
+    --color-primary-dark: rgb(29, 78, 216);
+    --color-border: rgba(15, 23, 42, 0.10);
+    --color-muted: #6b7280;
+    --color-code: #b91c1c;
+
+    /* Variables de diseño */
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --shadow-soft: 0 20px 60px rgba(15, 23, 42, 0.08);
+    --shadow-card: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+/*
+--------------------------------------------------
+Base del documento
+--------------------------------------------------
+*/
+html {
+    /* La base de 'rem' suele ser 16px en navegadores. */
+    font-size: 16px; 
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--color-text);
+    background:
+        radial-gradient(circle at top, rgba(37, 99, 235, 0.08), transparent 35%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+    line-height: 1.65;
+    padding: clamp(1rem, 2vw, 2rem);
+}
+
+header, footer, .notes { max-width: 980px; margin: 0 auto; }
+header { margin-bottom: 1.5rem; }
+
+.notes {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: clamp(1.25rem, 3vw, 2.25rem);
+}
+
+/* Tipografía de encabezados */
+h1, h2, h3, h4 { color: var(--color-primary); line-height: 1.2; margin-top: 0; }
+h1 { font-size: clamp(2rem, 3vw, 3rem); letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+h2 { font-size: clamp(1.35rem, 2vw, 1.7rem); margin-bottom: 0.75rem; }
+h3 { font-size: 1.15rem; margin-bottom: 0.5rem; }
+
+.lead { color: var(--color-muted); max-width: 65ch; margin: 0 0 1rem; font-size: 1.1rem; }
+header hr { border: none; height: 1px; background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.35), transparent); margin: 1.25rem 0 0; }
+section + section { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border); }
+p { margin: 0 0 1rem; }
+ul { padding-left: 1.25rem; margin: 0 0 1rem; }
+li + li { margin-top: 0.5rem; }
+
+code { 
+    color: var(--color-code); 
+    background: rgba(185, 28, 28, 0.06); 
+    padding: 0.15rem 0.35rem; 
+    border-radius: 0.35rem; 
+    font-family: monospace; 
+    font-size: 0.95em; 
+}
+
+/*
+--------------------------------------------------
+Cajas Demostrativas Base
+--------------------------------------------------
+*/
+.box {
+    padding: 1.25rem;
+    margin: 1rem 0;
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+}
+
+.demo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+/*
+--------------------------------------------------
+1. Demo: Unidades Absolutas (px)
+--------------------------------------------------
+*/
+.px-box {
+    width: 300px; /* Tamaño rígido, puede desbordar pantallas pequeñas */
+    background-color: #fee2e2; /* Rojo claro */
+    color: #991b1b;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 2px solid #ef4444;
+    font-weight: 500;
+}
+
+/*
+--------------------------------------------------
+2. Demo: EM vs REM (El problema de la cascada)
+--------------------------------------------------
+*/
+/* Comportamiento de EM: Se multiplica 1.5 * 1.5 * 1.5... */
+.em-parent {
+    font-size: 1.2em; /* 1.2 x tamaño heredado */
+    background: #e0f2fe; padding: 1rem; border-radius: 8px;
+    border: 1px solid #7dd3fc;
+}
+.em-child {
+    font-size: 1.2em; /* 1.2 x tamaño del padre (1.44em total) */
+    background: #bae6fd; padding: 1rem; margin-top: 0.5rem; border-radius: 6px;
+}
+.em-grandchild {
+    font-size: 1.2em; /* 1.2 x tamaño del hijo (1.728em total) */
+    background: #7dd3fc; padding: 1rem; margin-top: 0.5rem; border-radius: 4px;
+    font-weight: bold; color: #0284c7;
+}
+
+/* Comportamiento de REM: Siempre mira al html (raíz), no importa la anidación */
+.rem-parent {
+    font-size: 1.2rem; /* 1.2 x 16px = 19.2px */
+    background: #dcfce7; padding: 1rem; border-radius: 8px;
+    border: 1px solid #86efac;
+}
+.rem-child {
+    font-size: 1.2rem; /* Sigue siendo 1.2 x 16px */
+    background: #bbf7d0; padding: 1rem; margin-top: 0.5rem; border-radius: 6px;
+}
+.rem-grandchild {
+    font-size: 1.2rem; /* Sigue siendo 1.2 x 16px */
+    background: #86efac; padding: 1rem; margin-top: 0.5rem; border-radius: 4px;
+    font-weight: bold; color: #166534;
+}
+
+/*
+--------------------------------------------------
+3. Demo: Unidades Viewport (vw)
+--------------------------------------------------
+*/
+.demo-viewport {
+    /* Ocultamos el desbordamiento por si la caja vw es muy grande */
+    overflow: hidden; 
+}
+
+.vw-box {
+    /* Su ancho será exactamente la mitad del tamaño de la ventana del navegador */
+    width: 50vw; 
+    background-color: var(--color-primary);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+    /* Transición para ver el efecto más fluido al cambiar el tamaño de ventana */
+    transition: width 0.2s ease-out; 
+}
+
+/* Responsive básico para evitar que la grid se rompa en móviles */
+@media (max-width: 768px) {
+    .demo-grid { grid-template-columns: 1fr; }
+    .vw-box { width: 80vw; } /* Ajuste de la demo en móvil */
+}
+
+footer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    text-align: center;
+    color: var(--color-muted);
+    font-size: 0.95rem;
+    border-top: 1px solid var(--color-border);
+}

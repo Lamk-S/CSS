@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Unidades de Medida en CSS — Nivel Intermedio</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Unidades de Medida en CSS</h1>
+        <p class="lead">Guía definitiva para entender unidades absolutas, relativas, tipográficas y del viewport para crear interfaces escalables y accesibles.</p>
+        <hr>
+    </header>
+
+    <main>
+        <article class="notes">
+
+            <!-- SECCIÓN 1: Unidades Absolutas -->
+            <section aria-labelledby="unidades-absolutas">
+                <h2 id="unidades-absolutas">1. Unidades Absolutas</h2>
+                <p>Las unidades absolutas tienen un tamaño fijo. No cambian independientemente del tamaño de la pantalla, el contenedor o las preferencias del usuario. Son ideales para cosas que <strong>nunca deben cambiar de tamaño</strong>, como bordes o sombras, pero no se recomiendan para tipografía o anchos de contenedores responsivos.</p>
+                
+                <ul>
+                    <li><strong><code>px</code> (Píxeles):</strong> La unidad más común en pantallas. Un píxel CSS no siempre es igual a un píxel físico del monitor, pero es la medida base.</li>
+                    <li><strong><code>cm</code>, <code>mm</code>, <code>in</code> (Físicas):</strong> Centímetros, milímetros y pulgadas. Se usan casi exclusivamente para hojas de estilo de impresión (<code>@media print</code>).</li>
+                </ul>
+
+                <div class="box demo-absolute">
+                    <p class="px-box">Esta caja tiene un ancho de exactamente <code>300px</code>. Si tu pantalla es más pequeña que esto, generará un scroll horizontal (lo cual es un problema en diseño web).</p>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: Unidades Relativas (Tipográficas) -->
+            <section aria-labelledby="unidades-relativas-texto">
+                <h2 id="unidades-relativas-texto">2. Unidades Relativas (Tipografía)</h2>
+                <p>Su tamaño se calcula en relación con otro valor (como el tamaño de fuente del padre o del documento base). Son fundamentales para la <strong>accesibilidad</strong>, ya que respetan si el usuario tiene configurada una letra más grande en su navegador.</p>
+
+                <h3>El problema de <code>em</code> vs la solución de <code>rem</code></h3>
+                <ul>
+                    <li><strong><code>em</code>:</strong> Relativo al <code>font-size</code> de su contenedor padre directo. <strong>Cuidado:</strong> Si anidas elementos con <code>em</code>, sus tamaños se multiplican (efecto cascada/bola de nieve).</li>
+                    <li><strong><code>rem</code> (Root em):</strong> Relativo al <code>font-size</code> del elemento raíz (<code>&lt;html&gt;</code>). Evita el problema de la cascada y mantiene todo predecible. ¡Es el estándar moderno!</li>
+                    <li><strong><code>ch</code> (Character):</strong> Equivale al ancho del número "0" en la fuente actual. Excelente para limitar el ancho de párrafos y mejorar la lectura.</li>
+                </ul>
+
+                <div class="demo-grid">
+                    <!-- Demo de EM -->
+                    <div class="box">
+                        <h4 style="margin-top:0;">Comportamiento de <code>em</code></h4>
+                        <div class="em-parent">
+                            Soy el padre (1.5em)
+                            <div class="em-child">
+                                Soy el hijo (1.5em). ¡Me he multiplicado!
+                                <div class="em-grandchild">
+                                    Soy el nieto (1.5em). ¡Soy gigante!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Demo de REM -->
+                    <div class="box">
+                        <h4 style="margin-top:0;">Comportamiento de <code>rem</code></h4>
+                        <div class="rem-parent">
+                            Soy el padre (1.5rem)
+                            <div class="rem-child">
+                                Soy el hijo (1.5rem). Mantengo el mismo tamaño.
+                                <div class="rem-grandchild">
+                                    Soy el nieto (1.5rem). Sigo predecible.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: Unidades Relativas (Viewport) -->
+            <section aria-labelledby="unidades-viewport">
+                <h2 id="unidades-viewport">3. Unidades del Viewport (Pantalla)</h2>
+                <p>Estas unidades son relativas a las dimensiones de la ventana del navegador (el viewport). Son mágicas para crear secciones a pantalla completa o elementos que se adaptan al redimensionar la ventana.</p>
+                <ul>
+                    <li><strong><code>vw</code> (Viewport Width):</strong> 1vw = 1% del ancho total de la pantalla.</li>
+                    <li><strong><code>vh</code> (Viewport Height):</strong> 1vh = 1% del alto total de la pantalla. (Ej: <code>100vh</code> ocupa toda la altura visible).</li>
+                    <li><strong><code>vmin</code> / <code>vmax</code>:</strong> El valor mínimo o máximo entre <code>vw</code> y <code>vh</code>. Muy útiles para mantener proporciones perfectas en móviles y escritorio.</li>
+                </ul>
+
+                <div class="box demo-viewport">
+                    <div class="vw-box">
+                        Mi ancho es <code>50vw</code>. ¡Cambia el tamaño de tu navegador y verás cómo crezco o encojo dinámicamente!
+                    </div>
+                </div>
+            </section>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>CSS - Nivel Intermedio - 2026</p>
+    </footer>
+</body>
+</html>
