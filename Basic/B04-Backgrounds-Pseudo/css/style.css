@@ -248,6 +248,20 @@ Cajas Demostrativas Base
     text-decoration: underline;
 }
 
+/*
+--------------------------------------------------
+Footer
+--------------------------------------------------
+*/
+footer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    text-align: center;
+    color: var(--color-muted);
+    font-size: 0.95rem;
+    border-top: 1px solid var(--color-border);
+}
+
 /* Responsive básico */
 @media (max-width: 640px) {
     .notes { padding: 1.25rem; }
