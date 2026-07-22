@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Diagramación en CSS — Nivel Intermedio</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Diagramación en CSS (Layouts)</h1>
+        <p class="lead">Guía para controlar el flujo del documento: dimensiones, comportamientos de visualización (display) y maquetación tradicional con flotantes.</p>
+        <hr>
+    </header>
+
+    <main>
+        <article class="notes">
+
+            <!-- SECCIÓN 1: Ancho y Alto -->
+            <section aria-labelledby="dimensiones">
+                <h2 id="dimensiones">1. Ancho y Alto de las Cajas</h2>
+                <p>Controlar las dimensiones es el primer paso para diagramar. No siempre queremos que una caja ocupe el 100% del espacio, ni que se rompa en pantallas pequeñas.</p>
+                <ul>
+                    <li><strong><code>width</code> y <code>height</code>:</strong> Definen el ancho y alto estático.</li>
+                    <li><strong><code>max-width</code> y <code>min-height</code>:</strong> Son más seguros para el diseño responsivo. <code>max-width: 100%</code> asegura que una imagen o caja nunca desborde su contenedor.</li>
+                </ul>
+
+                <div class="demo-box width-demo">
+                    <p>Esta caja usa <code>max-width: 400px;</code>. En pantallas grandes no pasará de 400px, pero en celulares se encogerá fluidamente.</p>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: Display, Float y Clear -->
+            <section aria-labelledby="display-float">
+                <h2 id="display-float">2. Display, Float y Clear</h2>
+                <p>El comportamiento natural de los elementos web se define por su propiedad <code>display</code>. Los elementos en <code>block</code> ocupan toda la línea, mientras que los <code>inline</code> se ajustan a su contenido.</p>
+                
+                <h3>El uso de <code>float</code></h3>
+                <p>Originalmente creado para que el texto rodeara las imágenes (como en los periódicos). Al aplicar <code>float: left</code> o <code>right</code>, sacamos al elemento del flujo normal.</p>
+                
+                <div class="box clearfix">
+                    <div class="demo-float-img">IMG Flotante</div>
+                    <p>Este texto rodea a la caja flotante. Como la caja tiene <code>float: left;</code>, se alinea a la izquierda y permite que el contenido de texto suba y ocupe el espacio a su derecha. Es vital usar la técnica <strong>clearfix</strong> en el contenedor padre para evitar que su altura colapse cuando contiene elementos flotantes.</p>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: Diagramación por Filas -->
+            <section aria-labelledby="filas">
+                <h2 id="filas">3. Diagramación por Filas</h2>
+                <p>Es el flujo natural (normal flow) de los elementos de bloque (<code>display: block</code>). Se apilan uno debajo del otro de arriba hacia abajo. Ideal para la estructura principal: Cabecera, Contenido y Pie de página.</p>
+
+                <div class="box layout-rows">
+                    <header class="row-header">Cabecera (Header)</header>
+                    <main class="row-main">Contenido Principal (Main)</main>
+                    <footer class="row-footer">Pie de Página (Footer)</footer>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: Diagramación por Columnas -->
+            <section aria-labelledby="columnas">
+                <h2 id="columnas">4. Diagramación por Columnas</h2>
+                <p>Antes de la llegada de Flexbox y CSS Grid, la diagramación por columnas se lograba casi exclusivamente utilizando <code>float</code> y anchos en porcentajes (%).</p>
+                <p>Si queremos 3 columnas, les damos <code>width: 33.33%</code> y <code>float: left</code> a cada una.</p>
+
+                <div class="box layout-columns clearfix">
+                    <div class="col">
+                        <h4>Columna 1</h4>
+                        <p>Ancho: 33.33%</p>
+                    </div>
+                    <div class="col">
+                        <h4>Columna 2</h4>
+                        <p>Flotando a la izquierda</p>
+                    </div>
+                    <div class="col">
+                        <h4>Columna 3</h4>
+                        <p>Contenedor con clearfix</p>
+                    </div>
+                </div>
+            </section>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>CSS - Nivel Intermedio - 2026</p>
+    </footer>
+</body>
+</html>
