@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Posicionamiento en CSS — Nivel Intermedio</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Posicionamiento en CSS</h1>
+        <p class="lead">Aprende a sacar elementos del flujo normal del documento, moverlos en los ejes X, Y, Z, y crear componentes de interfaz avanzados.</p>
+        <hr>
+    </header>
+
+    <main>
+        <article class="notes">
+
+            <!-- SECCIÓN 1: Conceptos Básicos -->
+            <section aria-labelledby="conceptos-basicos">
+                <h2 id="conceptos-basicos">1. Conceptos y Propiedades de Desplazamiento</h2>
+                <p>Normalmente, el navegador pinta los elementos de arriba a abajo y de izquierda a derecha (el Flujo Normal). Cuando usamos la propiedad <code>position</code>, podemos alterar esto usando las propiedades de desplazamiento (offset):</p>
+                <ul>
+                    <li><strong><code>top</code>, <code>right</code>, <code>bottom</code>, <code>left</code>:</strong> Empujan el elemento en la dirección opuesta. Ej: <code>top: 20px</code> empuja el elemento 20px hacia abajo desde el borde superior.</li>
+                    <li>Estas propiedades <strong>solo funcionan</strong> si el elemento tiene un <code>position</code> distinto a <code>static</code>.</li>
+                </ul>
+            </section>
+
+            <!-- SECCIÓN 2: Valores de Position -->
+            <section aria-labelledby="valores-position">
+                <h2 id="valores-position">2. Los Valores de 'Position'</h2>
+                
+                <h3>a) Static (Por defecto)</h3>
+                <p>El elemento sigue el flujo normal. Las propiedades <code>top</code>, <code>left</code> o <code>z-index</code> no tienen ningún efecto aquí.</p>
+
+                <h3>b) Relative (Relativo)</h3>
+                <p>El elemento se mueve <strong>en relación a su posición original</strong>. Deja un "fantasma" o espacio vacío donde solía estar, por lo que no afecta a los elementos vecinos.</p>
+                <div class="box demo-container">
+                    <div class="demo-box box-static">1. Static</div>
+                    <div class="demo-box box-relative">2. Relative (top: 20px, left: 30px)</div>
+                    <div class="demo-box box-static">3. Static</div>
+                </div>
+
+                <h3>c) Absolute (Absoluto)</h3>
+                <p>Saca al elemento completamente del flujo normal (sus vecinos actúan como si no existiera). Se posiciona <strong>en relación a su ancestro posicionado más cercano</strong>.</p>
+
+                <h3>d) Fixed (Fijo)</h3>
+                <p>Similar al absoluto, pero se posiciona <strong>en relación al Viewport (la pantalla)</strong>. Si haces scroll en la página, el elemento <code>fixed</code> no se moverá. (Ej: Un botón flotante de chat).</p>
+
+                <h3>e) Sticky (Pegajoso)</h3>
+                <p>Actúa como <code>relative</code> hasta que haces scroll y cruzas un límite (ej: <code>top: 0</code>), momento en el que se vuelve <code>fixed</code>. Haz scroll en la caja de abajo para probarlo:</p>
+                <div class="demo-scroll-box">
+                    <div class="sticky-header">¡Soy Sticky! Trata de hacerme scroll.</div>
+                    <p>Contenido largo...</p>
+                    <p>Sigue haciendo scroll...</p>
+                    <p>Un poco más...</p>
+                    <p>Fin del contenedor.</p>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: El Truco de Oro -->
+            <section aria-labelledby="truco-oro">
+                <h2 id="truco-oro">3. El Patrón Maestro: Padre Relativo + Hijo Absoluto</h2>
+                <p>Este es el concepto que <strong>debes</strong> dominar. Si a un elemento hijo le pones <code>position: absolute</code>, buscará al primer ancestro que tenga <code>position: relative</code> para usarlo como su mapa de coordenadas. Si no encuentra ninguno, usará el límite de toda la página web.</p>
+                
+                <div class="box card-relative">
+                    <h4>Tarjeta de Producto (Padre Relativo)</h4>
+                    <p>Como mi contenedor tiene <code>position: relative</code>, el botón de abajo se posicionará en relación a mis esquinas, no a las de la pantalla.</p>
+                    
+                    <div class="badge-absolute">¡Nuevo! (Hijo Absoluto)</div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: Z-Index -->
+            <section aria-labelledby="z-index">
+                <h2 id="z-index">4. Orden de Apilamiento (Z-Index)</h2>
+                <p>Cuando los elementos se salen del flujo normal, pueden chocar o superponerse. La propiedad <code>z-index</code> controla la profundidad (el eje Z). Un número mayor significa que está más cerca del usuario (encima de los demás).</p>
+                <p><em>Nota: <code>z-index</code> solo funciona en elementos posicionados (relative, absolute, fixed, sticky).</em></p>
+
+                <div class="box z-index-demo">
+                    <div class="z-box z-box-1">z-index: 1</div>
+                    <div class="z-box z-box-3">z-index: 3 (Arriba)</div>
+                    <div class="z-box z-box-2">z-index: 2</div>
+                </div>
+            </section>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>CSS - Nivel Intermedio - 2026</p>
+    </footer>
+</body>
+</html>
