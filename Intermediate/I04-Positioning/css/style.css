@@ -1,0 +1,244 @@
+/*
+=========================================
+style.css - Posicionamiento
+Objetivo:
+Demostrar visualmente cómo los elementos
+escapan del flujo normal usando relative,
+absolute, sticky, y cómo se apilan con z-index.
+=========================================
+*/
+
+:root {
+    /* Paleta base de la serie */
+    --color-text: #1f2937;
+    --color-bg: hsl(220, 25%, 97%);
+    --color-surface: #ffffff;
+    --color-primary: rgb(37, 99, 235);
+    --color-border: rgba(15, 23, 42, 0.10);
+    --color-muted: #6b7280;
+    --color-code: #b91c1c;
+
+    /* Colores para demos de z-index */
+    --color-z1: #94a3b8; /* Gris */
+    --color-z2: #38bdf8; /* Celeste */
+    --color-z3: #f43f5e; /* Rosa/Rojo */
+
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --shadow-card: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+/*
+--------------------------------------------------
+Base del documento
+--------------------------------------------------
+*/
+html { font-size: 16px; scroll-behavior: smooth; box-sizing: border-box; }
+*, *:before, *:after { box-sizing: inherit; }
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--color-text);
+    background:
+        radial-gradient(circle at top, rgba(37, 99, 235, 0.08), transparent 35%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+    line-height: 1.65;
+    padding: clamp(1rem, 2vw, 2rem);
+}
+
+header, .notes { max-width: 980px; margin: 0 auto; }
+header { margin-bottom: 1.5rem; }
+
+.notes {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: clamp(1.25rem, 3vw, 2.25rem);
+}
+
+h1, h2, h3, h4 { color: var(--color-primary); line-height: 1.2; margin-top: 0; }
+h1 { font-size: clamp(2rem, 3vw, 3rem); letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+h2 { font-size: clamp(1.35rem, 2vw, 1.7rem); margin: 2rem 0 0.75rem; }
+h3 { font-size: 1.15rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: #1e40af; }
+
+.lead { color: var(--color-muted); max-width: 65ch; margin: 0 0 1rem; font-size: 1.1rem; }
+header hr { border: none; height: 1px; background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.35), transparent); margin: 1.25rem 0 0; }
+section + section { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border); }
+p { margin: 0 0 1rem; }
+ul { padding-left: 1.25rem; margin: 0 0 1rem; }
+
+code { 
+    color: var(--color-code); 
+    background: rgba(185, 28, 28, 0.06); 
+    padding: 0.15rem 0.35rem; 
+    border-radius: 0.35rem; 
+    font-family: monospace; 
+}
+
+.box {
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+}
+
+/*
+--------------------------------------------------
+1. Demo: Position Relative
+--------------------------------------------------
+*/
+.demo-container {
+    background-color: #f1f5f9;
+    border: 1px dashed #cbd5e1;
+}
+
+.demo-box {
+    padding: 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    color: white;
+    text-align: center;
+}
+
+.box-static {
+    background-color: #64748b;
+    margin-bottom: 0.5rem;
+}
+
+.box-relative {
+    background-color: var(--color-primary);
+    /* Inicia la magia del posicionamiento relativo */
+    position: relative;
+    top: 20px;
+    left: 30px;
+    /* Se mueve de su punto de origen, pero el box-static de abajo 
+       no sube para ocupar su espacio. Deja un "fantasma". */
+    z-index: 10; /* Para asegurarnos que flote sobre el de abajo */
+}
+
+/*
+--------------------------------------------------
+2. Demo: Position Sticky
+--------------------------------------------------
+*/
+.demo-scroll-box {
+    height: 180px;
+    overflow-y: auto; /* Permite hacer scroll solo dentro de esta caja */
+    background-color: #f8fafc;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    position: relative;
+}
+
+.sticky-header {
+    background-color: #10b981; /* Verde */
+    color: white;
+    padding: 0.75rem;
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    
+    /* Configuración Sticky */
+    position: sticky;
+    top: 0; /* Cuando llegue al top 0 de su contenedor, se "pega" */
+}
+
+/*
+--------------------------------------------------
+3. Demo: Patrón Padre Relativo / Hijo Absoluto
+--------------------------------------------------
+*/
+.card-relative {
+    /* El contenedor padre se vuelve la "referencia" de coordenadas */
+    position: relative; 
+    
+    background-color: #eff6ff; /* Azul muy clarito */
+    border: 2px solid #bfdbfe;
+    min-height: 120px;
+}
+
+.badge-absolute {
+    /* El hijo sale del flujo y se posiciona relativo a la .card-relative */
+    position: absolute;
+    
+    /* Coordenadas respecto a su padre */
+    top: -15px;
+    right: -15px;
+    
+    background-color: #ef4444; /* Rojo alerta */
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+}
+
+/*
+--------------------------------------------------
+4. Demo: Orden de Apilamiento (Z-Index)
+--------------------------------------------------
+*/
+.z-index-demo {
+    position: relative; /* Contenedor para que los absolutos no se escapen */
+    height: 200px;
+    background-color: #f1f5f9;
+}
+
+.z-box {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    color: white;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.5);
+    box-shadow: 0 10px 15px rgba(0,0,0,0.2);
+}
+
+/* Caja 1 (Abajo del todo) */
+.z-box-1 {
+    top: 20px;
+    left: 20px;
+    background-color: var(--color-z1);
+    z-index: 1;
+}
+
+/* Caja 2 (Al medio visualmente, pero z-index 2) */
+.z-box-2 {
+    top: 60px;
+    left: 60px;
+    background-color: var(--color-z2);
+    z-index: 2;
+}
+
+/* Caja 3 (Arriba del todo porque tiene el z-index mayor) */
+.z-box-3 {
+    top: 40px;
+    left: 100px;
+    background-color: var(--color-z3);
+    z-index: 3;
+}
+
+/*
+--------------------------------------------------
+Footer
+--------------------------------------------------
+*/
+footer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    text-align: center;
+    color: var(--color-muted);
+    font-size: 0.95rem;
+    border-top: 1px solid var(--color-border);
+}
