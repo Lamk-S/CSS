@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Modelo de Caja en CSS — Nivel Intermedio</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header>
+        <h1>El Modelo de Caja (Box Model)</h1>
+        <p class="lead">Comprende cómo los navegadores calculan el tamaño y el espaciado de cada elemento en la web. Todo en CSS es una caja.</p>
+        <hr>
+    </header>
+
+    <main>
+        <article class="notes">
+
+            <!-- SECCIÓN 1: Qué es -->
+            <section aria-labelledby="que-es">
+                <h2 id="que-es">1. ¿Qué es el Modelo de Caja?</h2>
+                <p>En HTML y CSS, <strong>todo es una caja rectangular</strong> (incluso los textos o botones con bordes redondeados). El Modelo de Caja es el conjunto de reglas que define las partes de esa caja y cómo interactúan entre sí. Se compone de 4 capas, de adentro hacia afuera:</p>
+                
+                <ol>
+                    <li><strong>Content (Contenido):</strong> El área donde se muestra el texto o la imagen.</li>
+                    <li><strong>Padding (Relleno):</strong> Espacio transparente <em>dentro</em> de la caja, entre el contenido y el borde.</li>
+                    <li><strong>Border (Borde):</strong> La línea visible que envuelve al padding y al contenido.</li>
+                    <li><strong>Margin (Margen):</strong> Espacio transparente <em>fuera</em> de la caja, que la separa de otros elementos.</li>
+                </ol>
+
+                <div class="box box-model-visual">
+                    <div class="layer-margin">
+                        <span>Margin (Margen exterior)</span>
+                        <div class="layer-border">
+                            <span>Border (Borde)</span>
+                            <div class="layer-padding">
+                                <span>Padding (Relleno interior)</span>
+                                <div class="layer-content">
+                                    Content (Contenido)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: Márgenes y Paddings -->
+            <section aria-labelledby="espaciados">
+                <h2 id="espaciados">2. Márgenes y Paddings</h2>
+                <p>Ambos generan espacio, pero de maneras totalmente distintas. El <code>padding</code> engorda el elemento por dentro (su fondo se expande), mientras que el <code>margin</code> empuja a los vecinos hacia afuera.</p>
+                <p>Podemos declararlos lado por lado (ej: <code>margin-top</code>, <code>padding-left</code>) o usando la propiedad abreviada (shorthand), que sigue el sentido de las agujas del reloj: <strong>Arriba, Derecha, Abajo, Izquierda</strong>.</p>
+
+                <pre><code class="language-css">/* Arriba: 10px | Derecha: 20px | Abajo: 15px | Izquierda: 5px */
+padding: 10px 20px 15px 5px;
+
+/* Arriba y Abajo: 2rem | Derecha e Izquierda: 1rem */
+margin: 2rem 1rem;</code></pre>
+
+                <div class="demo-grid">
+                    <div class="box demo-spacing">
+                        <div class="only-padding">Tengo <code>padding: 2rem</code>. Mi fondo azul crece.</div>
+                    </div>
+                    <div class="box demo-spacing">
+                        <div class="only-margin">Tengo <code>margin: 2rem</code>. Empujo a mis vecinos lejos de mí.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: Bordes -->
+            <section aria-labelledby="bordes">
+                <h2 id="bordes">3. Borders (Bordes)</h2>
+                <p>El borde envuelve el contenido y el padding. Para que un borde sea visible, necesita tres cosas: <strong>ancho</strong>, <strong>estilo</strong> y <strong>color</strong>.</p>
+                <p>También es aquí donde aplicamos el famoso <code>border-radius</code> para suavizar las esquinas.</p>
+
+                <div class="box borders-demo">
+                    <div class="border-solid">Solid + Radius</div>
+                    <div class="border-dashed">Dashed</div>
+                    <div class="border-double">Double</div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: Box-sizing -->
+            <section aria-labelledby="box-sizing">
+                <h2 id="box-sizing">4. La magia de Box-Sizing</h2>
+                <p>Por defecto, CSS usa <code>box-sizing: content-box</code>. Esto significa que si le das a una caja un ancho del 100%, y luego le agregas padding o bordes, estos <strong>se sumarán al 100%</strong>, rompiendo el diseño y creando un scroll horizontal.</p>
+                <p>La solución moderna es usar <code>box-sizing: border-box</code>. Esto le dice a CSS: <em>"Incluye el padding y el borde dentro del ancho que declaré"</em>. ¡Es un salvavidas absoluto!</p>
+
+                <div class="box-sizing-container">
+                    <h4>Ambas cajas tienen: <code>width: 100%; padding: 2rem; border: 5px solid;</code></h4>
+                    
+                    <div class="sizing-bad">
+                        <strong>content-box (Por defecto)</strong><br>
+                        ¡Me desbordo de mi contenedor! 100% + padding + border = 110%
+                    </div>
+                    
+                    <div class="sizing-good">
+                        <strong>border-box (La mejor práctica)</strong><br>
+                        Me mantengo exactamente al 100%. CSS reduce el espacio del contenido para absorber el padding y el borde.
+                    </div>
+                </div>
+            </section>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>CSS - Nivel Intermedio - 2026</p>
+    </footer>
+</body>
+</html>
