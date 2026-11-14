@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CSS Grid en CSS — Nivel Intermedio</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header>
+        <h1>CSS Grid Layout</h1>
+        <p class="lead">El sistema de layout bidimensional mas potente de CSS. Crea grillas complejas, layouts tipo revista y estructuras responsive sin media queries con una sola línea.</p>
+        <hr>
+    </header>
+
+    <main>
+        <article class="notes">
+
+            <!-- 1. Qué es Grid -->
+            <section aria-labelledby="que-es-grid">
+                <h2 id="que-es-grid">1. Que es Grid y diferencia con Flexbox</h2>
+                <p><strong>Flexbox es unidimensional</strong> (una fila O una columna). <strong>Grid es bidimensional</strong> (filas Y columnas al mismo tiempo). Grid es para el layout macro de la pagina, Flexbox para componentes internos.</p>
+                <ul>
+                    <li><code>display: grid</code> activa la grilla en el contenedor</li>
+                    <li>Define columnas con <code>grid-template-columns</code> y filas con <code>grid-template-rows</code></li>
+                    <li>El espacio entre celdas se controla con <code>gap</code></li>
+                </ul>
+
+                <div class="box">
+                    <h4>Grilla basica 3x2</h4>
+                    <div class="grid-demo basic-grid">
+                        <div class="grid-item">1</div>
+                        <div class="grid-item">2</div>
+                        <div class="grid-item">3</div>
+                        <div class="grid-item">4</div>
+                        <div class="grid-item">5</div>
+                        <div class="grid-item">6</div>
+                    </div>
+                    <pre><code class="language-css">.contenedor {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 100px 100px;
+  gap: 1rem;
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- 2. Unidades fr, repeat, minmax -->
+            <section aria-labelledby="unidades-grid">
+                <h2 id="unidades-grid">2. Unidades magicas: fr, repeat() y minmax()</h2>
+                <p>La unidad <code>fr</code> (fraction) reparte el espacio sobrante. Es la clave para layouts flexibles sin calcular porcentajes.</p>
+                <ul>
+                    <li><code>1fr 1fr 1fr</code> = 3 columnas iguales</li>
+                    <li><code>repeat(3, 1fr)</code> = lo mismo, mas corto</li>
+                    <li><code>200px 1fr</code> = sidebar fijo de 200px + contenido flexible</li>
+                    <li><code>minmax(200px, 1fr)</code> = minimo 200px, maximo flexible</li>
+                    <li><code>repeat(auto-fit, minmax(250px, 1fr))</code> = responsive sin media queries</li>
+                </ul>
+
+                <div class="demo-grid">
+                    <div class="box">
+                        <h4>repeat(3, 1fr)</h4>
+                        <div class="grid-demo three-equal">
+                            <div class="grid-item">1fr</div><div class="grid-item">1fr</div><div class="grid-item">1fr</div>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <h4>200px + 1fr + 1fr</h4>
+                        <div class="grid-demo sidebar-grid">
+                            <div class="grid-item">200px</div><div class="grid-item">1fr</div><div class="grid-item">1fr</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <h4>Responsive automatico: repeat(auto-fit, minmax(150px, 1fr))</h4>
+                    <p class="small-note">Redimensiona la ventana. No hay media queries, Grid decide cuantas columnas entran.</p>
+                    <div class="grid-demo auto-fit">
+                        <div class="grid-item">1</div><div class="grid-item">2</div><div class="grid-item">3</div>
+                        <div class="grid-item">4</div><div class="grid-item">5</div><div class="grid-item">6</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Posicionamiento -->
+            <section aria-labelledby="posicionamiento-grid">
+                <h2 id="posicionamiento-grid">3. Posicionando items: lineas, span y áreas</h2>
+                <p>En Grid puedes decirle a un item exactamente donde debe estar.</p>
+
+                <div class="box">
+                    <h4>grid-column y grid-row con span</h4>
+                    <div class="grid-demo positioned-grid">
+                        <div class="grid-item span-2">Ocupa 2 columnas<br><code>grid-column: span 2</code></div>
+                        <div class="grid-item">1</div>
+                        <div class="grid-item tall-span">Ocupa 2 filas<br><code>grid-row: span 2</code></div>
+                        <div class="grid-item">2</div>
+                        <div class="grid-item">3</div>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <h4>Grid Template Áreas - Layout visual con palabras</h4>
+                    <p>Nombras áreas y las dibujas como un ASCII art. Es el método mas legible para layouts grandes.</p>
+                    <div class="grid-demo areas-demo">
+                        <div class="area-header">header</div>
+                        <div class="area-sidebar">sidebar</div>
+                        <div class="area-main">main</div>
+                        <div class="area-footer">footer</div>
+                    </div>
+                    <pre><code class="language-css">.layout {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "sidebar main"
+    "footer footer";
+  grid-template-columns: 200px 1fr;
+}
+.header { grid-area: header; }
+.sidebar { grid-area: sidebar; }
+.main { grid-area: main; }
+.footer { grid-area: footer; }</code></pre>
+                </div>
+            </section>
+
+            <!-- 4. Alineación -->
+            <section aria-labelledby="alineacion-grid">
+                <h2 id="alineacion-grid">4. Alineación en Grid</h2>
+                <p>Grid tiene dos niveles de alineación: dentro de la celda y de la grilla completa.</p>
+                <ul>
+                    <li><code>justify-items</code> / <code>align-items</code>: alineación de items dentro de su celda</li>
+                    <li><code>justify-content</code> / <code>align-content</code>: alineación de toda la grilla cuando es mas pequeña que el contenedor</li>
+                    <li><code>place-items: center</code>: shorthand para centrar todo (justify + align)</li>
+                </ul>
+
+                <div class="box">
+                    <h4>Centrado absoluto con place-items: center</h4>
+                    <div class="grid-demo place-center">
+                        <div class="grid-item centered">Centrado con<br>place-items: center</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Casos reales -->
+            <section aria-labelledby="casos-reales-grid">
+                <h2 id="casos-reales-grid">5. Patrones reales con Grid</h2>
+
+                <h3>Galería tipo Pinterest / Dashboard</h3>
+                <div class="box">
+                    <div class="grid-demo gallery-demo">
+                        <div class="gallery-item">Imagen 1</div>
+                        <div class="gallery-item tall">Imagen 2<br>(mas alta)</div>
+                        <div class="gallery-item">Imagen 3</div>
+                        <div class="gallery-item wide">Imagen 4 (wide)</div>
+                        <div class="gallery-item">Imagen 5</div>
+                        <div class="gallery-item">Imagen 6</div>
+                    </div>
+                </div>
+
+                <h3>Holy Grail Layout - El layout clásico web</h3>
+                <div class="box">
+                    <div class="grid-demo holy-grail">
+                        <div class="hg-header">Header</div>
+                        <div class="hg-nav">Nav</div>
+                        <div class="hg-main">Main Content<br><br>Grid hace esto trivial sin hacks de float o flex complejos. Header y Footer full width, sidebar y main con alturas iguales automaticamente.</div>
+                        <div class="hg-aside">Aside</div>
+                        <div class="hg-footer">Footer</div>
+                    </div>
+                </div>
+            </section>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>CSS - Nivel Intermedio - 2026</p>
+    </footer>
+</body>
+</html>
