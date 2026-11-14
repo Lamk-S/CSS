@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flexbox en CSS — Nivel Intermedio</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Flexbox en CSS</h1>
+        <p class="lead">Domina el modelo de caja flexible: controla filas y columnas en una dimensión, alinea elementos sin hacks y construye componentes modernos como navbars y cards.</p>
+        <hr>
+    </header>
+
+    <main>
+        <article class="notes">
+
+            <!-- 1. Que es -->
+            <section aria-labelledby="que-es-flexbox">
+                <h2 id="que-es-flexbox">1. Que es Flexbox y cuándo usarlo</h2>
+                <p>Flexbox es un modelo de layout <strong>unidimensional</strong>. Sirve para alinear elementos en una sola dirección: fila (horizontal) o columna (vertical). Es ideal para componentes como menus, barras de herramientas, grupos de botones o cards.</p>
+                <p>Se activa con <code>display: flex</code> en el contenedor padre. Todos los hijos directos se convierten en flex items.</p>
+                <ul>
+                    <li><strong>Contenedor (flex container):</strong> El padre con <code>display: flex</code></li>
+                    <li><strong>Items (flex items):</strong> Los hijos directos</li>
+                    <li><strong>Ejes:</strong> Main axis (principal) y Cross axis (cruzado). Dependen de <code>flex-direction</code></li>
+                </ul>
+
+                <div class="box flex-visual">
+                    <div class="flex-demo simple-row">
+                        <div class="item">1</div>
+                        <div class="item">2</div>
+                        <div class="item">3</div>
+                    </div>
+                    <p class="demo-label"><code>display: flex</code> - Por defecto en fila, los items se alinean al inicio</p>
+                </div>
+            </section>
+
+            <!-- 2. Flex Direction -->
+            <section aria-labelledby="flex-direction">
+                <h2 id="flex-direction">2. Dirección de los ejes - flex-direction</h2>
+                <p>Define cual es el main axis. Cambia completamente el flujo.</p>
+                <ul>
+                    <li><code>row</code> (default): Izquierda a derecha</li>
+                    <li><code>row-reverse</code>: Derecha a izquierda</li>
+                    <li><code>column</code>: Arriba a abajo</li>
+                    <li><code>column-reverse</code>: Abajo a arriba</li>
+                </ul>
+
+                <div class="demo-grid">
+                    <div class="box">
+                        <h4>row</h4>
+                        <div class="flex-demo direction-row">
+                            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <h4>column</h4>
+                        <div class="flex-demo direction-column">
+                            <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Justify Content -->
+            <section aria-labelledby="justify-content">
+                <h2 id="justify-content">3. Alineación en el Main Axis - justify-content</h2>
+                <p>Controla como se distribuyen los items a lo largo del eje principal.</p>
+
+                <div class="box">
+                    <h4>space-between vs center vs flex-end</h4>
+                    <div class="stack-demos">
+                        <div>
+                            <span class="small-label">justify-content: flex-start (default)</span>
+                            <div class="flex-demo justify-start">
+                                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="small-label">justify-content: center</span>
+                            <div class="flex-demo justify-center">
+                                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="small-label">justify-content: space-between</span>
+                            <div class="flex-demo justify-between">
+                                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="small-label">justify-content: space-evenly</span>
+                            <div class="flex-demo justify-evenly">
+                                <div class="item">1</div><div class="item">2</div><div class="item">3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Align Items -->
+            <section aria-labelledby="align-items">
+                <h2 id="align-items">4. Alineación en el Cross Axis - align-items y gap</h2>
+                <p>Mientras <code>justify-content</code> alinea en el main axis, <code>align-items</code> lo hace en el cross axis. <code>gap</code> reemplaza márgenes manuales.</p>
+
+                <div class="demo-grid">
+                    <div class="box">
+                        <h4>align-items: center (Centrado perfecto)</h4>
+                        <div class="flex-demo align-center tall">
+                            <div class="item">1</div>
+                            <div class="item large">2 - mas alto</div>
+                            <div class="item">3</div>
+                        </div>
+                        <pre><code class="language-css">.contenedor {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}</code></pre>
+                    </div>
+                    <div class="box">
+                        <h4>align-items: stretch vs flex-start</h4>
+                        <div class="flex-demo align-stretch tall">
+                            <div class="item">stretch</div>
+                            <div class="item">stretch</div>
+                            <div class="item">stretch</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Flex Wrap -->
+            <section aria-labelledby="flex-wrap">
+                <h2 id="flex-wrap">5. Envoltura y crecimiento - flex-wrap, flex-grow</h2>
+                <p>Por defecto, Flexbox intenta meter todo en una sola línea. Con <code>flex-wrap: wrap</code> permitimos que salte de línea.</p>
+                <ul>
+                    <li><code>flex-wrap: nowrap</code> (default) - todo en una línea, puede desbordar</li>
+                    <li><code>flex-wrap: wrap</code> - salta a la siguiente línea si no entra</li>
+                    <li><code>flex-grow</code>: cuanto crece un item para ocupar espacio sobrante</li>
+                    <li><code>flex-shrink</code>: cuanto se encoge si falta espacio</li>
+                    <li><code>flex-basis</code>: tamaño base antes de crecer/encogerse</li>
+                    <li>Shorthand: <code>flex: 1</code> equivale a <code>flex-grow:1 flex-shrink:1 flex-basis:0%</code></li>
+                </ul>
+
+                <div class="box">
+                    <h4>flex-wrap + flex: 1</h4>
+                    <div class="flex-demo wrap-demo">
+                        <div class="item grow">flex: 1</div>
+                        <div class="item grow">flex: 1</div>
+                        <div class="item grow-2">flex: 2 (ocupa el doble)</div>
+                        <div class="item grow">flex: 1</div>
+                        <div class="item grow">flex: 1</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. Casos reales -->
+            <section aria-labelledby="casos-reales">
+                <h2 id="casos-reales">6. Patrones reales con Flexbox</h2>
+                
+                <h3>Navbar típica</h3>
+                <div class="box">
+                    <nav class="navbar-demo">
+                        <div class="logo">Lamk.</div>
+                        <div class="nav-links">
+                            <a href="#">Inicio</a>
+                            <a href="#">Cursos</a>
+                            <a href="#">Proyectos</a>
+                        </div>
+                        <button class="btn">Contacto</button>
+                    </nav>
+                </div>
+
+                <h3>Cards flexibles y centradas</h3>
+                <div class="box">
+                    <div class="flex-demo cards-demo">
+                        <div class="card">Card 1<br><small>flex: 1</small></div>
+                        <div class="card">Card 2<br><small>Mismo alto gracias a stretch</small></div>
+                        <div class="card">Card 3<br><small>Sin alturas fijas</small></div>
+                    </div>
+                </div>
+
+                <h3>Centrado perfecto (el truco mas usado)</h3>
+                <div class="box centered-box-demo">
+                    <div class="centered-content">Estoy perfectamente centrado</div>
+                </div>
+            </section>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>CSS - Nivel Intermedio - 2026</p>
+    </footer>
+</body>
+</html>
