@@ -1,289 +1,215 @@
-# Curso de CSS - Apuntes y Practicas
+# Curso de CSS — Apuntes Técnicos y Laboratorio Práctico
 
-Repositorio dedicado al aprendizaje progresivo de CSS, desde fundamentos hasta nivel intermedio. Contiene apuntes teoricos con ejemplos interactivos, documentacion comentada y practicas organizadas por modulos.
+[![HTML5](https://img.shields.io/badge/HTML5-Semántico-E34F26?style=flat-square&logo=html5&logoColor=white)](https://developer.mozilla.org/es/docs/Web/HTML)
+[![CSS3](https://img.shields.io/badge/CSS3-Moderno_&_Vanilla-1572B6?style=flat-square&logo=css3&logoColor=white)](https://developer.mozilla.org/es/docs/Web/CSS)
+[![Arquitectura](https://img.shields.io/badge/Enfoque-Mobile_First_&_A11y-10B981?style=flat-square)](https://github.com/Lamk-S/CSS)
+[![Progreso](https://img.shields.io/badge/Módulos-12%2F12_Completados-2563EB?style=flat-square)](#roadmap-del-curso)
+[![Licencia](https://img.shields.io/badge/Licencia-MIT-64748B?style=flat-square)](#licencia)
 
-Repositorio: https://github.com/Lamk-S/CSS
+Repositorio de ingeniería frontend dedicado al aprendizaje progresivo de **CSS moderno**, desde sus fundamentos hasta arquitectura de layouts (Flexbox y Grid), diseño responsivo y animaciones aceleradas por GPU. Cada módulo funciona como una pieza de documentación interactiva autocontenida.
 
----
-
-## Descripcion
-
-Este repositorio centraliza mis apuntes del curso de CSS. Cada modulo (B01, I01, etc.) es una pagina HTML independiente con su propia hoja de estilos, donde se documenta y demuestra visualmente un concepto especifico.
-
-El enfoque es aprender haciendo: cada `index.html` incluye teoria, ejemplos de codigo y resultados visuales; cada `css/style.css` esta completamente comentado para explicar decisiones de diseno, accesibilidad y arquitectura.
-
-El repositorio esta dividido en dos niveles:
-
-- **Basic:** Fundamentos - introduccion, colores, tipografia, fondos y pseudo-clases
-- **Intermediate:** Diagramacion y modelo de caja - unidades, layouts, box model y posicionamiento
+**Repositorio:** [github.com/Lamk-S/CSS](https://github.com/Lamk-S/CSS)
 
 ---
 
-## Objetivo
+## Descripción y Filosofía
 
-1.  Comprender los fundamentos: cascada, herencia y especificidad
-2.  Dominar color, tipografia, fondos y manejo de fuentes locales y externas
-3.  Entender unidades absolutas vs relativas y su impacto en accesibilidad y responsive
-4.  Dominar el modelo de caja, box-sizing y tecnicas de layout tradicionales y modernas
-5.  Aprender posicionamiento y apilamiento con z-index
-6.  Mantener material de consulta versionado, limpio y reutilizable
+Este proyecto centraliza apuntes estructurados bajo una premisa de **aprender construyendo**:
 
----
+- **Teoría aplicada:** Cada `index.html` presenta el concepto técnico, fragmentos de código listos para producción y laboratorios visuales interactivos en tiempo real.
+- **Código autodocumentado:** Cada `css/style.css` está comentado por bloques arquitectónicos explicando el *porqué* detrás de cada decisión de diseño, rendimiento y accesibilidad (a11y).
+- **Cero dependencias:** Todo está construido con HTML5 semántico y CSS3 nativo, sin frameworks ni preprocesadores, para dominar el estándar web real.
 
-## Tecnologias y herramientas
+### Niveles del programa
 
-- **Lenguajes:** HTML5, CSS3 moderno (vanilla, sin frameworks)
-- **Fuentes:** @font-face con .woff y .woff2, Google Fonts (Inter, Merriweather), Font Awesome 6
-- **Conceptos clave:** Variables CSS (custom properties), clamp(), calc(), gradientes, backdrop-filter, box-sizing
-- **Layout:** Float con clearfix, flujo normal, posicionamiento, display
-- **Editor recomendado:** Visual Studio Code con Live Server
-- **Navegador:** Chrome, Firefox, Edge modernos
+| Nivel | Enfoque técnico | Módulos |
+| :--- | :--- | :--- |
+| **`Basic/`** | Fundamentos del lenguaje: cascada, especificidad, modelos de color, tipografía web, fondos y pseudo-selectores. | `B01` – `B04` |
+| **`Intermediate/`** | Arquitectura de interfaz: unidades relativas, modelo de caja, posicionamiento, Flexbox, CSS Grid, diseño responsivo y *motion UI*. | `I01` – `I08` |
 
 ---
 
-## Estructura del repositorio
+## Objetivos de Aprendizaje
 
-```
+1. Comprender el motor de renderizado de CSS: **cascada, herencia y especificidad**.
+2. Gestionar sistemas de color, tipografía legible (`@font-face`, escalas fluidas) y recursos visuales.
+3. Dominar las unidades relativas (`rem`, `em`, `ch`, `vw/vh`) y su impacto directo en la accesibilidad.
+4. Controlar el **Box Model**, el flujo del documento, el posicionamiento y los contextos de apilamiento (`z-index`).
+5. Construir arquitecturas unidimensionales con **Flexbox** y bidimensionales con **CSS Grid** (`fr`, `minmax()`, `grid-template-areas`).
+6. Implementar interfaces **Mobile-First**, tipografía fluida con `clamp()` y adaptabilidad por componente con **Container Queries**.
+7. Desarrollar micro-interacciones a **60fps** respetando las preferencias de movimiento del usuario (`prefers-reduced-motion`).
+
+---
+
+## Stack y Estándares Aplicados
+
+- **Lenguajes:** HTML5 semántico, CSS3 moderno (Vanilla).
+- **Arquitectura CSS:** Design Tokens mediante *Custom Properties* (`:root`), metodología *Mobile-First* (`min-width`), `box-sizing: border-box` global.
+- **Sistemas de Layout:** Flujo normal, `float`/`clearfix`, **Flexbox**, **CSS Grid** (`repeat()`, `auto-fit`, `minmax()`, `grid-template-areas`).
+- **Funciones y APIs modernas:** `clamp()`, `calc()`, `@container` (*Container Queries*), `backdrop-filter`, `@keyframes`.
+- **Tipografía e Iconografía:** `@font-face` local (`.woff2` / `.woff` con `font-display: swap`), Google Fonts (`Inter`, `Merriweather`) y Font Awesome 6.
+- **Entorno recomendado:** Visual Studio Code + extensión *Live Server* y navegadores modernos (Chrome, Firefox, Edge).
+
+---
+
+## 📂 Estructura del Repositorio
+
+```text
 CSS/
-|
 ├── Basic/
-|   ├── B01-Introduction/
-|   │   ├── index.html
-|   │   └── css/styles.css
-|   ├── B02-Colors/
-|   │   ├── index.html
-|   │   └── css/styles.css
-|   ├── B03-Typography/
-|   │   ├── index.html
-|   │   ├── css/style.css
-|   │   └── fonts/
-|   │       ├── Atkinson-hyperlegible-Regular.woff2
-|   │       ├── Atkinson-hyperlegible-Bold.woff2
-|   │       ├── Grandstander-Regular.woff
-|   │       └── Grandstander-Bold.woff
-|   └── B04-Backgrounds-Pseudo/
-|       ├── index.html
-|       └── css/style.css
-|
+│   ├── B01-Introduction/          # Sintaxis, cascada, herencia y especificidad
+│   │   ├── index.html
+│   │   └── css/styles.css
+│   ├── B02-Colors/                # Modelos de color, canal alfa vs opacity y gradientes
+│   │   ├── index.html
+│   │   └── css/styles.css
+│   ├── B03-Typography/            # @font-face, Google Fonts, unidades tipográficas y legibilidad
+│   │   ├── index.html
+│   │   ├── css/style.css
+│   │   └── fonts/
+│   └── B04-Backgrounds-Pseudo/    # Fondos múltiples, overlays, pseudoclases y pseudoelementos
+│       ├── index.html
+│       └── css/style.css
+│
 ├── Intermediate/
-|   ├── I01-CSS-Units/
-|   │   ├── index.html
-|   │   └── css/style.css
-|   ├── I02-CSS-Layouts/
-|   │   ├── index.html
-|   │   └── css/style.css
-|   ├── I03-Box-Model/
-|   │   ├── index.html
-|   │   └── css/style.css
-|   └── I04-Positioning/
-|       ├── index.html
-|       └── css/style.css
-|
+│   ├── I01-CSS-Units/             # Unidades absolutas, relativas (em/rem/ch) y viewport
+│   │   ├── index.html
+│   │   └── css/style.css
+│   ├── I02-CSS-Layouts/           # Flujo normal, display, float, clearfix y columnas
+│   │   ├── index.html
+│   │   └── css/style.css
+│   ├── I03-Box-Model/             # Capas de caja, shorthand y content-box vs border-box
+│   │   ├── index.html
+│   │   └── css/style.css
+│   ├── I04-Positioning/           # static, relative, absolute, fixed, sticky y z-index
+│   │   ├── index.html
+│   │   └── css/style.css
+│   ├── I05-Flexbox/               # Layout unidimensional, ejes, alineación y patrones UI
+│   │   ├── index.html
+│   │   └── css/style.css
+│   ├── I06-Grid/                  # Layout bidimensional, fr, repeat(), minmax() y áreas
+│   │   ├── index.html
+│   │   └── css/style.css
+│   ├── I07-Responsive/            # Mobile-First, breakpoints, clamp() y Container Queries
+│   │   ├── index.html
+│   │   └── css/style.css
+│   └── I08-Animations/            # Transiciones, transformaciones GPU, @keyframes y 60fps
+│       ├── index.html
+│       └── css/style.css
+│
 └── README.md
+
 ```
 
 ---
 
-## Contenido detallado
+## 📚 Contenido Detallado por Módulo
 
-### Nivel Basico
+### Nivel Básico (`Basic/`)
 
-#### B01 - Introduction: Fundamentos de CSS
-`Basic/B01-Introduction/`
+* **Conceptos:** Sintaxis `selector { propiedad: valor; }`, selectores de etiqueta, grupales (`h1, h2, h3`), clase (`.class`) e ID (`#id`), hojas de estilo del navegador (*User Agent Styles*).
+* **Motor de resolución:** Orden de cascada, cálculo de especificidad (`inline > ID > clase > etiqueta`) y propiedades heredables (`color`, `font-family`).
+* **Laboratorios:** Competencia de reglas `p` por orden de aparición y resolución de conflictos mediante `p#miIdentificador`.
 
-- Sintaxis basica `selector { propiedad: valor; }`
-- Selectores: elemento, grupal (`h1, h2, h3`), ID (`#id`) y clase (`.class`)
-- User agent styles
-- Cascada: la ultima regla gana
-- Especificidad: inline > ID > clase > etiqueta
-- Herencia: `color` y `font-family`
-- Buenas practicas: hojas externas vs inline, comentarios
-- Demos: dos reglas `p` compitiendo y `p#miIdentificador` ganando por especificidad
+* **Conceptos:** Palabras clave, HEX (6 y 8 dígitos), `rgb()`/`rgba()`, `hsl()`/`hsla()`, centralización de paleta mediante variables CSS en `:root`.
+* **Diferencia crítica:** Canal alfa (`rgba`) frente a la propiedad `opacity` (herencia de opacidad en elementos hijos).
+* **Laboratorios:** Comparativa visual entre `.bg-alfa` (fondo translúcido con texto 100% legible) y `.bg-opacity` (degradación de contraste en todo el bloque), además de efectos `backdrop-filter: blur()`.
 
-#### B02 - Colors: Modelos de color y transparencia
-`Basic/B02-Colors/`
+* **Conceptos:** *Web Safe Fonts*, carga local mediante `@font-face` (`Atkinson Hyperlegible` en `.woff2` y `Grandstander` en `.woff`) con `font-display: swap` para evitar *FOIT*.
+* **Escalabilidad y UX:** Unidades `px` vs `em` vs `rem`, medida óptima de lectura (`max-width: 65ch`), interlineado (`line-height: 1.5 - 1.75`) e iconografía con Font Awesome.
+* **Laboratorios:** Comparativa de escalado `16px` vs `1.5rem` y bloque editorial optimizado para lectura prolongada.
 
-- Modelos: keywords, HEX, RGB/RGBA, HSL/HSLA, HEX 8 digitos
-- Diferencia critica: canal alfa (`rgba`) vs `opacity` (afecta a hijos)
-- Propiedades: `color`, `background-color`, `border-color`
-- Variables CSS centralizadas en `:root`
-- Diseno: `radial-gradient`, `linear-gradient`, `backdrop-filter: blur()`
-- Demos: `.bg-alfa` con fondo semitransparente y texto legible vs `.bg-opacity` con todo transparente
-
-#### B03 - Typography: Tipografia y legibilidad
-`Basic/B03-Typography/`
-
-- Web Safe Fonts y font stacks de sistema
-- @font-face local:
-  - Atkinson Hyperlegible Regular/Bold (.woff2) para texto base
-  - Grandstander Regular/Bold (.woff) para titulos
-  - `font-display: swap`
-- Google Fonts via `<link>` (Inter + Merriweather)
-- Iconos como fuente: Font Awesome
-- Unidades: `px` (estatica), `em` (padre), `rem` (raiz, recomendada)
-- Legibilidad: `line-height` 1.5-1.75, `max-width: 65ch`, `text-align: left`
-- Demos: cajas por fuente, comparativa 16px vs 1.5rem, parrafo optimizado, iconos HTML5/CSS3/JS
-
-#### B04 - Backgrounds and Pseudo: Fondos y pseudo
-`Basic/B04-Backgrounds-Pseudo/`
-
-- `background-image`, `background-repeat`: repeat, no-repeat, repeat-x/y
-- `background-position`: center, top right, valores porcentuales
-- `background-size`: `cover` vs `contain`
-- Multiples fondos: `linear-gradient(...), url(...)` con overlay para legibilidad
-- Pseudoclases: `:hover`, `:active`, `:link`, `:visited` (orden LoVe HAte)
-- Pseudoelementos: `::before`, `::after` con `content` obligatorio
-- Demos: repeat vs no-repeat, cover centrado, gradiente + foto, boton con hover y transform, decoracion con ::before, enlace con icono SVG como background
-
-### Nivel Intermedio
-
-#### I01 - CSS Units: Unidades de medida
-`Intermediate/I01-CSS-Units/`
-
-Concepto clave para interfaces escalables y accesibles.
-
-- **Absolutas:** `px`, `cm`, `mm`, `in` - fijas, para bordes/sombras, no para tipografia responsive. Problema de `width: 300px` que genera scroll horizontal
-- **Relativas tipograficas:**
-  - `em`: relativo al padre, efecto cascada/bola de nieve al anidar
-  - `rem`: relativo a `<html>` (root em), predecible, estandar moderno
-  - `ch`: ancho del caracter "0", ideal para limitar parrafos a 65 caracteres
-- **Viewport:**
-  - `vw`: 1% del ancho de ventana
-  - `vh`: 1% del alto (100vh = pantalla completa)
-  - `vmin`/`vmax`: minimo/maximo entre vw y vh
-- Demos visuales:
-  - Caja de 300px vs responsive
-  - Comparativa em (se multiplica 1.2em > 1.44em > 1.728em) vs rem (siempre 1.2rem = 19.2px)
-  - Caja de 50vw que crece/encoge al redimensionar navegador
-  - Transicion `width 0.2s ease-out` para ver efecto fluido
-
-#### I02 - CSS Layouts: Diagramacion
-`Intermediate/I02-CSS-Layouts/`
-
-Control del flujo del documento antes de Flexbox/Grid.
-
-- **Dimensiones:** `width`/`height` vs `max-width`/`min-height` - `max-width: 400px` se adapta en movil pero no crece de mas en desktop, centrado con `margin: auto`
-- **Display, Float y Clear:**
-  - `display: block` ocupa toda la linea, `inline` se ajusta al contenido
-  - `float: left/right` saca del flujo para que texto rodee imagen (estilo periodico)
-  - Problema: contenedor colapsa, solucion: hack `clearfix::after { content: ""; display: table; clear: both; }`
-  - `box-sizing: border-box` critico para columnas con porcentaje
-- **Diagramacion por filas:** Flujo normal de bloques apilados (Header, Main, Footer)
-- **Diagramacion por columnas:** Tecnica tradicional con `float: left` y `width: 33.33%`
-- Demos:
-  - Caja con `max-width: 400px`
-  - Imagen flotante con texto rodeando y contenedor con clearfix
-  - Layout de 3 filas con colores distintos
-  - 3 columnas flotantes que en movil (max-width 768px) pasan a `float: none; width: 100%`
-
-#### I03 - Box Model: Modelo de caja
-`Intermediate/I03-Box-Model/`
-
-Todo en CSS es una caja rectangular.
-
-- **4 capas de adentro hacia afuera:**
-  1. Content: texto/imagen
-  2. Padding: relleno interior, expande fondo
-  3. Border: linea visible (necesita ancho, estilo, color)
-  4. Margin: espacio exterior, empuja vecinos
-- **Shorthand:** sentido horario Arriba, Derecha, Abajo, Izquierda (`padding: 10px 20px 15px 5px` o `margin: 2rem 1rem`)
-- **Border-radius:** para suavizar esquinas
-- **Box-sizing - el concepto mas importante:**
-  - `content-box` (default): width 100% + padding + border = mas de 100%, rompe layout y genera scroll
-  - `border-box`: padding y border se descuentan dentro del width, mantiene 100% exacto
-  - Mejor practica global: `html { box-sizing: border-box; } *, *:before, *:after { box-sizing: inherit; }`
-- Demos con colores estilo DevTools:
-  - Grafico de capas: margin #f9cc9d, border #fce18b, padding #c4d79b, content #9ec3e5
-  - Padding vs Margin: `.only-padding` con fondo que crece vs `.only-margin` que empuja
-  - Borders: solid + radius, dashed, double
-  - Comparativa `sizing-bad` (content-box desbordada, borde rojo) vs `sizing-good` (border-box perfecta, borde verde)
-
-#### I04 - Positioning: Posicionamiento
-`Intermediate/I04-Positioning/`
-
-Sacar elementos del flujo normal y controlar ejes X, Y, Z.
-
-- **Propiedades de desplazamiento:** `top`, `right`, `bottom`, `left` solo funcionan si `position` no es `static`
-- **Valores:**
-  - `static`: default, flujo normal, ignora top/left/z-index
-  - `relative`: se mueve respecto a su posicion original, deja fantasma (espacio reservado)
-  - `absolute`: sale completamente del flujo (vecinos actuan como si no existiera), se posiciona respecto al ancestro posicionado mas cercano
-  - `fixed`: similar a absolute pero respecto al viewport, no se mueve con scroll (boton de chat flotante)
-  - `sticky`: hibrido relative hasta cruzar limite (top: 0), luego se vuelve fixed
-- **Patron maestro obligatorio:** Padre `position: relative` + Hijo `position: absolute` - el padre se vuelve referencia de coordenadas para el hijo. Si no hay ancestro posicionado, usa la pagina completa
-- **Z-index:** controla eje Z (profundidad), numero mayor = mas cerca del usuario, solo funciona en elementos posicionados
-- Demos:
-  - 3 cajas static / relative (top 20px left 30px con fantasma) / static
-  - Scroll box de 180px con `sticky-header` que se pega en top: 0
-  - Tarjeta `card-relative` (relative) con badge `badge-absolute` (absolute top: -15px right: -15px)
-  - 3 cajas superpuestas con z-index 1 (gris), 2 (celeste), 3 (rosa/rojo arriba del todo)
+* **Conceptos:** `background-image`, `background-repeat`, `background-position`, `background-size` (`cover` vs `contain`) y capas múltiples (`linear-gradient` + imagen como *overlay* de contraste).
+* **Interactividad y decoración:** Pseudoclases de estado (`:link`, `:visited`, `:hover`, `:active` bajo la regla *LoVe HAte*) y pseudoelementos (`::before`, `::after`).
+* **Laboratorios:** Tarjetas con *overlay* legible, botones interactivos y enlaces enriquecidos con iconos SVG inyectados por CSS.
 
 ---
 
-## Como ejecutar
+### Nivel Intermedio (`Intermediate/`)
 
-No requiere compilacion.
+* **Conceptos:** Unidades absolutas (`px`) frente a relativas tipográficas (`em`, `rem`, `ch`) y relativas al viewport (`vw`, `vh`, `vmin`, `vmax`).
+* **Laboratorios:** Demostración del efecto compuesto ("bola de nieve") en `em` anidados (`1.2em → 1.44em → 1.728em`) frente a la estabilidad de `rem`, y contenedores fluidos basados en `50vw`.
 
-1. Clonar:
+* **Conceptos:** Restricciones fluidas (`max-width` + `margin: auto`), comportamiento de `display` (`block` vs `inline`), posicionamiento flotante (`float`) y solución al colapso de contenedores mediante `clearfix`.
+* **Laboratorios:** Artículos estilo editorial con imágenes flotantes y grillas clásicas de 3 columnas adaptables.
+
+* **Conceptos:** Anatomía de 4 capas (*Content → Padding → Border → Margin*), sintaxis *shorthand* horaria y reset universal de `box-sizing: border-box`.
+* **Laboratorios:** Diagrama interactivo inspirado en Chrome DevTools y comparativa directa entre `content-box` (desbordamiento por suma de padding/borde) y `border-box` (dimensiones exactas).
+
+* **Conceptos:** Valores de `position` (`static`, `relative`, `absolute`, `fixed`, `sticky`), el patrón maestro **Padre `relative` + Hijo `absolute**`, y control del eje Z mediante `z-index`.
+* **Laboratorios:** Cabeceras `sticky` dentro de contenedores con scroll, tarjetas con *badges* flotantes absolutos y superposición de capas por índice Z.
+
+* **Conceptos:** Contenedor e ítems flexibles (`display: flex`), control de ejes (*Main Axis* y *Cross Axis*) con `flex-direction`, distribución con `justify-content`, alineación transversal con `align-items`, espaciado nativo con `gap`, envoltura (`flex-wrap`) y factores de flexibilidad (`flex-grow`, `flex-shrink`, `flex-basis`, `flex: 1`).
+* **Laboratorios:** Comparativas de distribución (`space-between`, `space-evenly`), centrado absoluto, barra de navegación (*navbar*), tarjetas con igualación automática de altura (`stretch`) y distribución proporcional (`flex: 1` vs `flex: 2`).
+
+* **Conceptos:** Grillas bidimensionales (`display: grid`), unidad fraccionaria `fr`, funciones `repeat()` y `minmax()`, grillas intrínsecas (`auto-fit`), expansión de celdas con `span`, trazado semántico mediante `grid-template-areas` y centrado con `place-items: center`.
+* **Laboratorios:** Grilla responsiva automática sin media queries, galería asimétrica tipo *Pinterest / Dashboard* y estructura completa **Holy Grail Layout** adaptable a móvil.
+
+* **Conceptos:** Arquitectura *Mobile-First* (`min-width`), definición de *breakpoints* basados en contenido, tipografía fluida con `clamp()`, grillas intrínsecas (`auto-fit` + `minmax()`) y **Container Queries** (`container-type: inline-size` y `@container`).
+* **Laboratorios:** Navbar responsivo *CSS-only* (patrón `:checked`), grid adaptable sin media queries y tarjeta redimensionable en vivo gobernada por `@container`.
+
+* **Conceptos:** Interpolación con `transition`, curvas `cubic-bezier()`, transformaciones 2D/3D aceleradas por GPU (`translate`, `scale`, `rotate`), secuencias con `@keyframes` y accesibilidad mediante `@media (prefers-reduced-motion: reduce)`.
+* **Laboratorios:** Pista comparativa de curvas de aceleración, escenarios anti-*jitter* para transformaciones, *spinners*, indicadores de pulso y *Skeleton Shimmer* para carga percibida.
+
+---
+
+## Cómo Ejecutar en Local
+
+Este proyecto no requiere compilación ni instalación de paquetes.
+
+1. **Clonar el repositorio:**
 ```bash
-git clone https://github.com/Lamk-S/CSS.git
+git clone [https://github.com/Lamk-S/CSS.git](https://github.com/Lamk-S/CSS.git)
 cd CSS
+
 ```
 
-2. Abrir con Live Server (recomendado):
-- Instalar extension Live Server en VS Code
-- Click derecho sobre cualquier `index.html` -> Open with Live Server
 
-3. Abrir directo:
-- Doble clic en `Basic/B01-Introduction/index.html` o `Intermediate/I03-Box-Model/index.html`
+2. **Abrir con Live Server (Recomendado):**
+* Abre la carpeta en **Visual Studio Code**.
+* Haz clic derecho sobre cualquier archivo `index.html` (por ejemplo, `Intermediate/I06-Grid/index.html`) y selecciona **Open with Live Server**.
 
----
 
-## Buenas practicas aplicadas en todo el repo
+3. **Apertura directa:**
+* También puedes abrir cualquier archivo `index.html` directamente en tu navegador web.
 
-- Variables CSS en `:root` para paleta, radios y sombras (consistencia)
-- Comentarios por bloques explicando objetivo y por que
-- `clamp()` para padding y font-size responsive
-- `box-sizing: border-box` como base en layouts
-- HTML semantico y accesible con `aria-labelledby`
-- `font-display: swap` para evitar FOIT
-- Demos aisladas en `.box` para no contaminar estilo base
-- Mobile first con media queries en 640px/768px
+
 
 ---
 
-## Roadmap
+## Buenas Prácticas Transversales
 
-- [x] B01 - Introduccion, cascada, herencia, especificidad
-- [x] B02 - Colores y transparencias
-- [x] B03 - Tipografia, @font-face, Google Fonts, iconos
-- [x] B04 - Fondos, posicionamiento de fondos, pseudo-clases/elementos
-- [x] I01 - Unidades: px, em, rem, ch, vw, vh, vmin/vmax
-- [x] I02 - Layouts: width/max-width, float, clearfix, filas y columnas
-- [x] I03 - Box Model: content, padding, border, margin, box-sizing
-- [x] I04 - Positioning: static, relative, absolute, fixed, sticky, z-index, patron padre relativo + hijo absoluto
-- [ ] I05 - Flexbox
-- [ ] I06 - Grid
-- [ ] I07 - Responsive Design y Media Queries avanzadas
-- [ ] I08 - Transiciones, Transformaciones y Animaciones
+* **Consistencia visual:** Todos los módulos comparten un sistema de tokens (`--color-primary`, `--radius-md`, `--shadow-card`) para mantener coherencia editorial.
+* **Aislamiento de componentes:** Los ejemplos interactivos viven encapsulados dentro de contenedores `.box` para evitar colisiones de estilos.
+* **Accesibilidad (a11y):** Uso de atributos ARIA (`aria-labelledby`, `role="status"`), navegación por teclado (`:focus-visible`) y soporte nativo para reducción de movimiento.
 
 ---
 
-## Requisitos
+## Roadmap del Curso
 
-- Navegador moderno con soporte CSS3 (Chrome 90+, Firefox 88+, Edge 90+)
-- VS Code + Live Server opcional
-- No necesita Node.js ni dependencias
+* [x] **B01** — Introducción, cascada, herencia y especificidad
+* [x] **B02** — Colores, canal alfa y transparencias
+* [x] **B03** — Tipografía web, `@font-face`, Google Fonts e iconografía
+* [x] **B04** — Fondos, overlays y pseudo-selectores
+* [x] **I01** — Unidades de medida (`px`, `em`, `rem`, `ch`, `vw`, `vh`)
+* [x] **I02** — Layouts tradicionales (`display`, `float`, `clearfix`)
+* [x] **I03** — Box Model y `box-sizing`
+* [x] **I04** — Posicionamiento y `z-index`
+* [x] **I05** — Flexbox (alineación unidimensional y distribución dinámica)
+* [x] **I06** — CSS Grid (arquitectura bidimensional, `minmax()` y `grid-template-areas`)
+* [x] **I07** — Responsive Design, `clamp()` y Container Queries
+* [x] **I08** — Transiciones, Transformaciones GPU y Animaciones `@keyframes`
 
 ---
 
 ## Autor
 
-**Melvin López (Lamk-S)**
-GitHub: https://github.com/Lamk-S
+**Melvin López (`Lamk-S`)**
+
+* GitHub: [@Lamk-S](https://github.com/Lamk-S)
 
 ---
 
 ## Licencia
 
-Licencia MIT - Uso libre para aprendizaje y referencia.
+Licencia MIT - Uso libre con fines educativos y de referencia técnica.
