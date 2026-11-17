@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Apuntes técnicos de CSS Responsive Design: Mobile-First, Media Queries, unidades fluidas con clamp() y Container Queries.">
+    <title>Responsive Design en CSS — Nivel Intermedio</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header class="page-header">
+        <span class="badge-module">Módulo I07 · Arquitectura CSS</span>
+        <h1>Responsive Design y Media Queries</h1>
+        <p class="lead">
+            Diseña interfaces adaptables para móvil, tablet y escritorio. Domina la metodología 
+            <em>Mobile-First</em>, breakpoints basados en contenido, tipografía fluida con <code>clamp()</code> y <em>Container Queries</em>.
+        </p>
+        <hr aria-hidden="true">
+    </header>
+
+    <main>
+        <article class="notes">
+            <!-- SECCIÓN 1: Fundamentos y estrategia Mobile-First -->
+            <section aria-labelledby="que-es-responsive">
+                <h2 id="que-es-responsive">1. Qué es Responsive y Mobile-First</h2>
+                <p>
+                    El diseño responsivo no consiste simplemente en "que se vea bien en el celular". Es una arquitectura donde el layout y los componentes <strong>se adaptan dinámicamente al espacio disponible</strong> desde una única base de código.
+                </p>
+
+                <ul>
+                    <li>
+                        <strong>Mobile-First (Estándar moderno):</strong> Se escriben los estilos base para pantallas pequeñas (~320px) y se añade complejidad estructural mediante <code>min-width</code>. Reduce la sobrescritura de reglas CSS.
+                    </li>
+                    <li>
+                        <strong>Desktop-First (Enfoque heredado):</strong> Parte de resoluciones de escritorio y oculta o reacomoda elementos usando <code>max-width</code>.
+                    </li>
+                    <li>
+                        <strong>Viewport Meta Tag:</strong> Sin <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code>, los dispositivos móviles simularán un ancho de ~980px y harán zoom out automático.
+                    </li>
+                </ul>
+
+                <aside class="box callout" aria-label="Regla de oro de diseño responsivo">
+                    <div class="callout-header">
+                        <span class="callout-tag">Principio de Arquitectura</span>
+                    </div>
+                    <p>
+                        <strong>Regla de oro:</strong> Empieza con una estructura lineal y ligera en móvil (1 columna, jerarquía tipográfica clara y áreas táctiles amplias) y enriquece la densidad visual progresivamente conforme crece el viewport.
+                    </p>
+                </aside>
+            </section>
+
+            <!-- SECCIÓN 2: Sintaxis de Media Queries y gestión de Breakpoints -->
+            <section aria-labelledby="media-queries">
+                <h2 id="media-queries">2. Media Queries — Sintaxis y Breakpoints</h2>
+                <p>
+                    Las <em>Media Queries</em> permiten aplicar bloques de CSS condicionalmente según las características del dispositivo o del área de visualización.
+                </p>
+
+                <pre><code class="language-css">/* 1. Estilos base (Mobile-First: 0px en adelante) */
+.card {
+  width: 100%;
+}
+
+/* 2. Tablet: a partir de 768px */
+@media (min-width: 768px) {
+  .card { width: 50%; }
+}
+
+/* 3. Desktop: a partir de 1024px */
+@media (min-width: 1024px) {
+  .card { width: 33.333%; }
+}
+
+/* Consulta por orientación del dispositivo */
+@media (orientation: landscape) {
+  /* Ajustes específicos para modo horizontal */
+}</code></pre>
+
+                <h3>Puntos de quiebre (Breakpoints) de referencia</h3>
+                <div class="box breakpoints-demo" role="list" aria-label="Ejemplos de breakpoints estándar">
+                    <div class="bp" role="listitem"><span>320px</span> Mobile S</div>
+                    <div class="bp" role="listitem"><span>768px</span> Tablet</div>
+                    <div class="bp" role="listitem"><span>1024px</span> Desktop</div>
+                    <div class="bp" role="listitem"><span>1280px</span> Large</div>
+                </div>
+                <p class="small-note">
+                    * Consejo UI/UX: No definas breakpoints pensando en marcas de teléfonos comerciales; créalos exactamente en el ancho donde <strong>tu contenido o diseño se rompe</strong>.
+                </p>
+            </section>
+
+            <!-- SECCIÓN 3: Fluidez intrínseca sin depender de Media Queries -->
+            <section aria-labelledby="unidades-fluidas">
+                <h2 id="unidades-fluidas">3. Unidades fluidas y <code>clamp()</code></h2>
+                <p>
+                    El CSS moderno permite crear interfaces elásticas que escalan de forma continua entre dos extremos sin necesidad de escribir múltiples saltos de <code>@media</code>.
+                </p>
+
+                <div class="demo-grid">
+                    <!-- Tarjeta A: Imágenes fluidas -->
+                    <div class="box demo-card">
+                        <h4>Imágenes fluidas (100%)</h4>
+                        <div class="img-wrapper">
+                            <div class="fake-img">IMG · max-width: 100% + height: auto</div>
+                        </div>
+                        <pre><code>img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}</code></pre>
+                    </div>
+
+                    <!-- Tarjeta B: Tipografía fluida -->
+                    <div class="box demo-card">
+                        <h4>Tipografía fluida con <code>clamp()</code></h4>
+                        <div class="fluid-preview">
+                            <p class="fluid-text">Título fluido sin saltos</p>
+                        </div>
+                        <pre><code>.fluid-text {
+  /* clamp(mínimo, ideal, máximo) */
+  font-size: clamp(1.5rem, 3.5vw + 0.5rem, 2.75rem);
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Tarjeta C: CSS Grid intrínseco -->
+                <div class="box">
+                    <h4>Grid responsivo intrínseco (sin Media Queries)</h4>
+                    <p class="small-note">Usa <code>repeat(auto-fit, minmax(180px, 1fr))</code> para que las columnas se apilen automáticamente cuando falte espacio.</p>
+                    <div class="grid-auto">
+                        <div class="grid-item">180px mínimo</div>
+                        <div class="grid-item">Fluye solo</div>
+                        <div class="grid-item">Cero @media</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: Patrones de componentes en producción -->
+            <section aria-labelledby="patrones">
+                <h2 id="patrones">4. Patrones reales en producción</h2>
+
+                <h3>A. Grid de columnas progresivo (1 → 2 → 3)</h3>
+                <div class="box">
+                    <div class="responsive-columns">
+                        <div class="col">Columna 1 (100% móvil · 50% tablet · 33% desktop)</div>
+                        <div class="col">Columna 2</div>
+                        <div class="col">Columna 3</div>
+                    </div>
+                </div>
+
+                <h3>B. Navbar responsivo con menú hamburguesa (CSS-only)</h3>
+                <div class="box">
+                    <nav class="navbar-responsive" aria-label="Navegación de demostración">
+                        <div class="nav-brand">Lamk<span>.</span></div>
+                        
+                        <!-- Checkbox oculto que controla el estado abierto/cerrado sin JavaScript -->
+                        <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-hidden="true">
+                        <label for="nav-toggle" class="hamburger" aria-label="Abrir o cerrar menú de navegación">☰</label>
+                        
+                        <div class="nav-menu">
+                            <a href="#que-es-responsive">Inicio</a>
+                            <a href="#media-queries">Cursos</a>
+                            <a href="#unidades-fluidas">Proyectos</a>
+                            <a href="#patrones">Contacto</a>
+                        </div>
+                    </nav>
+                    <p class="small-note">
+                        Redimensiona la ventana a menos de 768px para activar el menú móvil. Patrón implementado mediante el selector de hermanos adyacentes (<code>:checked + .hamburger + .nav-menu</code>).
+                    </p>
+                </div>
+
+                <h3>C. Container Queries — Responsividad a nivel de componente</h3>
+                <div class="box">
+                    <p>
+                        A diferencia de las <em>Media Queries</em> (que miran el tamaño de toda la pantalla), las <strong>Container Queries</strong> permiten que un componente se adapte al ancho de su contenedor padre.
+                    </p>
+                    <pre><code>.card-container {
+  container-type: inline-size;
+}
+
+@container (min-width: 400px) {
+  .cq-card { flex-direction: row; }
+}</code></pre>
+
+                    <div class="container-demo-wrapper">
+                        <span class="resize-hint">↔ Arrastra la esquina inferior derecha del cuadro blanco para probar el componente:</span>
+                        <div class="card-container-demo">
+                            <div class="cq-card">
+                                <div class="cq-thumb">COMPONENTE</div>
+                                <div class="cq-text">
+                                    <strong>Card sensible al contenedor</strong>
+                                    <p>Si el contenedor mide ≥ 400px pasa a fila horizontal; si es más estrecho, se apila en columna.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <p>CSS - Nivel Intermedio - 2026</p>
+    </footer>
+</body>
+</html>
