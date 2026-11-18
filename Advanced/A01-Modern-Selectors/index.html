@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Apuntes avanzados de CSS: Selectores modernos :is(), :where(), :not() complejo y :has() (parent selector) con casos de producción.">
+    <title>A01 - Modern Selectors — CSS Avanzado</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header class="page-header">
+        <span class="badge-module">Módulo A01 · Arquitectura de Selectores</span>
+        <h1>Modern Selectors: <code>:is()</code>, <code>:where()</code>, <code>:not()</code> y <code>:has()</code></h1>
+        <p class="lead">
+            Domina las pseudo-clases funcionales que transformaron la arquitectura CSS moderna. Reduce especificidad con <code>:where()</code>, 
+            agrupa sin repetir con <code>:is()</code>, filtra con <code>:not()</code> complejo y estiliza contenedores según sus hijos con <code>:has()</code>.
+        </p>
+        <hr aria-hidden="true">
+    </header>
+
+    <main>
+        <article class="notes">
+            <!-- SECCIÓN 1: :is() -->
+            <section aria-labelledby="is-selector">
+                <h2 id="is-selector">1. <code>:is()</code> — Agrupación inteligente y tolerante a fallos</h2>
+                <p>
+                    Permite agrupar listas de selectores evitando la repetición de ancestros comunes. Además, es una lista <strong>tolerante a errores</strong>: si un selector de la lista es inválido, el navegador ignora solo ese elemento y aplica los demás.
+                </p>
+
+                <pre><code class="language-css">/* Antes: repetición de contexto */
+.card h2, .card h3, .card h4 {
+  color: var(--color-text-strong);
+}
+
+/* Ahora: limpio, escalable y tolerante a errores */
+.card :is(h2, h3, h4) {
+  color: var(--color-text-strong);
+}
+
+/* Tolerancia a fallos: aunque ::selector-invalido falle, h1 y h2 se aplican */
+:is(h1, h2, ::selector-invalido) {
+  line-height: 1.2;
+}</code></pre>
+
+                <div class="box demo-is">
+                    <h4>Demo: Agrupación contextual con <code>:is()</code></h4>
+                    <div class="demo-card is-demo">
+                        <h2>Encabezado h2 dentro de .demo-card</h2>
+                        <h3>Encabezado h3 dentro de .demo-card</h3>
+                        <h4>Encabezado h4 dentro de .demo-card</h4>
+                        <p>Los tres niveles reciben su tratamiento visual mediante una sola regla: <code>.demo-card :is(h2, h3, h4)</code>.</p>
+                    </div>
+                </div>
+
+                <aside class="box callout" aria-label="Nota sobre especificidad de :is()">
+                    <div class="callout-header">
+                        <span class="callout-tag">Cálculo de Especificidad</span>
+                    </div>
+                    <p>
+                        <strong><code>:is()</code> adopta la especificidad del argumento más específico de su lista.</strong> 
+                        Por ejemplo, <code>:is(h1, #hero, .title)</code> tendrá especificidad de ID <code>(1,0,0)</code> incluso cuando coincida con un simple <code>&lt;h1&gt;</code>. Si buscas especificidad cero, utiliza <code>:where()</code>.
+                    </p>
+                </aside>
+            </section>
+
+            <!-- SECCIÓN 2: :where() -->
+            <section aria-labelledby="where-selector">
+                <h2 id="where-selector">2. <code>:where()</code> — Especificidad cero para Resets y Sistemas</h2>
+                <p>
+                    Comparte la misma sintaxis que <code>:is()</code>, pero su especificidad siempre es <code>(0,0,0)</code>. Es el estándar recomendado para hojas base, <em>resets</em> y librerías de componentes que deben ser fáciles de sobrescribir.
+                </p>
+
+                <pre><code class="language-css">/* Reset base con especificidad 0: nunca genera conflictos */
+:where(h1, h2, h3, h4, p, ul, ol) {
+  margin: 0;
+  padding: 0;
+}
+
+/* Cualquier clase simple gana automáticamente sin importar el orden */
+.title {
+  margin-bottom: 1rem; /* Especificidad (0,1,0) > (0,0,0) */
+}
+
+/* Comparativa de peso */
+:where(h1, h2) { /* (0,0,0) */ }
+h1             { /* (0,0,1) - gana sobre :where() */ }
+:is(h1, h2)    { /* (0,0,1) - empata con h1 */ }</code></pre>
+
+                <div class="box demo-where">
+                    <h4>Demo: Batalla de especificidad (<code>:where()</code> vs <code>:is()</code>)</h4>
+                    <div class="specificity-battle">
+                        <div class="battle-card where-loses">
+                            <code>:where(.where-loses h2) → (0,0,0)</code>
+                            <h2 class="battle-title">Gana .battle-title (azul)</h2>
+                            <p>Aunque <code>:where()</code> está declarado después en el CSS, su peso cero cede ante la clase.</p>
+                        </div>
+                        <div class="battle-card is-wins">
+                            <code>:is(.is-wins h2) → (0,1,1)</code>
+                            <h2 class="battle-title-2">Gana :is() (verde)</h2>
+                            <p><code>:is()</code> hereda la especificidad de la clase interna y prevalece por cascada.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: :not() -->
+            <section aria-labelledby="not-selector">
+                <h2 id="not-selector">3. <code>:not()</code> moderno — Negación con listas y selectores complejos</h2>
+                <p>
+                    En Selectors Level 4, <code>:not()</code> acepta listas separadas por comas y selectores complejos (descendientes, atributos o pseudo-clases encadenadas), funcionando como un filtro de exclusión preciso.
+                </p>
+
+                <pre><code class="language-css">/* Exclusión múltiple en una sola declaración */
+button:not(.primary, .ghost, [disabled]) {
+  border-color: #ef4444;
+}
+
+/* Cards que NO contienen una imagen */
+.card:not(:has(img)) {
+  padding-top: 1.5rem;
+}
+
+/* Todos los ítems excepto el primero y el último */
+li:not(:first-child, :last-child) {
+  border-block: 1px solid var(--color-border);
+}
+
+/* Validación UX sin JavaScript: campo con texto, sin foco e inválido */
+input:not(:placeholder-shown):not(:focus):invalid {
+  border-color: #ef4444;
+}</code></pre>
+
+                <div class="box">
+                    <h4>Demo: Filtrado múltiple con <code>:not()</code></h4>
+                    <div class="not-demo">
+                        <button type="button" class="btn">Base (filtrado)</button>
+                        <button type="button" class="btn primary">Primary</button>
+                        <button type="button" class="btn ghost">Ghost</button>
+                        <button type="button" class="btn" disabled>Disabled</button>
+                    </div>
+                    <p class="small-note">
+                        Solo el botón <strong>Base</strong> recibe el anillo rojo mediante <code>button:not(.primary, .ghost, [disabled])</code>.
+                    </p>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: :has() -->
+            <section aria-labelledby="has-selector">
+                <h2 id="has-selector">4. <code>:has()</code> — Selector relacional (Parent &amp; Sibling Selector)</h2>
+                <p>
+                    Permite estilizar un elemento padre (o un hermano anterior) en función de sus descendientes o de su estado. Elimina la necesidad de clases modificadoras redundantes en el HTML o listeners en JavaScript.
+                </p>
+
+                <div class="box has-intro">
+                    <h4>Patrones fundamentales de <code>:has()</code></h4>
+                    <pre><code class="language-css">/* 1. Parent selector: cambia el layout si el padre contiene una imagen */
+.card:has(> img) {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+}
+
+/* 2. Estado de formulario: reacciona si algún campo interno es inválido */
+form:has(:invalid) {
+  border-color: #ef4444;
+}
+
+/* 3. Previous sibling selector: estiliza un h2 solo si le sigue un subtítulo */
+h2:has(+ .subtitle) {
+  margin-bottom: 0.25rem;
+}</code></pre>
+                </div>
+
+                <h3>Casos reales en producción</h3>
+
+                <div class="demo-grid">
+                    <!-- Caso A -->
+                    <div class="box has-demo-card">
+                        <h4>A. Layout adaptativo según contenido</h4>
+                        <div class="has-cards">
+                            <div class="h-card">
+                                <div class="h-card-thumb">IMG</div>
+                                <div class="h-card-body">
+                                    <strong>Con thumbnail</strong>
+                                    <span>Muta automáticamente a Grid de 2 columnas.</span>
+                                </div>
+                            </div>
+                            <div class="h-card">
+                                <div class="h-card-body">
+                                    <strong>Sin thumbnail</strong>
+                                    <span>Mantiene su flujo de bloque estándar sin clases extra.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <pre><code>.h-card:has(> .h-card-thumb) {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+}</code></pre>
+                    </div>
+
+                    <!-- Caso B -->
+                    <div class="box has-demo-card">
+                        <h4>B. Validación reactiva en formularios</h4>
+                        <form class="has-form" onsubmit="return false" aria-label="Formulario de prueba de validación">
+                            <input type="email" placeholder="Email (escribe texto sin @ para probar)">
+                            <input type="text" placeholder="Nombre obligatorio" required>
+                            <span class="form-status">Estado del formulario</span>
+                        </form>
+                        <pre><code>.has-form:has(:invalid) {
+  border-color: #ef4444;
+}
+.has-form:has(:invalid) .form-status::after {
+  content: ": Inválido (campos pendientes)";
+}</code></pre>
+                    </div>
+
+                    <!-- Caso C -->
+                    <div class="box has-demo-card">
+                        <h4>C. Contenedor consciente de estado activo</h4>
+                        <nav class="has-nav" aria-label="Navegación de ejemplo">
+                            <a href="#has-selector" class="active">Inicio</a>
+                            <a href="#combinaciones">Cursos</a>
+                            <a href="#performance">Proyectos</a>
+                        </nav>
+                        <p class="small-note">El contenedor <code>&lt;nav&gt;</code> cambia su superficie al detectar un hijo <code>.active</code>.</p>
+                        <pre><code>.has-nav:has(.active) {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}</code></pre>
+                    </div>
+
+                    <!-- Caso D -->
+                    <div class="box has-demo-card">
+                        <h4>D. Quantity Queries (según cantidad de hijos)</h4>
+                        <div class="has-qty">
+                            <div class="qty-item">1 ítem (100% ancho)</div>
+                        </div>
+                        <div class="has-qty">
+                            <div class="qty-item">Ítem 1</div>
+                            <div class="qty-item">Ítem 2</div>
+                            <div class="qty-item">Ítem 3 (3 cols)</div>
+                        </div>
+                        <pre><code>/* Si el contenedor tiene 3 o más hijos directos */
+.has-qty:has(> :nth-child(3)) .qty-item {
+  flex: 1 1 30%;
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 5: Combinaciones Avanzadas -->
+            <section aria-labelledby="combinaciones">
+                <h2 id="combinaciones">5. Arquitectura combinada (Zero-Modifier Components)</h2>
+                <p>
+                    Al combinar los cuatro selectores, los componentes UI se vuelven <strong>autónomos</strong>: el HTML solo declara el contenido y el CSS infiere la variante visual sin clases modificadoras (<code>--with-badge</code>, <code>--has-image</code>).
+                </p>
+
+                <div class="box">
+                    <pre><code class="language-css">/* Botones sólidos que contienen un icono SVG */
+button:not(.ghost):has(> svg) {
+  padding-inline-start: 2.25rem;
+}
+
+/* Bloquea visualmente el botón de envío si hay errores y el usuario ya escribió */
+form:has(:invalid):not(:has(:placeholder-shown)) button[type="submit"] {
+  opacity: 0.5;
+  pointer-events: none;
+}</code></pre>
+                </div>
+
+                <div class="box final-demo">
+                    <h4>Demo final — 4 variantes de tarjeta con la misma clase <code>.smart-card</code></h4>
+                    <p class="small-note">Ninguna tarjeta usa clases modificadoras; el diseño responde únicamente a los nodos hijos presentes en el DOM:</p>
+                    
+                    <div class="smart-grid">
+                        <!-- Variante 1: Solo texto -->
+                        <article class="smart-card">
+                            <div>
+                                <h3>Card base</h3>
+                                <p>Sin imagen ni etiqueta.</p>
+                            </div>
+                        </article>
+
+                        <!-- Variante 2: Con badge -->
+                        <article class="smart-card">
+                            <span class="badge">Nuevo</span>
+                            <div>
+                                <h3>Con badge</h3>
+                                <p>Detecta <code>.badge</code> y ajusta padding y borde.</p>
+                            </div>
+                        </article>
+
+                        <!-- Variante 3: Con imagen -->
+                        <article class="smart-card">
+                            <div class="smart-thumb">IMG</div>
+                            <div>
+                                <h3>Con media</h3>
+                                <p>Detecta <code>.smart-thumb</code> y activa Grid.</p>
+                            </div>
+                        </article>
+
+                        <!-- Variante 4: Con imagen + badge -->
+                        <article class="smart-card">
+                            <span class="badge">Pro</span>
+                            <div class="smart-thumb">IMG</div>
+                            <div>
+                                <h3>Completa</h3>
+                                <p>Combina ambos estados automáticamente.</p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 6: Rendimiento y Soporte -->
+            <section aria-labelledby="performance">
+                <h2 id="performance">6. Rendimiento y Soporte en Navegadores</h2>
+                <ul>
+                    <li>
+                        <strong>Acota el alcance de <code>:has()</code>:</strong> Evita selectores globales costosos como <code>body:has(...)</code> o <code>*:has(*)</code> que obligan al motor a reevaluar todo el árbol DOM ante cada mutación. Utiliza el combinador de hijo directo (<code>.card:has(> img)</code>) siempre que sea posible.
+                    </li>
+                    <li>
+                        <strong>Soporte en producción (Baseline):</strong> <code>:is()</code>, <code>:where()</code>, <code>:not()</code> (Nivel 4) y <code>:has()</code> forman parte de <em>CSS Baseline</em> con soporte nativo en Chrome, Edge, Safari y Firefox.
+                    </li>
+                    <li>
+                        <strong>Regla mental de uso:</strong> <code>:where()</code> para resets → <code>:is()</code> para agrupar → <code>:not()</code> para excluir → <code>:has()</code> para lógica relacional.
+                    </li>
+                </ul>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <p>CSS Avanzado - A01 Modern Selectors - 2026</p>
+    </footer>
+</body>
+</html>
