@@ -3,10 +3,10 @@
 [![HTML5](https://img.shields.io/badge/HTML5-Semántico-E34F26?style=flat-square&logo=html5&logoColor=white)](https://developer.mozilla.org/es/docs/Web/HTML)
 [![CSS3](https://img.shields.io/badge/CSS3-Moderno_&_Vanilla-1572B6?style=flat-square&logo=css3&logoColor=white)](https://developer.mozilla.org/es/docs/Web/CSS)
 [![Arquitectura](https://img.shields.io/badge/Enfoque-Mobile_First_&_A11y-10B981?style=flat-square)](https://github.com/Lamk-S/CSS)
-[![Progreso](https://img.shields.io/badge/Módulos-12%2F12_Completados-2563EB?style=flat-square)](#roadmap-del-curso)
+[![Progreso](https://img.shields.io/badge/Módulos-14%2F14_Completados-2563EB?style=flat-square)](#roadmap-del-curso)
 [![Licencia](https://img.shields.io/badge/Licencia-MIT-64748B?style=flat-square)](#licencia)
 
-Repositorio de ingeniería frontend dedicado al aprendizaje progresivo de **CSS moderno**, desde sus fundamentos hasta arquitectura de layouts (Flexbox y Grid), diseño responsivo y animaciones aceleradas por GPU. Cada módulo funciona como una pieza de documentación interactiva autocontenida.
+Repositorio de ingeniería frontend dedicado al aprendizaje progresivo de **CSS moderno**, desde sus fundamentos hasta arquitectura de layouts (Flexbox y Grid), diseño responsivo, animaciones aceleradas por GPU, selectores relacionales y sistemas de Design Tokens. Cada módulo funciona como una pieza de documentación interactiva autocontenida.
 
 **Repositorio:** [github.com/Lamk-S/CSS](https://github.com/Lamk-S/CSS)
 
@@ -26,6 +26,7 @@ Este proyecto centraliza apuntes estructurados bajo una premisa de **aprender co
 | :--- | :--- | :--- |
 | **`Basic/`** | Fundamentos del lenguaje: cascada, especificidad, modelos de color, tipografía web, fondos y pseudo-selectores. | `B01` – `B04` |
 | **`Intermediate/`** | Arquitectura de interfaz: unidades relativas, modelo de caja, posicionamiento, Flexbox, CSS Grid, diseño responsivo y *motion UI*. | `I01` – `I08` |
+| **`Advanced/`** | Ingeniería de sistemas CSS: selectores modernos (`:is`, `:where`, `:not`, `:has`), CSS Houdini (`@property`), `color-mix()`, `light-dark()` y theming escalable. | `A01` – `A02` |
 
 ---
 
@@ -38,62 +39,71 @@ Este proyecto centraliza apuntes estructurados bajo una premisa de **aprender co
 5. Construir arquitecturas unidimensionales con **Flexbox** y bidimensionales con **CSS Grid** (`fr`, `minmax()`, `grid-template-areas`).
 6. Implementar interfaces **Mobile-First**, tipografía fluida con `clamp()` y adaptabilidad por componente con **Container Queries**.
 7. Desarrollar micro-interacciones a **60fps** respetando las preferencias de movimiento del usuario (`prefers-reduced-motion`).
+8. Diseñar componentes autónomos con **Selectores Modernos** (`:has()`, `:is()`, `:where()`) y sistemas de **Design Tokens** multi-tema (`@property`, `color-mix()`, `light-dark()`).
 
 ---
 
 ## Stack y Estándares Aplicados
 
 - **Lenguajes:** HTML5 semántico, CSS3 moderno (Vanilla).
-- **Arquitectura CSS:** Design Tokens mediante *Custom Properties* (`:root`), metodología *Mobile-First* (`min-width`), `box-sizing: border-box` global.
+- **Arquitectura CSS:** Design Tokens en 3 capas (Primitivos → Semánticos → Componentes), metodología *Mobile-First* (`min-width`), `box-sizing: border-box` global.
 - **Sistemas de Layout:** Flujo normal, `float`/`clearfix`, **Flexbox**, **CSS Grid** (`repeat()`, `auto-fit`, `minmax()`, `grid-template-areas`).
-- **Funciones y APIs modernas:** `clamp()`, `calc()`, `@container` (*Container Queries*), `backdrop-filter`, `@keyframes`.
+- **Funciones y APIs modernas:** `@property` (CSS Houdini), `color-mix()`, `light-dark()`, `:has()`, `:is()`, `:where()`, `clamp()`, `calc()`, `@container` (*Container Queries*), `backdrop-filter`, `@keyframes`.
 - **Tipografía e Iconografía:** `@font-face` local (`.woff2` / `.woff` con `font-display: swap`), Google Fonts (`Inter`, `Merriweather`) y Font Awesome 6.
-- **Entorno recomendado:** Visual Studio Code + extensión *Live Server* y navegadores modernos (Chrome, Firefox, Edge).
+- **Entorno recomendado:** Visual Studio Code + extensión *Live Server* y navegadores modernos (Chrome, Firefox, Edge, Safari).
 
 ---
 
-## 📂 Estructura del Repositorio
+## Estructura del Repositorio
 
 ```text
 CSS/
 ├── Basic/
-│   ├── B01-Introduction/          # Sintaxis, cascada, herencia y especificidad
+│   ├── B01-Introduction/              # Sintaxis, cascada, herencia y especificidad
 │   │   ├── index.html
 │   │   └── css/styles.css
-│   ├── B02-Colors/                # Modelos de color, canal alfa vs opacity y gradientes
+│   ├── B02-Colors/                    # Modelos de color, canal alfa vs opacity y gradientes
 │   │   ├── index.html
 │   │   └── css/styles.css
-│   ├── B03-Typography/            # @font-face, Google Fonts, unidades tipográficas y legibilidad
+│   ├── B03-Typography/                # @font-face, Google Fonts, unidades tipográficas y legibilidad
 │   │   ├── index.html
 │   │   ├── css/style.css
 │   │   └── fonts/
-│   └── B04-Backgrounds-Pseudo/    # Fondos múltiples, overlays, pseudoclases y pseudoelementos
+│   └── B04-Backgrounds-Pseudo/        # Fondos múltiples, overlays, pseudoclases y pseudoelementos
 │       ├── index.html
 │       └── css/style.css
 │
 ├── Intermediate/
-│   ├── I01-CSS-Units/             # Unidades absolutas, relativas (em/rem/ch) y viewport
+│   ├── I01-CSS-Units/                 # Unidades absolutas, relativas (em/rem/ch) y viewport
 │   │   ├── index.html
 │   │   └── css/style.css
-│   ├── I02-CSS-Layouts/           # Flujo normal, display, float, clearfix y columnas
+│   ├── I02-CSS-Layouts/               # Flujo normal, display, float, clearfix y columnas
 │   │   ├── index.html
 │   │   └── css/style.css
-│   ├── I03-Box-Model/             # Capas de caja, shorthand y content-box vs border-box
+│   ├── I03-Box-Model/                 # Capas de caja, shorthand y content-box vs border-box
 │   │   ├── index.html
 │   │   └── css/style.css
-│   ├── I04-Positioning/           # static, relative, absolute, fixed, sticky y z-index
+│   ├── I04-Positioning/               # static, relative, absolute, fixed, sticky y z-index
 │   │   ├── index.html
 │   │   └── css/style.css
-│   ├── I05-Flexbox/               # Layout unidimensional, ejes, alineación y patrones UI
+│   ├── I05-Flexbox/                   # Layout unidimensional, ejes, alineación y patrones UI
 │   │   ├── index.html
 │   │   └── css/style.css
-│   ├── I06-Grid/                  # Layout bidimensional, fr, repeat(), minmax() y áreas
+│   ├── I06-Grid/                      # Layout bidimensional, fr, repeat(), minmax() y áreas
 │   │   ├── index.html
 │   │   └── css/style.css
-│   ├── I07-Responsive/            # Mobile-First, breakpoints, clamp() y Container Queries
+│   ├── I07-Responsive/                # Mobile-First, breakpoints, clamp() y Container Queries
 │   │   ├── index.html
 │   │   └── css/style.css
-│   └── I08-Animations/            # Transiciones, transformaciones GPU, @keyframes y 60fps
+│   └── I08-Animations/                # Transiciones, transformaciones GPU, @keyframes y 60fps
+│       ├── index.html
+│       └── css/style.css
+│
+├── Advanced/
+│   ├── A01-Modern-Selectors/          # :is(), :where(), :not() complejo y :has() (parent selector)
+│   │   ├── index.html
+│   │   └── css/style.css
+│   └── A02-Design-Tokens-Theming/     # Design Tokens, @property, color-mix(), light-dark() y theming
 │       ├── index.html
 │       └── css/style.css
 │
@@ -103,7 +113,7 @@ CSS/
 
 ---
 
-## 📚 Contenido Detallado por Módulo
+## Contenido Detallado por Módulo
 
 ### Nivel Básico (`Basic/`)
 
@@ -153,6 +163,16 @@ CSS/
 
 ---
 
+### Nivel Avanzado (`Advanced/`)
+
+* **Conceptos:** Agrupación tolerante a fallos con `:is()`, hojas base y *resets* de especificidad cero `(0,0,0)` con `:where()`, filtrado con listas y selectores complejos en `:not()`, y lógica relacional (*Parent & Previous Sibling Selector*) con `:has()`.
+* **Laboratorios:** Batalla de especificidad `:where()` vs `:is()`, filtrado múltiple de botones, validación reactiva de formularios sin JavaScript, *Quantity Queries* (`:has(> :nth-child(3))`) y arquitectura de componentes *Zero-Modifier* (`.smart-card`).
+
+* **Conceptos:** Taxonomía de tokens en 3 capas (*Primitivos → Semánticos → Componentes*), registro de variables tipadas y animables con `@property` (CSS Houdini), generación dinámica de escalas tonales con `color-mix()`, resolución dual de esquemas con `light-dark()` y sincronización entre `color-scheme`, `prefers-color-scheme` y `[data-theme]`.
+* **Laboratorios:** Muestras vivas de tokens semánticos, borde cónico animado en GPU mediante `@property --angle`, paleta derivada con `color-mix()` y selector interactivo de tema (*Light / Dark / Auto SO*).
+
+---
+
 ## Cómo Ejecutar en Local
 
 Este proyecto no requiere compilación ni instalación de paquetes.
@@ -167,7 +187,7 @@ cd CSS
 
 2. **Abrir con Live Server (Recomendado):**
 * Abre la carpeta en **Visual Studio Code**.
-* Haz clic derecho sobre cualquier archivo `index.html` (por ejemplo, `Intermediate/I06-Grid/index.html`) y selecciona **Open with Live Server**.
+* Haz clic derecho sobre cualquier archivo `index.html` (por ejemplo, `Advanced/A02-Design-Tokens-Theming/index.html`) y selecciona **Open with Live Server**.
 
 
 3. **Apertura directa:**
@@ -181,7 +201,7 @@ cd CSS
 
 * **Consistencia visual:** Todos los módulos comparten un sistema de tokens (`--color-primary`, `--radius-md`, `--shadow-card`) para mantener coherencia editorial.
 * **Aislamiento de componentes:** Los ejemplos interactivos viven encapsulados dentro de contenedores `.box` para evitar colisiones de estilos.
-* **Accesibilidad (a11y):** Uso de atributos ARIA (`aria-labelledby`, `role="status"`), navegación por teclado (`:focus-visible`) y soporte nativo para reducción de movimiento.
+* **Accesibilidad (a11y):** Uso de atributos ARIA (`aria-labelledby`, `aria-pressed`, `role="status"`), navegación por teclado (`:focus-visible`) y soporte nativo para reducción de movimiento (`prefers-reduced-motion`).
 
 ---
 
@@ -199,6 +219,8 @@ cd CSS
 * [x] **I06** — CSS Grid (arquitectura bidimensional, `minmax()` y `grid-template-areas`)
 * [x] **I07** — Responsive Design, `clamp()` y Container Queries
 * [x] **I08** — Transiciones, Transformaciones GPU y Animaciones `@keyframes`
+* [x] **A01** — Modern Selectors (`:is()`, `:where()`, `:not()`, `:has()`)
+* [x] **A02** — Design Tokens & Theming (`@property`, `color-mix()`, `light-dark()`)
 
 ---
 
