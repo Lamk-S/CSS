@@ -1,0 +1,624 @@
+/* ==========================================================================
+   1. DESIGN TOKENS
+   ========================================================================== */
+:root {
+    --color-text: #1f2937;
+    --color-text-strong: #0f172a;
+    --color-muted: #64748b;
+    --color-surface: #ffffff;
+    --color-surface-subtle: #f8fafc;
+    --color-primary: #2563eb;
+    --color-primary-dark: #1e40af;
+    --color-primary-soft: rgba(37, 99, 235, 0.08);
+    --color-border: rgba(15, 23, 42, 0.09);
+    --color-code: #be123c;
+    --color-danger: #ef4444;
+    --color-success: #16a34a;
+
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 8px;
+    --shadow-soft: 0 20px 60px rgba(15, 23, 42, 0.07);
+    --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.04);
+
+    --transition-fast: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   2. RESET Y BASE (Arquitectura Mobile-First)
+   ========================================================================== */
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    box-sizing: border-box;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--color-text);
+    background:
+        radial-gradient(circle at top center, rgba(37, 99, 235, 0.09), transparent 40%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+    line-height: 1.65;
+    padding: clamp(1rem, 2.5vw, 2.5rem);
+    -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+}
+
+/* ==========================================================================
+   3. ESTRUCTURA Y TIPOGRAFÍA
+   ========================================================================== */
+.page-header,
+.notes,
+footer {
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 1.75rem;
+}
+
+.badge-module {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.75rem;
+}
+
+.notes {
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: clamp(1.25rem, 3.5vw, 2.5rem);
+}
+
+h1, h2, h3, h4 {
+    color: var(--color-text-strong);
+    line-height: 1.25;
+    margin-top: 0;
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    font-size: clamp(1.85rem, 3.5vw, 2.75rem);
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+}
+
+h1 code, h2 code {
+    font-size: 0.85em;
+}
+
+h2 {
+    font-size: clamp(1.3rem, 2.2vw, 1.65rem);
+    color: var(--color-primary);
+    margin: 0 0 0.85rem;
+}
+
+h3 {
+    font-size: 1.1rem;
+    margin: 1.75rem 0 0.75rem;
+    color: var(--color-primary-dark);
+}
+
+h4 {
+    font-size: 0.98rem;
+    margin-bottom: 0.75rem;
+}
+
+.lead {
+    color: var(--color-muted);
+    max-width: 70ch;
+    font-size: clamp(1rem, 1.4vw, 1.125rem);
+    margin: 0;
+}
+
+.page-header hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(37, 99, 235, 0.35), rgba(37, 99, 235, 0.05) 70%, transparent);
+    margin: 1.5rem 0 0;
+}
+
+section + section {
+    margin-top: 2.25rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+}
+
+ul, ol {
+    padding-left: 1.25rem;
+}
+
+li + li {
+    margin-top: 0.45rem;
+}
+
+.small-note {
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    margin: 0.5rem 0 0.85rem;
+}
+
+/* ==========================================================================
+   4. BLOQUES DE CÓDIGO, CONTENEDORES Y CALLOUTS
+   ========================================================================== */
+code {
+    color: var(--color-code);
+    background: rgba(190, 18, 60, 0.07);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.35rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.88em;
+}
+
+pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 1.1rem 1.25rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow-x: auto;
+    margin: 1rem 0 0;
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+
+pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    font-size: inherit;
+}
+
+.box {
+    padding: 1.25rem;
+    margin: 1rem 0;
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+}
+
+.callout {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(255, 255, 255, 0.95) 100%);
+    border: 1px solid rgba(37, 99, 235, 0.22);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 8px 24px -6px rgba(37, 99, 235, 0.08);
+    padding: 1.25rem 1.4rem;
+}
+
+.callout-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.45rem;
+}
+
+.callout-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+}
+
+.callout-tag::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+.callout p {
+    margin: 0;
+    color: var(--color-text-strong);
+}
+
+/* Grid Mobile-First para tarjetas de demostración */
+.demo-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin: 1rem 0;
+}
+
+@media (min-width: 768px) {
+    .demo-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.has-demo-card {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* ==========================================================================
+   5. DEMO 1: :is()
+   ========================================================================== */
+.demo-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 1.1rem;
+    background: var(--color-surface-subtle);
+}
+
+/* Agrupación limpia de encabezados dentro de .demo-card */
+.demo-card :is(h2, h3, h4) {
+    color: var(--color-primary-dark);
+    background: rgba(37, 99, 235, 0.07);
+    border: 1px solid rgba(37, 99, 235, 0.16);
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.demo-card p {
+    margin: 0.5rem 0 0;
+    font-size: 0.92rem;
+}
+
+/* ==========================================================================
+   6. DEMO 2: :where() vs :is() (Especificidad)
+   ========================================================================== */
+.specificity-battle {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+@media (min-width: 700px) {
+    .specificity-battle {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.battle-card {
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-subtle);
+    border: 1px solid var(--color-border);
+}
+
+.battle-card code {
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-weight: 600;
+}
+
+.battle-card p {
+    margin: 0.4rem 0 0;
+    font-size: 0.88rem;
+    color: var(--color-muted);
+}
+
+/* Caso A: .battle-title (0,1,0) gana frente a :where() (0,0,0) */
+.where-loses .battle-title {
+    color: var(--color-primary-dark);
+}
+:where(.where-loses h2) {
+    color: var(--color-danger);
+}
+
+/* Caso B: :is(.is-wins h2) tiene especificidad (0,1,1) > .battle-title-2 (0,1,0) */
+.is-wins .battle-title-2 {
+    color: var(--color-muted);
+}
+:is(.is-wins h2) {
+    color: var(--color-success);
+}
+
+/* ==========================================================================
+   7. DEMO 3: :not() COMPLEJO
+   ========================================================================== */
+.not-demo {
+    display: flex;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    background: var(--color-surface);
+    color: var(--color-text-strong);
+    border: 1px solid #cbd5e1;
+    padding: 0.5rem 0.95rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.btn.primary {
+    background: var(--color-primary);
+    color: #ffffff;
+    border-color: var(--color-primary);
+}
+
+.btn.ghost {
+    background: transparent;
+    border-style: dashed;
+}
+
+.btn[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Aplica estilo únicamente al botón que NO cumple ninguna de las exclusiones */
+.not-demo button:not(.primary, .ghost, [disabled]) {
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.14);
+}
+
+/* ==========================================================================
+   8. DEMO 4: :has() (Casos de producción)
+   ========================================================================== */
+
+/* --- Caso A: Card con o sin thumbnail --- */
+.has-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.h-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem;
+    background: var(--color-surface-subtle);
+}
+
+.h-card-body strong {
+    display: block;
+    color: var(--color-text-strong);
+    font-size: 0.92rem;
+}
+
+.h-card-body span {
+    font-size: 0.85rem;
+    color: var(--color-muted);
+}
+
+.h-card:has(> .h-card-thumb) {
+    display: grid;
+    grid-template-columns: 76px 1fr;
+    gap: 0.85rem;
+    align-items: center;
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.h-card-thumb {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: #ffffff;
+    padding: 1.15rem 0.5rem;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.78rem;
+}
+
+/* --- Caso B: Formulario reactivo --- */
+.has-form {
+    border: 1.5px solid #cbd5e1;
+    border-radius: var(--radius-sm);
+    padding: 0.95rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    background: var(--color-surface-subtle);
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.has-form input {
+    padding: 0.55rem 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    background: var(--color-surface);
+}
+
+.has-form:has(:invalid) {
+    border-color: var(--color-danger);
+    background: #fef2f2;
+}
+
+.form-status {
+    font-size: 0.82rem;
+    color: var(--color-success);
+    font-weight: 600;
+}
+
+.form-status::after {
+    content: ": Válido";
+}
+
+.has-form:has(:invalid) .form-status {
+    color: var(--color-danger);
+}
+
+.has-form:has(:invalid) .form-status::after {
+    content: ": Inválido (hay campos pendientes)";
+}
+
+/* --- Caso C: Navegación consciente de estado activo --- */
+.has-nav {
+    display: flex;
+    gap: 0.4rem;
+    padding: 0.45rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.has-nav a {
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--color-muted);
+    font-weight: 500;
+    font-size: 0.88rem;
+    transition: color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.has-nav a:hover {
+    color: var(--color-text-strong);
+}
+
+.has-nav a.active {
+    background: var(--color-primary);
+    color: #ffffff;
+}
+
+.has-nav:has(.active) {
+    background: #eff6ff;
+    border-color: #93c5fd;
+}
+
+/* --- Caso D: Quantity Queries --- */
+.has-qty {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+.qty-item {
+    background: #e0e7ff;
+    color: #3730a3;
+    border: 1px solid #c7d2fe;
+    padding: 0.55rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.82rem;
+    flex: 1 1 100%;
+    text-align: center;
+}
+
+.has-qty:has(> :nth-child(3)) .qty-item {
+    flex: 1 1 30%;
+}
+
+/* ==========================================================================
+   9. DEMO FINAL: SMART CARDS (Zero-Modifier Architecture)
+   ========================================================================== */
+.smart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.smart-card {
+    position: relative;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 1.1rem;
+    background: var(--color-surface-subtle);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.smart-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+}
+
+.smart-card .badge {
+    position: absolute;
+    top: -9px;
+    right: 12px;
+    background: var(--color-danger);
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
+}
+
+/* Estado 1: La tarjeta detecta que tiene un nodo .badge */
+.smart-card:has(> .badge) {
+    border-color: #fca5a5;
+    padding-top: 1.45rem;
+}
+
+/* Estado 2: La tarjeta detecta que tiene un nodo .smart-thumb */
+.smart-card:has(> .smart-thumb) {
+    display: grid;
+    grid-template-columns: 58px 1fr;
+    gap: 0.75rem;
+    align-items: start;
+    background: var(--color-surface);
+}
+
+.smart-thumb {
+    background: linear-gradient(135deg, #4f46e5, #2563eb);
+    color: #ffffff;
+    padding: 1.05rem 0.25rem;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.72rem;
+}
+
+/* Estado 3: Combinación de ambos nodos hijos */
+.smart-card:has(> .smart-thumb):has(> .badge) {
+    border-color: #93c5fd;
+    background: #eff6ff;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.1);
+}
+
+.smart-card h3 {
+    margin: 0 0 0.25rem;
+    font-size: 0.98rem;
+    color: var(--color-text-strong);
+}
+
+.smart-card p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-muted);
+}
+
+/* ==========================================================================
+   10. PIE DE PÁGINA
+   ========================================================================== */
+footer {
+    margin-top: 2.25rem;
+    padding-top: 1.25rem;
+    text-align: center;
+    color: var(--color-muted);
+    font-size: 0.88rem;
+    border-top: 1px solid var(--color-border);
+}

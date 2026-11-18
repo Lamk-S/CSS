@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Apuntes avanzados de CSS: Design Tokens, @property tipada, color-mix(), light-dark() y arquitectura de theming dark/light.">
+    <title>A02 - Design Tokens &amp; Theming — CSS Avanzado</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header class="page-header">
+        <span class="badge-module">Módulo A02 · Design Systems &amp; Architecture</span>
+        <h1>Design Tokens &amp; Theming</h1>
+        <p class="lead">
+            Transforma valores aislados en un sistema escalable. Domina <code>@property</code> (CSS Houdini) para variables tipadas y animables, 
+            <code>color-mix()</code> para paletas dinámicas, <code>light-dark()</code> y una arquitectura de temas con <code>data-theme</code> + <code>prefers-color-scheme</code>.
+        </p>
+        <hr aria-hidden="true">
+    </header>
+
+    <main>
+        <article class="notes">
+            <!-- SECCIÓN 1: Fundamentos de Design Tokens -->
+            <section aria-labelledby="que-son-tokens">
+                <h2 id="que-son-tokens">1. Qué son los Design Tokens y por qué importan</h2>
+                <p>
+                    Un <strong>Design Token</strong> es una variable semántica que almacena una decisión de diseño: color, escala tipográfica, espaciado, radio o elevación. 
+                    En lugar de dispersar <code>#2563eb</code> por decenas de archivos, referencias <code>var(--color-primary)</code>. Si la identidad visual cambia, actualizas una sola definición en <code>:root</code>.
+                </p>
+                <ul>
+                    <li><strong>Single Source of Truth:</strong> Única fuente de verdad compartida entre diseño y código.</li>
+                    <li><strong>Generación dinámica:</strong> Permiten derivar estados (<em>hover</em>, <em>soft</em>, bordes) matemáticamente con <code>color-mix()</code>.</li>
+                    <li><strong>Theming nativo:</strong> Alternancia instantánea entre modo claro y oscuro sin duplicar selectores de componentes.</li>
+                </ul>
+
+                <div class="box token-preview-grid">
+                    <h4>Tokens semánticos activos en este documento</h4>
+                    <div class="tokens-row">
+                        <div class="token-swatch" style="--swatch: var(--color-primary)"><span>--color-primary</span></div>
+                        <div class="token-swatch" style="--swatch: var(--color-primary-soft)"><span>--color-primary-soft</span></div>
+                        <div class="token-swatch" style="--swatch: var(--color-surface)"><span>--color-surface</span></div>
+                        <div class="token-swatch" style="--swatch: var(--color-bg)"><span>--color-bg</span></div>
+                    </div>
+                    <pre><code class="language-css">:root {
+  /* 1. Primitivos (valores crudos) */
+  --blue-500: #2563eb;
+
+  /* 2. Semánticos (intención de uso) */
+  --color-primary: var(--blue-500);
+  --color-primary-soft: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  --radius-md: 14px;
+  --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.06);
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: @property -->
+            <section aria-labelledby="property">
+                <h2 id="property">2. <code>@property</code> — Variables tipadas y animables</h2>
+                <p>
+                    Por defecto, una <em>Custom Property</em> estándar es tratada por el navegador como una cadena de texto sin tipo. Al desconocer si representa un ángulo, un color o una longitud, el motor no puede interpolar valores intermedios. 
+                    La regla <code>@property</code> registra la variable con una sintaxis estricta, herencia y valor inicial.
+                </p>
+
+                <pre><code class="language-css">@property --angle {
+  syntax: "&lt;angle&gt;"; /* Otros tipos: &lt;color&gt;, &lt;length&gt;, &lt;percentage&gt;, &lt;number&gt; */
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --primary-hue {
+  syntax: "&lt;number&gt;";
+  inherits: true;
+  initial-value: 221;
+}</code></pre>
+
+                <div class="box">
+                    <h4>Demo: Borde cónico animado (impulsado por <code>@property</code>)</h4>
+                    <p class="small-note">Sin <code>@property</code>, un <code>conic-gradient</code> no puede animar su ángulo inicial. Al tipar <code>--angle</code> como <code>&lt;angle&gt;</code>, el navegador interpola de <code>0deg</code> a <code>360deg</code> de forma continua.</p>
+                    <div class="demo-property-card">
+                        <div class="property-card">
+                            <strong>Card con <code>@property --angle</code></strong>
+                            <p>El borde gira suavemente porque <code>--angle</code> está registrado como tipo angular.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="box callout" aria-label="Regla de arquitectura sobre @property">
+                    <div class="callout-header">
+                        <span class="callout-tag">Regla de Arquitectura</span>
+                    </div>
+                    <p>
+                        <strong>Registra con <code>@property</code> cualquier token que necesites transicionar o animar:</strong> ángulos en gradientes, paradas de color o valores numéricos. Además, aporta validación: si alguien asigna un valor inválido al token, el navegador revierte al <code>initial-value</code> en lugar de romper la regla.
+                    </p>
+                </aside>
+            </section>
+
+            <!-- SECCIÓN 3: color-mix() y light-dark() -->
+            <section aria-labelledby="color-mix">
+                <h2 id="color-mix">3. <code>color-mix()</code> y <code>light-dark()</code> — Paletas sin hardcode</h2>
+                <p>
+                    Las funciones modernas de color eliminan la necesidad de preprocesadores (Sass/Less) para calcular tintes, sombras o variantes de tema.
+                </p>
+
+                <div class="demo-grid">
+                    <div class="box demo-card">
+                        <h4><code>color-mix()</code> — Escala tonal derivada</h4>
+                        <p class="small-note">Mezcla el token primario contra la superficie activa en el espacio de color indicado.</p>
+                        <div class="palette">
+                            <div class="palette-color" style="background: color-mix(in srgb, var(--color-primary) 100%, var(--color-surface))">100%</div>
+                            <div class="palette-color" style="background: color-mix(in srgb, var(--color-primary) 75%, var(--color-surface))">75%</div>
+                            <div class="palette-color" style="background: color-mix(in srgb, var(--color-primary) 45%, var(--color-surface)); color: var(--color-text-strong)">45%</div>
+                            <div class="palette-color" style="background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface)); color: var(--color-primary)">18%</div>
+                        </div>
+                        <pre><code>--color-primary-soft: color-mix(in srgb, var(--color-primary) 14%, transparent);
+--color-primary-hover: color-mix(in srgb, var(--color-primary) 85%, black);</code></pre>
+                    </div>
+
+                    <div class="box demo-card">
+                        <h4><code>light-dark()</code> — Resolución dual en una línea</h4>
+                        <p class="small-note">Evalúa automáticamente el valor claro u oscuro según el <code>color-scheme</code> activo en el contexto.</p>
+                        <pre><code>:root {
+  color-scheme: light dark;
+}
+
+.card {
+  background: light-dark(#ffffff, #1e293b);
+  color: light-dark(#0f172a, #e2e8f0);
+  border-color: light-dark(#e2e8f0, #334155);
+}</code></pre>
+                        <div class="light-dark-demo">Caja gobernada 100% por <code>light-dark()</code> · Prueba el selector abajo</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: Arquitectura de Theming -->
+            <section aria-labelledby="theming">
+                <h2 id="theming">4. Arquitectura de Theming: <code>data-theme</code> + <code>prefers-color-scheme</code></h2>
+                <p>
+                    Un sistema de temas resiliente en producción combina tres niveles de prioridad:
+                </p>
+                <ol>
+                    <li><strong>Tokens duales con <code>light-dark()</code>:</strong> Declara ambos esquemas desde el inicio en <code>:root</code> mediante <code>color-scheme: light dark</code>.</li>
+                    <li><strong>Preferencia del sistema operativo:</strong> Si no existe override manual, el navegador respeta automáticamente <code>prefers-color-scheme</code>.</li>
+                    <li><strong>Override explícito del usuario:</strong> Los atributos <code>[data-theme="light"]</code> y <code>[data-theme="dark"]</code> fuerzan el <code>color-scheme</code> correspondiente.</li>
+                </ol>
+
+                <pre><code class="language-css">:root {
+  color-scheme: light dark;
+  --color-bg: light-dark(#f8fafc, #0f172a);
+  --color-surface: light-dark(#ffffff, #1e293b);
+  --color-text: light-dark(#1f2937, #e2e8f0);
+  --color-primary: light-dark(#2563eb, #60a5fa);
+}
+
+/* Override manual del usuario mediante atributo de datos */
+[data-theme="light"] { color-scheme: light; }
+[data-theme="dark"]  { color-scheme: dark; }</code></pre>
+
+                <div class="box">
+                    <h4>Demo interactiva — Selector de tema en tiempo real</h4>
+                    <div class="theme-switcher" role="group" aria-label="Selector de tema de la interfaz">
+                        <button type="button" class="theme-btn active" data-set-theme="light" aria-pressed="true">☀️ Light</button>
+                        <button type="button" class="theme-btn" data-set-theme="dark" aria-pressed="false">🌙 Dark</button>
+                        <button type="button" class="theme-btn" data-set-theme="auto" aria-pressed="false">💻 Auto (SO)</button>
+                    </div>
+
+                    <div class="themed-components">
+                        <div class="themed-card">
+                            <span class="themed-pill">Themed Component</span>
+                            <h3>Esta tarjeta reacciona al token activo</h3>
+                            <p>Superficie, contraste tipográfico, bordes y estados interactivos mutan dinámicamente sin reescribir reglas de componente.</p>
+                            <button type="button" class="themed-btn">Acción primaria</button>
+                        </div>
+                        <div class="themed-card secondary">
+                            <h4>Beneficios arquitectónicos</h4>
+                            <ul>
+                                <li>1 token actualiza toda la interfaz</li>
+                                <li><code>color-mix()</code> genera estados <em>hover</em> y <em>soft</em></li>
+                                <li><code>light-dark()</code> reduce el CSS a la mitad</li>
+                                <li><code>@property</code> habilita transiciones en gradientes</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 5: Jerarquía escalable -->
+            <section aria-labelledby="estructura">
+                <h2 id="estructura">5. Taxonomía de Tokens (Escalable a Design System)</h2>
+
+                <div class="box">
+                    <h4>Arquitectura en 3 capas: Primitivos → Semánticos → Componentes</h4>
+                    <pre><code class="language-css">/* CAPA 1: PRIMITIVOS (Escala base neutra, nunca se consumen directo en UI) */
+--blue-500: #2563eb;
+--slate-50: #f8fafc;
+--slate-800: #1e293b;
+--space-4: 1rem;
+
+/* CAPA 2: SEMÁNTICOS (Decisión de diseño y soporte light/dark) */
+--color-primary: light-dark(var(--blue-500), #60a5fa);
+--color-primary-hover: color-mix(in srgb, var(--color-primary) 85%, black);
+--color-surface: light-dark(#ffffff, var(--slate-800));
+--space-card-padding: var(--space-4);
+
+/* CAPA 3: COMPONENTES (Opcional, para librerías multi-marca / white-label) */
+--card-bg: var(--color-surface);
+--card-padding: var(--space-card-padding);
+--card-radius: var(--radius-md);</code></pre>
+                </div>
+
+                <aside class="box callout" aria-label="Checklist de auditoría de Design Tokens">
+                    <div class="callout-header">
+                        <span class="callout-tag">Checklist de Auditoría</span>
+                    </div>
+                    <p>
+                        Antes de dar por cerrado un sistema de estilos, verifica tres criterios: 
+                        <strong>1)</strong> ¿Alterna entre <em>light</em> y <em>dark</em> cambiando únicamente <code>data-theme</code>? 
+                        <strong>2)</strong> ¿Al modificar <code>--color-primary</code> se regeneran automáticamente sus variantes suaves y estados <em>hover</em> con <code>color-mix()</code>? 
+                        <strong>3)</strong> ¿Tus gradientes animados utilizan <code>@property</code>?
+                    </p>
+                </aside>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <p>CSS Avanzado - A02 Design Tokens &amp; Theming - 2026</p>
+    </footer>
+
+    <script>
+        // Controlador mínimo para alternar el atributo data-theme; la resolución visual es 100% CSS
+        const html = document.documentElement;
+        const buttons = document.querySelectorAll('[data-set-theme]');
+
+        const applyThemeState = (theme) => {
+            buttons.forEach((btn) => {
+                const isSelected = btn.getAttribute('data-set-theme') === theme;
+                btn.classList.toggle('active', isSelected);
+                btn.setAttribute('aria-pressed', String(isSelected));
+            });
+
+            if (theme === 'auto') {
+                html.removeAttribute('data-theme');
+                localStorage.removeItem('theme');
+            } else {
+                html.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+            }
+        };
+
+        buttons.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                applyThemeState(btn.getAttribute('data-set-theme'));
+            });
+        });
+
+        // Restaurar preferencia guardada del usuario si existe
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light' || savedTheme === 'dark') {
+            applyThemeState(savedTheme);
+        }
+    </script>
+</body>
+</html>
