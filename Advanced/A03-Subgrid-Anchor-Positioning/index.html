@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Apuntes avanzados de CSS: Subgrid para alinear contenido anidado y Anchor Positioning + Popover API para tooltips y menús sin JS.">
+    <title>A03 - Subgrid + Anchor Positioning — CSS Avanzado</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header class="page-header">
+        <span class="badge-module">Módulo A03 · Advanced Layout &amp; UI APIs</span>
+        <h1>Subgrid + Anchor Positioning</h1>
+        <p class="lead">
+            Resuelve dos limitaciones históricas del layout web: <code>subgrid</code> permite que los contenedores hijos hereden los <em>tracks</em> de su padre para alinear contenido interno, 
+            y <code>anchor-name</code> + <code>position-area</code> posicionan tooltips, menús y popovers anclados sin calcular coordenadas en JavaScript.
+        </p>
+        <hr aria-hidden="true">
+    </header>
+
+    <main>
+        <article class="notes">
+            <!-- SECCIÓN 1: CSS Subgrid -->
+            <section aria-labelledby="subgrid">
+                <h2 id="subgrid">1. CSS <code>subgrid</code> — Herencia de tracks entre niveles</h2>
+                <p>
+                    En CSS Grid tradicional, cada grilla anidada crea sus propios <em>tracks</em> independientes. Si tienes tres tarjetas con título, descripción y botón, los botones se desalinean cuando el contenido varía de altura. 
+                    Con <code>grid-template-rows: subgrid</code>, el hijo adopta exactamente las líneas de la grilla padre.
+                </p>
+
+                <pre><code class="language-css">/* 1. El padre define la estructura de filas */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: auto 1fr auto; /* Título, cuerpo flexible, footer */
+  gap: 1.25rem;
+}
+
+/* 2. Cada tarjeta abarca 3 filas del padre y hereda sus tracks */
+.card {
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+}
+
+/* Ahora h3, p y button comparten alineación horizontal en todas las tarjetas */</code></pre>
+
+                <div class="box">
+                    <h4>Comparativa visual: Grid independiente vs <code>subgrid</code></h4>
+                    <div class="subgrid-compare">
+                        <div class="compare-block">
+                            <span class="compare-label bad">Sin subgrid — Títulos y cuerpos desalineados</span>
+                            <div class="cards-no-subgrid">
+                                <article class="card-demo">
+                                    <h3>Título corto</h3>
+                                    <p>Texto breve en la primera tarjeta.</p>
+                                    <button type="button">Acción</button>
+                                </article>
+                                <article class="card-demo">
+                                    <h3>Título extenso que ocupa dos o más líneas en esta tarjeta</h3>
+                                    <p>Contenido mucho más largo que hace crecer la tarjeta y empuja el inicio del párrafo hacia abajo respecto a sus vecinas.</p>
+                                    <button type="button">Acción</button>
+                                </article>
+                                <article class="card-demo">
+                                    <h3>Título medio</h3>
+                                    <p>Texto de longitud intermedia.</p>
+                                    <button type="button">Acción</button>
+                                </article>
+                            </div>
+                        </div>
+
+                        <div class="compare-block">
+                            <span class="compare-label good">Con subgrid — Títulos, párrafos y botones alineados</span>
+                            <div class="cards-subgrid">
+                                <article class="card-demo subgrid-card">
+                                    <h3>Título corto</h3>
+                                    <p>Texto breve en la primera tarjeta.</p>
+                                    <button type="button">Acción</button>
+                                </article>
+                                <article class="card-demo subgrid-card">
+                                    <h3>Título extenso que ocupa dos o más líneas en esta tarjeta</h3>
+                                    <p>Contenido mucho más largo que hace crecer la tarjeta, pero todas comparten las mismas 3 filas del contenedor padre.</p>
+                                    <button type="button">Acción</button>
+                                </article>
+                                <article class="card-demo subgrid-card">
+                                    <h3>Título medio</h3>
+                                    <p>Texto de longitud intermedia.</p>
+                                    <button type="button">Acción</button>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <h4><code>subgrid</code> en formularios — Columnas de etiquetas sincronizadas</h4>
+                    <p class="small-note">En pantallas medianas y grandes, las etiquetas de todas las filas se ajustan automáticamente al ancho de la etiqueta más larga sin anchos fijos.</p>
+                    <form class="form-subgrid" onsubmit="return false" aria-label="Formulario con columnas subgrid">
+                        <div class="form-row">
+                            <label for="f-name">Nombre</label>
+                            <input id="f-name" type="text" placeholder="Melvin">
+                            <span class="hint">Requerido</span>
+                        </div>
+                        <div class="form-row">
+                            <label for="f-email">Correo electrónico corporativo</label>
+                            <input id="f-email" type="email" placeholder="melvin@ejemplo.com">
+                            <span class="hint">Formato válido</span>
+                        </div>
+                        <div class="form-row">
+                            <label for="f-tel">Teléfono</label>
+                            <input id="f-tel" type="tel" placeholder="+51 999 999 999">
+                            <span class="hint">Opcional</span>
+                        </div>
+                    </form>
+                    <pre><code class="language-css">@media (min-width: 640px) {
+  .form-subgrid {
+    display: grid;
+    grid-template-columns: max-content 1fr auto;
+  }
+  .form-row {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+  }
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: CSS Anchor Positioning -->
+            <section aria-labelledby="anchor">
+                <h2 id="anchor">2. Anchor Positioning — Tooltips y Popovers sin JS</h2>
+                <p>
+                    Tradicionalmente, posicionar un elemento flotante respecto a un botón exigía medir coordenadas con <code>getBoundingClientRect()</code> y escuchar eventos de <code>scroll</code> y <code>resize</code>. 
+                    Con <strong>CSS Anchor Positioning</strong>, vinculas ambos elementos de forma declarativa mediante un identificador de ancla.
+                </p>
+
+                <div class="box">
+                    <h4>Sintaxis moderna: <code>anchor-name</code> + <code>position-area</code></h4>
+                    <pre><code class="language-css">/* 1. Definir el elemento disparador como ancla */
+.trigger {
+  anchor-name: --my-anchor;
+}
+
+/* 2. Vincular el elemento flotante y ubicarlo en la cuadrícula del ancla */
+.tooltip {
+  position: fixed;
+  position-anchor: --my-anchor;
+  position-area: bottom center;
+  margin-top: 8px;
+
+  /* Si se acerca al borde del viewport, invierte eje bloque o en línea */
+  position-try-fallbacks: flip-block, flip-inline;
+}</code></pre>
+                </div>
+
+                <div class="demo-grid">
+                    <!-- Demo 1: Tooltip -->
+                    <div class="box demo-card">
+                        <h4>Demo 1: Tooltip anclado (Hover / Focus)</h4>
+                        <p class="small-note">Pasa el cursor o enfoca con teclado el botón para mostrar el tooltip sobre él.</p>
+                        <div class="anchor-center">
+                            <button type="button" class="anchor-btn" id="anchor1" aria-describedby="tip1">Pasa el cursor aquí</button>
+                            <div class="anchor-tooltip" id="tip1" role="tooltip">Tooltip anclado con <code>position-area: top center</code></div>
+                        </div>
+                        <pre><code>#anchor1 { anchor-name: --anchor1; }
+.anchor-tooltip {
+  position-anchor: --anchor1;
+  position-area: top center;
+  margin-bottom: 8px;
+}</code></pre>
+                    </div>
+
+                    <!-- Demo 2: Menu Dropdown -->
+                    <div class="box demo-card">
+                        <h4>Demo 2: Menú desplegable anclado</h4>
+                        <p class="small-note">Permanece abierto al navegar por las opciones mediante <code>:has()</code> y <code>:focus-within</code>.</p>
+                        <div class="anchor-center">
+                            <div class="dropdown-wrapper">
+                                <button type="button" class="anchor-btn" id="anchor2" aria-haspopup="true">Opciones ▾</button>
+                                <nav class="anchor-menu" aria-label="Menú de usuario">
+                                    <a href="#anchor">Mi perfil</a>
+                                    <a href="#anchor">Configuración</a>
+                                    <a href="#anchor">Cerrar sesión</a>
+                                </nav>
+                            </div>
+                        </div>
+                        <pre><code>#anchor2 { anchor-name: --anchor2; }
+.anchor-menu {
+  position-anchor: --anchor2;
+  position-area: bottom span-left;
+  position-try-fallbacks: flip-block;
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Demo 3: Popover API + Anchor -->
+                <div class="box">
+                    <h4>Demo 3: Popover API (HTML) + Anchor Positioning (CSS)</h4>
+                    <p class="small-note">
+                        La combinación estándar recomendada: el atributo nativo <code>popover</code> gestiona la <em>Top Layer</em>, el cierre con <kbd>Esc</kbd> y clic exterior, mientras CSS lo ancla al disparador.
+                    </p>
+                    <div class="anchor-center">
+                        <button type="button" class="anchor-btn popover-trigger" popovertarget="my-popover" id="anchor3">Abrir Popover nativo</button>
+                        <div id="my-popover" popover class="anchor-popover">
+                            <strong>Popover anclado sin JavaScript</strong>
+                            <p>Renderizado en la Top Layer del navegador, anclado mediante <code>position-anchor: --anchor3</code> y con inversión automática ante bordes de pantalla.</p>
+                            <button type="button" popovertarget="my-popover" popovertargetaction="hide" class="close-pop">Entendido</button>
+                        </div>
+                    </div>
+                    <pre><code class="language-css">#anchor3 { anchor-name: --anchor3; }
+
+#my-popover {
+  position-anchor: --anchor3;
+  position-area: bottom center;
+  position-try-fallbacks: flip-block, flip-inline;
+  margin-top: 8px;
+}</code></pre>
+                </div>
+
+                <aside class="box callout" aria-label="Regla de oro sobre position-try-fallbacks">
+                    <div class="callout-header">
+                        <span class="callout-tag">Regla de Oro en Anchor Positioning</span>
+                    </div>
+                    <p>
+                        <strong>Incluye siempre <code>position-try-fallbacks: flip-block, flip-inline;</code></strong> en tus elementos flotantes. 
+                        Si el usuario abre un menú cerca del borde inferior o lateral de la ventana, el motor recalcula la posición en el eje opuesto de forma nativa, reemplazando dependencias externas como Floating UI o Popper.js.
+                    </p>
+                </aside>
+            </section>
+
+            <!-- SECCIÓN 3: Patrón Combinado -->
+            <section aria-labelledby="combinado">
+                <h2 id="combinado">3. Patrón Combinado — Catálogo con <code>subgrid</code> + Menú anclado</h2>
+                <p>
+                    En este componente real, <code>subgrid</code> garantiza que la imagen, el título, el precio y el botón de cada producto mantengan alineación horizontal perfecta, mientras cada botón abre su propio menú contextual anclado.
+                </p>
+                <div class="box">
+                    <div class="product-grid">
+                        <article class="product-card">
+                            <div class="p-img">MEDIA 01</div>
+                            <h3>Camiseta Esencial</h3>
+                            <p class="price">$25.00</p>
+                            <div class="p-actions">
+                                <button type="button" class="p-menu-btn" id="p1" aria-label="Más opciones para Camiseta Esencial">⋯</button>
+                                <div class="p-menu" role="menu">
+                                    <a href="#combinado" role="menuitem">Ver detalle</a>
+                                    <a href="#combinado" role="menuitem">Añadir al carrito</a>
+                                    <a href="#combinado" role="menuitem">Guardar</a>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="product-card">
+                            <div class="p-img">MEDIA 02</div>
+                            <h3>Camiseta Oversize Edición Limitada de Algodón Orgánico</h3>
+                            <p class="price">$45.00</p>
+                            <div class="p-actions">
+                                <button type="button" class="p-menu-btn" id="p2" aria-label="Más opciones para Camiseta Oversize">⋯</button>
+                                <div class="p-menu" role="menu">
+                                    <a href="#combinado" role="menuitem">Ver detalle</a>
+                                    <a href="#combinado" role="menuitem">Añadir al carrito</a>
+                                    <a href="#combinado" role="menuitem">Guardar</a>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="product-card">
+                            <div class="p-img">MEDIA 03</div>
+                            <h3>Hoodie Técnico</h3>
+                            <p class="price">$60.00</p>
+                            <div class="p-actions">
+                                <button type="button" class="p-menu-btn" id="p3" aria-label="Más opciones para Hoodie Técnico">⋯</button>
+                                <div class="p-menu" role="menu">
+                                    <a href="#combinado" role="menuitem">Ver detalle</a>
+                                    <a href="#combinado" role="menuitem">Añadir al carrito</a>
+                                    <a href="#combinado" role="menuitem">Guardar</a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: Soporte y Fallbacks -->
+            <section aria-labelledby="soporte">
+                <h2 id="soporte">4. Soporte en Navegadores y Estrategia de Fallback</h2>
+                <ul>
+                    <li>
+                        <strong>CSS Subgrid:</strong> Soporte completo en todos los navegadores modernos (Chrome 117+, Edge 117+, Firefox 71+, Safari 16+). En navegadores antiguos degrada de forma natural a una grilla estándar sin romper el contenido.
+                    </li>
+                    <li>
+                        <strong>Popover API:</strong> Parte de <em>CSS/HTML Baseline</em> con soporte nativo multi-navegador.
+                    </li>
+                    <li>
+                        <strong>Anchor Positioning:</strong> Disponible en Chromium (Chrome/Edge 125+) y Safari moderno. Utiliza <code>@supports not (position-anchor: --x)</code> para ofrecer posicionamiento clásico <code>position: absolute</code> como respaldo progresivo.
+                    </li>
+                </ul>
+                <pre><code class="language-css">@supports not (position-anchor: --a) {
+  .tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}</code></pre>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <p>CSS Avanzado - A03 Subgrid + Anchor Positioning - 2026</p>
+    </footer>
+</body>
+</html>
