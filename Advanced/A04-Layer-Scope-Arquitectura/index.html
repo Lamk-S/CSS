@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Apuntes avanzados de CSS: @layer para controlar la cascada, @scope para aislar sub-árboles DOM y arquitectura moderna escalable.">
+    <title>A04 - @layer, @scope y Arquitectura — CSS Avanzado</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header class="page-header">
+        <span class="badge-module">Módulo A04 · Cascade Control &amp; Architecture</span>
+        <h1><code>@layer</code>, <code>@scope</code> y Arquitectura</h1>
+        <p class="lead">
+            Pon fin a las guerras de especificidad y a la fuga de estilos globales. <code>@layer</code> te otorga control explícito sobre la prioridad de la cascada, 
+            <code>@scope</code> encapsula reglas dentro de un sub-árbol del DOM sin herramientas de compilación, y combinados con Design Tokens estructuran sistemas escalables.
+        </p>
+        <hr aria-hidden="true">
+    </header>
+
+    <main>
+        <article class="notes">
+            <!-- SECCIÓN 1: @layer (Cascade Layers) -->
+            <section aria-labelledby="layer">
+                <h2 id="layer">1. <code>@layer</code> — Control explícito de la cascada</h2>
+                <p>
+                    En CSS clásico, un selector con ID (<code>#nav .link</code>) siempre vence a una clase (<code>.link-active</code>), obligando a recurrir a <code>!important</code> o selectores artificialmente largos. 
+                    Con <strong>Cascade Layers</strong>, el orden en que declaras las capas determina qué regla gana, <strong>sin importar la especificidad</strong> de los selectores internos.
+                </p>
+
+                <div class="box">
+                    <h4>Declaración de jerarquía: La última capa declarada gana</h4>
+                    <pre><code class="language-css">/* 1. Define el orden de prioridad en la primera línea */
+@layer reset, base, tokens, components, utilities;
+
+/* 2. Cada capa puede poblarse en cualquier orden de archivo */
+@layer reset {
+  * { margin: 0; box-sizing: border-box; }
+}
+
+@layer base {
+  body { font-family: system-ui, sans-serif; line-height: 1.6; }
+}
+
+@layer components {
+  .btn { background: #2563eb; color: white; padding: 0.6rem 1rem; }
+  /* Aunque use un ID (1,0,0), pierde contra la capa utilities */
+  #header .btn { background: #dc2626; }
+}
+
+@layer utilities {
+  /* Especificidad baja (0,1,0), pero gana sin necesidad de !important */
+  .bg-emerald { background: #16a34a; }
+  .hidden { display: none; }
+}</code></pre>
+                    <p class="small-note">
+                        <strong>Regla fundamental:</strong> Los estilos declarados <em>fuera</em> de cualquier <code>@layer</code> tienen mayor prioridad que los estilos dentro de capas. Asimismo, el uso de <code>!important</code> invierte el orden de prioridad entre capas.
+                    </p>
+                </div>
+
+                <div class="box layer-demo-box">
+                    <h4>Demo en vivo: Una clase en <code>@layer utilities</code> vence a un <code>#id</code> en <code>@layer components</code></h4>
+                    <div class="layer-battle">
+                        <div id="test-id" class="utility-card">
+                            Este elemento tiene <code>id="test-id"</code> (rojo en <code>@layer components</code>, especificidad <code>1,0,0</code>) 
+                            y <code>class="utility-card"</code> (verde en <code>@layer utilities</code>, especificidad <code>0,1,0</code>). 
+                            Gana el verde <strong>sin usar <code>!important</code></strong>.
+                        </div>
+                    </div>
+                    <pre><code class="language-css">@layer reset, tokens, base, components, utilities;
+
+@layer components {
+  #test-id { background: #fecaca; color: #dc2626; } /* (1,0,0) */
+}
+
+@layer utilities {
+  .utility-card { background: #dcfce7; color: #15803d; } /* (0,1,0) — Gana por capa */
+}</code></pre>
+                </div>
+
+                <div class="box">
+                    <h4>Sub-capas anidadas e importación de terceros</h4>
+                    <pre><code class="language-css">/* Organización modular mediante capas anidadas */
+@layer components {
+  @layer buttons {
+    .btn { /* ... */ }
+  }
+  @layer cards {
+    .card { /* ... */ }
+  }
+}
+
+/* Encapsula librerías externas en una capa de baja prioridad */
+@import url("normalize.css") layer(reset);
+@import url("vendor-ui.css") layer(vendor);</code></pre>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: @scope (Scoped CSS nativo) -->
+            <section aria-labelledby="scope">
+                <h2 id="scope">2. <code>@scope</code> — Encapsulamiento nativo sin build tools</h2>
+                <p>
+                    Al escribir <code>.card h2</code>, la regla desciende indefinidamente y contamina cualquier <code>&lt;h2&gt;</code> dentro de subcomponentes anidados. 
+                    La regla <code>@scope</code> permite fijar una <strong>raíz de alcance</strong> y, opcionalmente, un <strong>límite inferior</strong> (<em>donut scope</em>) donde los estilos dejan de aplicarse.
+                </p>
+
+                <div class="box">
+                    <h4>Sintaxis: Raíz de alcance y límite inferior (<code>to</code>)</h4>
+                    <pre><code class="language-css">/* Alcance acotado: afecta a .card, pero se detiene al llegar a .card-slot */
+@scope (.card) to (.card-slot) {
+  :scope {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+
+  h2 {
+    color: #1d4ed8;
+    font-size: 1.15rem;
+  }
+}</code></pre>
+                </div>
+
+                <div class="box scope-demo">
+                    <h4>Demo en vivo: Donut Scope con <code>@scope (.scope-card) to (.scope-nested)</code></h4>
+                    <div class="scope-outer">
+                        <h2>1. <code>&lt;h2&gt;</code> fuera de <code>.scope-card</code> — Sin estilos del componente</h2>
+                        <div class="scope-card">
+                            <h2>2. <code>&lt;h2&gt;</code> dentro de <code>.scope-card</code> — Estilizado por <code>@scope</code></h2>
+                            <p>Párrafo perteneciente al cuerpo directo de la tarjeta con alcance.</p>
+                            <div class="scope-nested">
+                                <h2>3. <code>&lt;h2&gt;</code> dentro de <code>.scope-nested</code> — Protegido por el límite <code>to (.scope-nested)</code></h2>
+                                <p>El alcance se detuvo exactamente en este contenedor hijo.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <pre><code class="language-css">@scope (.scope-card) to (.scope-nested) {
+  :scope { border: 2px solid #3b82f6; background: #eff6ff; }
+  h2 { color: #1d4ed8; background: #dbeafe; padding: 0.35rem 0.65rem; border-radius: 6px; }
+  p  { color: #1e40af; }
+}</code></pre>
+                </div>
+
+                <div class="box">
+                    <h4>Matriz de decisión: Cuándo usar cada herramienta moderna</h4>
+                    <div class="table-wrapper">
+                        <table class="compare-table">
+                            <thead>
+                                <tr>
+                                    <th>Herramienta</th>
+                                    <th>Propósito arquitectónico</th>
+                                    <th>Ejemplo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>@layer</code></td>
+                                    <td>Ordenar la prioridad global de la cascada</td>
+                                    <td><code>@layer reset, base, components, utilities;</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>@scope</code></td>
+                                    <td>Aislar estilos a un fragmento DOM con límite superior e inferior</td>
+                                    <td><code>@scope (.card) to (.slot) { h2 { ... } }</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>:has()</code></td>
+                                    <td>Adaptar un contenedor según sus descendientes o estado</td>
+                                    <td><code>.card:has(> img) { ... }</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>:where()</code></td>
+                                    <td>Aplicar reglas base con especificidad cero <code>(0,0,0)</code></td>
+                                    <td><code>:where(h1, h2, p) { margin: 0; }</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: Arquitectura Moderna Integrada -->
+            <section aria-labelledby="arquitectura">
+                <h2 id="arquitectura">3. Arquitectura Moderna — Layers + Scope + Tokens</h2>
+                <p>
+                    Al integrar <code>@layer</code>, <code>@scope</code> y <em>Design Tokens</em> en una misma hoja de estilos, obtienes un sistema predecible que escala desde una landing page hasta un Design System empresarial.
+                </p>
+
+                <div class="box">
+                    <h4>Estructura base de arquitectura escalable</h4>
+                    <pre><code class="language-css">/* 1. Jerarquía explícita de capas */
+@layer reset, tokens, base, components, utilities;
+
+/* 2. TOKENS — Fuente única de verdad */
+@layer tokens {
+  :root {
+    --color-primary: #2563eb;
+    --radius-md: 12px;
+  }
+}
+
+/* 3. BASE — Tipografía y elementos semánticos sin clases */
+@layer base {
+  body { font-family: system-ui, sans-serif; background: #f8fafc; }
+}
+
+/* 4. COMPONENTS — Encapsulados con @scope */
+@layer components {
+  @scope (.arch-card) {
+    :scope { background: #ffffff; border-radius: var(--radius-md); padding: 1.25rem; }
+    h3 { margin-bottom: 0.5rem; }
+  }
+}
+
+/* 5. UTILITIES — Alta prioridad de capa con baja especificidad */
+@layer utilities {
+  :where(.hidden) { display: none; }
+}</code></pre>
+                </div>
+
+                <div class="box architecture-demo">
+                    <h4>Demo: Componentes aislados dentro de <code>@layer components</code> + <code>@scope</code></h4>
+                    <div class="arch-grid">
+                        <article class="arch-card">
+                            <h3>Card encapsulada 01</h3>
+                            <p>Sus encabezados, párrafos y botones están gobernados por <code>@scope</code> sin contaminar el exterior.</p>
+                            <button type="button" class="arch-btn">Acción primaria</button>
+                        </article>
+                        <article class="arch-card">
+                            <h3>Card encapsulada 02</h3>
+                            <p>Misma definición de componente, cero colisiones de nombres ni especificidad inflada.</p>
+                            <button type="button" class="arch-btn">Explorar</button>
+                        </article>
+                    </div>
+                    <div class="outside-probe">
+                        <h3>Encabezado <code>&lt;h3&gt;</code> fuera de <code>.arch-card</code></h3>
+                        <p>Conserva los estilos base del documento porque los estilos de <code>.arch-card</code> no escapan de su <code>@scope</code>.</p>
+                    </div>
+                </div>
+
+                <aside class="box callout" aria-label="Checklist de arquitectura CSS">
+                    <div class="callout-header">
+                        <span class="callout-tag">Checklist de Arquitectura Frontend</span>
+                    </div>
+                    <p>
+                        <strong>Evalúa tu hoja de estilos:</strong> ¿Están tus reglas organizadas en <code>@layer</code>? 
+                        ¿Tus <em>resets</em> combinan <code>:where()</code> dentro de <code>@layer reset</code>? 
+                        ¿Tus componentes complejos acotan su alcance con <code>@scope</code> para evitar fugas? 
+                        ¿Eliminaste la necesidad de <code>!important</code> en tus utilidades? Si cumples estos cuatro puntos, tu CSS es escalable por diseño.
+                    </p>
+                </aside>
+            </section>
+
+            <!-- SECCIÓN 4: CSS Nesting Nativo -->
+            <section aria-labelledby="anidamiento">
+                <h2 id="anidamiento">4. Bonus: CSS Nesting nativo + <code>@layer</code></h2>
+                <p>
+                    El anidamiento nativo (<code>&amp;</code>) forma parte del estándar CSS moderno y se integra directamente con <code>@layer</code>, <code>:has()</code> y <code>@scope</code> sin necesidad de preprocesadores.
+                </p>
+                <pre><code class="language-css">@layer components {
+  .card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+
+    &amp; h3 {
+      margin: 0 0 0.5rem;
+      color: #0f172a;
+    }
+
+    &amp;:has(&gt; img) {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 1rem;
+    }
+
+    @scope (&amp;) to (.card-footer) {
+      :scope { border: 1px solid #e2e8f0; }
+    }
+  }
+}</code></pre>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <p>CSS Avanzado - A04 @layer, @scope y Arquitectura - 2026</p>
+    </footer>
+</body>
+</html>
