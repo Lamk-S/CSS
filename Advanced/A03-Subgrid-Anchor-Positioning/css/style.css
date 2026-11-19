@@ -1,0 +1,781 @@
+/* ==========================================================================
+   1. DESIGN TOKENS (Sistema unificado del repositorio)
+   ========================================================================== */
+:root {
+    --color-text: #1f2937;
+    --color-text-strong: #0f172a;
+    --color-muted: #64748b;
+    --color-surface: #ffffff;
+    --color-surface-subtle: #f8fafc;
+    --color-primary: #2563eb;
+    --color-primary-dark: #1d4ed8;
+    --color-primary-soft: rgba(37, 99, 235, 0.08);
+    --color-border: rgba(15, 23, 42, 0.09);
+    --color-code: #be123c;
+    --color-success: #16a34a;
+
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 8px;
+    --radius-pill: 999px;
+
+    --shadow-soft: 0 20px 60px rgba(15, 23, 42, 0.07);
+    --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.04);
+    --shadow-float: 0 12px 32px rgba(15, 23, 42, 0.16);
+
+    --transition-fast: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   2. RESET Y BASE (Arquitectura Mobile-First)
+   ========================================================================== */
+html {
+    font-size: 16px;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--color-text);
+    background:
+        radial-gradient(circle at top center, rgba(37, 99, 235, 0.09), transparent 40%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+    line-height: 1.65;
+    padding: clamp(1rem, 2.5vw, 2.5rem);
+    -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+}
+
+/* ==========================================================================
+   3. ESTRUCTURA Y TIPOGRAFÍA
+   ========================================================================== */
+.page-header,
+.notes,
+footer {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 1.75rem;
+}
+
+.badge-module {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    padding: 0.25rem 0.7rem;
+    border-radius: var(--radius-pill);
+    margin-bottom: 0.75rem;
+}
+
+.notes {
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: clamp(1.25rem, 3.5vw, 2.5rem);
+}
+
+h1, h2, h3, h4 {
+    color: var(--color-text-strong);
+    line-height: 1.25;
+    margin-top: 0;
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    font-size: clamp(1.85rem, 3.5vw, 2.85rem);
+    color: var(--color-primary);
+    margin: 0.2rem 0 0.5rem;
+}
+
+h2 {
+    font-size: clamp(1.3rem, 2.2vw, 1.65rem);
+    color: var(--color-primary);
+    margin: 0 0 0.85rem;
+}
+
+h3 {
+    font-size: 1.05rem;
+    margin: 0 0 0.35rem;
+}
+
+h4 {
+    font-size: 0.98rem;
+    margin-bottom: 0.5rem;
+}
+
+.lead {
+    color: var(--color-muted);
+    max-width: 75ch;
+    font-size: clamp(1rem, 1.4vw, 1.12rem);
+    margin: 0;
+}
+
+.page-header hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(37, 99, 235, 0.35), rgba(37, 99, 235, 0.05) 70%, transparent);
+    margin: 1.5rem 0 0;
+}
+
+section + section {
+    margin-top: 2.25rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+}
+
+ul {
+    padding-left: 1.25rem;
+}
+
+li + li {
+    margin-top: 0.45rem;
+}
+
+.small-note {
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    margin: 0.25rem 0 0.75rem;
+}
+
+kbd {
+    background: var(--color-surface-subtle);
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 0.1rem 0.35rem;
+    font-size: 0.82em;
+    font-family: ui-monospace, monospace;
+}
+
+/* ==========================================================================
+   4. CÓDIGO, CONTENEDORES Y CALLOUTS
+   ========================================================================== */
+code {
+    color: var(--color-code);
+    background: rgba(190, 18, 60, 0.07);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.35rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.88em;
+}
+
+/* Armonía tipográfica: los <code> dentro de encabezados usan la paleta primaria */
+:is(h1, h2, h3, h4) code {
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    font-size: 0.85em;
+}
+
+pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 1.1rem 1.25rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow-x: auto;
+    margin: 1rem 0 0;
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+
+pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border: none;
+    font-size: inherit;
+}
+
+.box {
+    padding: 1.25rem;
+    margin: 1rem 0;
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+}
+
+.callout {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(255, 255, 255, 0.95) 100%);
+    border: 1px solid rgba(37, 99, 235, 0.22);
+    padding: 1.25rem 1.4rem;
+}
+
+.callout-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.45rem;
+}
+
+.callout-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+}
+
+.callout-tag::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+.callout p {
+    margin: 0;
+    color: var(--color-text-strong);
+}
+
+/* Grid Mobile-First con minmax(0, 1fr) para evitar desbordamiento por <pre> */
+.demo-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    margin: 1rem 0;
+}
+
+@media (min-width: 768px) {
+    .demo-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.demo-card {
+    margin: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.demo-card pre {
+    margin-top: auto;
+}
+
+/* ==========================================================================
+   5. DEMOS DE SUBGRID
+   ========================================================================== */
+.subgrid-compare {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 0.75rem;
+}
+
+.compare-block {
+    border: 1px dashed #cbd5e1;
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    background: var(--color-surface-subtle);
+}
+
+.compare-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.22rem 0.65rem;
+    border-radius: var(--radius-pill);
+    margin-bottom: 0.85rem;
+}
+
+.compare-label.bad {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.compare-label.good {
+    background: #f0fdf4;
+    color: var(--color-success);
+    border: 1px solid #bbf7d0;
+}
+
+/* --- Caso A: Sin Subgrid --- */
+.cards-no-subgrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1rem;
+}
+
+.cards-no-subgrid .card-demo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: var(--color-surface);
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+
+.cards-no-subgrid .card-demo h3 {
+    font-size: 0.95rem;
+}
+
+.cards-no-subgrid .card-demo p {
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    margin: 0;
+    flex: 1;
+}
+
+.cards-no-subgrid .card-demo button {
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--color-primary);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* --- Caso B: Con Subgrid --- */
+.cards-subgrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    grid-auto-rows: auto;
+    gap: 1rem;
+}
+
+.card-demo.subgrid-card {
+    display: grid;
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+    row-gap: 0.5rem;
+    background: var(--color-surface);
+    border: 1px solid #bfdbfe;
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+
+.card-demo.subgrid-card h3 {
+    grid-row: 1;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.card-demo.subgrid-card p {
+    grid-row: 2;
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 0.85rem;
+}
+
+.card-demo.subgrid-card button {
+    grid-row: 3;
+    align-self: end;
+    margin-top: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--color-primary-dark);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* --- Caso C: Formulario Subgrid (Mobile-First) --- */
+.form-subgrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    background: var(--color-surface-subtle);
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+    padding: 0.65rem 0.75rem;
+    background: var(--color-surface);
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+}
+
+@media (min-width: 640px) {
+    .form-subgrid {
+        grid-template-columns: max-content 1fr auto;
+    }
+
+    .form-row {
+        grid-column: 1 / -1;
+        grid-template-columns: subgrid;
+        align-items: center;
+        gap: 0.85rem;
+    }
+}
+
+.form-row label {
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: #334155;
+}
+
+.form-row input {
+    width: 100%;
+    padding: 0.45rem 0.65rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.88rem;
+}
+
+.form-row .hint {
+    font-size: 0.78rem;
+    color: var(--color-muted);
+}
+
+/* ==========================================================================
+   6. DEMOS DE ANCHOR POSITIONING & POPOVER API
+   ========================================================================== */
+.anchor-center {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3.25rem 1rem;
+    background: linear-gradient(180deg, #f8fafc, #eff6ff);
+    border: 1px dashed #cbd5e1;
+    border-radius: var(--radius-sm);
+    margin: 0.75rem 0;
+}
+
+.dropdown-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.anchor-btn {
+    background: var(--color-text-strong);
+    color: #ffffff;
+    border: none;
+    padding: 0.65rem 1.15rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.anchor-btn:hover {
+    background: #1e293b;
+    transform: translateY(-1px);
+}
+
+/* Registro de nombres de ancla */
+#anchor1 { anchor-name: --anchor1; }
+#anchor2 { anchor-name: --anchor2; }
+#anchor3 { anchor-name: --anchor3; }
+#p1      { anchor-name: --p1; }
+#p2      { anchor-name: --p2; }
+#p3      { anchor-name: --p3; }
+
+/* --- Demo 1: Tooltip anclado --- */
+.anchor-tooltip {
+    position: fixed;
+    position-anchor: --anchor1;
+    position-area: top center;
+    position-try-fallbacks: flip-block, flip-inline;
+    margin-bottom: 8px;
+
+    background: var(--color-text-strong);
+    color: #ffffff;
+    padding: 0.5rem 0.85rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    white-space: nowrap;
+    box-shadow: var(--shadow-float);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(4px);
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+    z-index: 20;
+}
+
+.anchor-tooltip code {
+    background: rgba(255, 255, 255, 0.14);
+    color: #93c5fd;
+}
+
+.anchor-center:has(#anchor1:hover) .anchor-tooltip,
+.anchor-center:has(#anchor1:focus-visible) .anchor-tooltip {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- Demo 2: Menú dropdown anclado --- */
+.anchor-menu {
+    position: fixed;
+    position-anchor: --anchor2;
+    position-area: bottom span-left;
+    position-try-fallbacks: flip-block, flip-inline;
+    margin-top: 6px;
+
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    min-width: 170px;
+    display: flex;
+    flex-direction: column;
+    padding: 0.35rem;
+    box-shadow: var(--shadow-float);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-4px);
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+    z-index: 20;
+}
+
+.anchor-menu a {
+    padding: 0.45rem 0.7rem;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #334155;
+    font-weight: 500;
+    font-size: 0.88rem;
+}
+
+.anchor-menu a:hover {
+    background: #f1f5f9;
+    color: var(--color-primary);
+}
+
+/* Mantiene el menú abierto tanto en el botón como al navegar dentro del menú */
+.dropdown-wrapper:has(#anchor2:hover) .anchor-menu,
+.dropdown-wrapper:has(.anchor-menu:hover) .anchor-menu,
+.dropdown-wrapper:focus-within .anchor-menu {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* --- Demo 3: Popover API + Anchor --- */
+.anchor-popover {
+    position-anchor: --anchor3;
+    position-area: bottom center;
+    position-try-fallbacks: flip-block, flip-inline;
+    margin: 8px 0 0;
+
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid #cbd5e1;
+    min-width: 260px;
+    max-width: 320px;
+    padding: 1.1rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-float);
+    text-align: left;
+}
+
+.anchor-popover strong {
+    display: block;
+    color: var(--color-text-strong);
+    margin-bottom: 0.35rem;
+    font-size: 0.95rem;
+}
+
+.anchor-popover p {
+    margin: 0 0 0.95rem;
+    color: var(--color-muted);
+    font-size: 0.86rem;
+    line-height: 1.5;
+}
+
+.close-pop {
+    background: var(--color-primary);
+    color: #ffffff;
+    border: none;
+    padding: 0.45rem 0.85rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.84rem;
+}
+
+/* Fallback progresivo para navegadores sin Anchor Positioning */
+@supports not (position-anchor: --a) {
+    .anchor-tooltip {
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .anchor-center:has(#anchor1:hover) .anchor-tooltip,
+    .anchor-center:has(#anchor1:focus-visible) .anchor-tooltip {
+        transform: translateX(-50%);
+    }
+
+    .anchor-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        left: auto;
+    }
+
+    .anchor-popover:popover-open {
+        position: fixed;
+        inset: 0;
+        margin: auto;
+        height: fit-content;
+    }
+}
+
+/* ==========================================================================
+   7. PATRÓN COMBINADO: PRODUCT GRID (Subgrid + Anchor Positioning)
+   ========================================================================== */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    grid-auto-rows: auto;
+    gap: 1rem;
+}
+
+.product-card {
+    display: grid;
+    grid-row: span 4;
+    grid-template-rows: subgrid;
+    row-gap: 0.55rem;
+    background: var(--color-surface);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem;
+    position: relative;
+}
+
+.product-card .p-img {
+    grid-row: 1;
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    color: #3730a3;
+    border-radius: var(--radius-sm);
+    padding: 2rem 0.5rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+}
+
+.product-card h3 {
+    grid-row: 2;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.product-card .price {
+    grid-row: 3;
+    margin: 0;
+    color: var(--color-success);
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.product-card .p-actions {
+    grid-row: 4;
+    position: relative;
+    justify-self: start;
+}
+
+.p-menu-btn {
+    background: var(--color-surface-subtle);
+    border: 1px solid #cbd5e1;
+    color: var(--color-text-strong);
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.p-menu {
+    position: fixed;
+    position-anchor: --p1;
+    position-area: bottom span-right;
+    position-try-fallbacks: flip-block, flip-inline;
+    margin-top: 4px;
+
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-sm);
+    min-width: 145px;
+    padding: 0.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    box-shadow: var(--shadow-float);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-fast);
+    z-index: 20;
+}
+
+.product-card:nth-child(2) .p-menu { position-anchor: --p2; }
+.product-card:nth-child(3) .p-menu { position-anchor: --p3; }
+
+.p-menu a {
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.84rem;
+    text-decoration: none;
+    color: #334155;
+    font-weight: 500;
+}
+
+.p-menu a:hover {
+    background: #f1f5f9;
+    color: var(--color-primary);
+}
+
+.p-actions:has(.p-menu-btn:hover) .p-menu,
+.p-actions:has(.p-menu:hover) .p-menu,
+.p-actions:focus-within .p-menu {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+@supports not (position-anchor: --a) {
+    .p-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+    }
+}
+
+/* ==========================================================================
+   8. PIE DE PÁGINA
+   ========================================================================== */
+footer {
+    margin-top: 2.25rem;
+    padding-top: 1.25rem;
+    text-align: center;
+    color: var(--color-muted);
+    font-size: 0.88rem;
+    border-top: 1px solid var(--color-border);
+}
