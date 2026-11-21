@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Apuntes avanzados de CSS: pseudo-clases de formulario :user-valid, :user-invalid, :placeholder-shown, :focus-visible, accent-color y controles custom sin JS.">
+    <title>A06 - Formularios y Estados UI — CSS Avanzado</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header class="page-header">
+        <span class="badge-module">Módulo A06 · Forms &amp; Interactive UI States</span>
+        <h1>Formularios y Estados UI</h1>
+        <p class="lead">
+            Un formulario moderno no necesita JavaScript para ofrecer retroalimentación inmediata y accesible. 
+            Con <code>:user-valid</code>, <code>:user-invalid</code>, <code>:placeholder-shown</code>, <code>:focus-visible</code>, <code>accent-color</code> y controles personalizados con <code>appearance: none</code> construyes experiencias nativas robustas.
+        </p>
+        <hr aria-hidden="true">
+    </header>
+
+    <main>
+        <article class="notes">
+            <!-- SECCIÓN 1: Pseudo-clases de validación -->
+            <section aria-labelledby="validacion">
+                <h2 id="validacion">1. Pseudo-clases de validación — Feedback sin JS</h2>
+                <p>
+                    El navegador evalúa continuamente las restricciones HTML5 (<code>required</code>, <code>type="email"</code>, <code>min</code>, <code>pattern</code>). 
+                    A diferencia de <code>:invalid</code> —que marca error antes de que el usuario empiece a escribir—, <code>:user-invalid</code> y <code>:user-valid</code> esperan a que el usuario haya interactuado con el campo.
+                </p>
+
+                <div class="box">
+                    <h4>Ciclo de vida declarativo de un campo</h4>
+                    <pre><code class="language-css">/* 1. Estado inicial intacto: placeholder visible */
+.field:placeholder-shown {
+  border-color: #cbd5e1;
+}
+
+/* 2. Inválido únicamente tras interacción del usuario */
+.field:user-invalid {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+/* 3. Válido tras interacción del usuario */
+.field:user-valid {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+/* 4. Mensaje de error hermano revelado sin JS */
+.field:user-invalid ~ .error {
+  display: block;
+}</code></pre>
+                </div>
+
+                <div class="demo-grid">
+                    <div class="box demo-card">
+                        <h4>Demo: <code>:placeholder-shown</code> + <code>:user-invalid</code></h4>
+                        <form class="demo-form" onsubmit="return false" novalidate>
+                            <label class="f-label" for="d-email">Correo corporativo</label>
+                            <input class="f-input" id="d-email" type="email" placeholder="tu@empresa.com" required>
+                            <span class="f-hint">Escribe un correo incompleto y sal del campo para ver el estado</span>
+                            <span class="f-error" role="alert">Formato de correo electrónico no válido</span>
+                        </form>
+                        <pre><code class="language-css">input:placeholder-shown { border-color: #cbd5e1; }
+input:user-invalid { border-color: #dc2626; }
+input:user-valid { border-color: #16a34a; }</code></pre>
+                    </div>
+
+                    <div class="box demo-card">
+                        <h4>Demo: <code>:in-range</code> / <code>:out-of-range</code></h4>
+                        <form class="demo-form" onsubmit="return false" novalidate>
+                            <label class="f-label" for="d-age">Edad permitida (18 – 99)</label>
+                            <input class="f-input" id="d-age" type="number" min="18" max="99" placeholder="25">
+                            <span class="f-hint">Prueba ingresar 15 o 120 para disparar <code>:out-of-range</code></span>
+                            <span class="f-error" role="alert">El valor debe estar entre 18 y 99</span>
+                        </form>
+                        <pre><code class="language-css">input:in-range { border-color: #16a34a; }
+input:out-of-range { border-color: #dc2626; }</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: Estados de Foco -->
+            <section aria-labelledby="focus">
+                <h2 id="focus">2. <code>:focus-visible</code> vs <code>:focus</code> y <code>:focus-within</code></h2>
+                <p>
+                    <code>:focus</code> se activa tanto al hacer clic con ratón como al navegar con teclado. 
+                    <code>:focus-visible</code> aplica el anillo de foco únicamente cuando el navegador detecta navegación por teclado o entrada de texto, manteniendo la interfaz limpia sin sacrificar accesibilidad.
+                </p>
+
+                <div class="box">
+                    <div class="focus-grid">
+                        <div class="focus-card">
+                            <h4><code>:focus</code> — Anillo siempre</h4>
+                            <button type="button" class="f-btn focus-only">Haz clic con mouse</button>
+                            <p class="small-note">Muestra el contorno incluso al hacer clic con puntero.</p>
+                            <pre><code>.btn:focus {
+  outline: 2px solid #2563eb;
+}</code></pre>
+                        </div>
+
+                        <div class="focus-card good">
+                            <h4><code>:focus-visible</code> — Teclado</h4>
+                            <button type="button" class="f-btn focus-visible">Navega con Tab</button>
+                            <p class="small-note">Oculto al clic con mouse; visible al tabular con teclado.</p>
+                            <pre><code>.btn:focus-visible {
+  outline: 2px solid #2563eb;
+}</code></pre>
+                        </div>
+
+                        <div class="focus-card">
+                            <h4><code>:focus-within</code> — Contenedor</h4>
+                            <div class="field-group">
+                                <label for="gw">Grupo reactivo al foco</label>
+                                <input id="gw" type="text" placeholder="Enfoca este campo">
+                            </div>
+                            <p class="small-note">El contenedor padre detecta cuando cualquier descendiente recibe foco.</p>
+                            <pre><code>.group:focus-within {
+  border-color: #2563eb;
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: accent-color -->
+            <section aria-labelledby="accent">
+                <h2 id="accent">3. <code>accent-color</code> — Personalización nativa de controles</h2>
+                <p>
+                    Una sola declaración tiñe los controles nativos (<code>checkbox</code>, <code>radio</code>, <code>range</code> y <code>progress</code>) con el color de marca, calculando automáticamente el contraste interno y adaptándose al esquema claro/oscuro.
+                </p>
+
+                <div class="box">
+                    <div class="accent-grid">
+                        <div class="accent-block default-accent">
+                            <span class="accent-label"><code>accent-color: auto</code> (Default SO)</span>
+                            <div class="accent-row">
+                                <input type="checkbox" checked aria-label="Checkbox por defecto">
+                                <input type="radio" name="demo-acc-1" checked aria-label="Radio por defecto">
+                                <input type="range" value="60" aria-label="Rango por defecto">
+                                <progress value="60" max="100" aria-label="Progreso por defecto">60%</progress>
+                            </div>
+                        </div>
+
+                        <div class="accent-block themed">
+                            <span class="accent-label good">Con <code>accent-color: #2563eb</code></span>
+                            <div class="accent-row">
+                                <input type="checkbox" checked aria-label="Checkbox con accent-color">
+                                <input type="radio" name="demo-acc-2" checked aria-label="Radio con accent-color">
+                                <input type="range" value="60" aria-label="Rango con accent-color">
+                                <progress value="60" max="100" aria-label="Progreso con accent-color">60%</progress>
+                            </div>
+                        </div>
+                    </div>
+                    <pre><code class="language-css">:root {
+  accent-color: var(--color-primary);
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: Controles Custom Accesibles -->
+            <section aria-labelledby="custom">
+                <h2 id="custom">4. Controles custom sin JS — Checkbox, Switch y Radio</h2>
+                <p>
+                    Mediante <code>appearance: none</code> eliminas el dibujo nativo del sistema operativo pero conservas intacta la semántica HTML, el estado <code>:checked</code>, el manejo por teclado (<kbd>Space</kbd>) y la lectura para tecnologías de asistencia. 
+                    <strong>Nunca ocultes el <code>&lt;input&gt;</code> con <code>display: none</code></strong>.
+                </p>
+
+                <div class="box">
+                    <h4>Checkbox personalizado con <code>appearance: none</code></h4>
+                    <div class="custom-demo">
+                        <label class="c-check">
+                            <input type="checkbox" checked>
+                            Acepto los términos y políticas de privacidad
+                        </label>
+                        <label class="c-check">
+                            <input type="checkbox">
+                            Suscribirme al boletín técnico mensual
+                        </label>
+                    </div>
+                    <pre><code class="language-css">.c-check input {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 5px;
+  display: grid;
+  place-items: center;
+}
+.c-check input:checked {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.c-check input:checked::after {
+  content: "✓";
+  color: #ffffff;
+  font-size: 13px;
+}</code></pre>
+                </div>
+
+                <div class="box">
+                    <h4>Interruptor (Switch) accesible con <code>role="switch"</code></h4>
+                    <div class="custom-demo">
+                        <label class="c-switch">
+                            <input type="checkbox" role="switch" checked>
+                            <span class="c-track" aria-hidden="true"></span>
+                            Notificaciones por correo electrónico
+                        </label>
+                        <label class="c-switch">
+                            <input type="checkbox" role="switch">
+                            <span class="c-track" aria-hidden="true"></span>
+                            Autenticación en dos pasos (2FA)
+                        </label>
+                    </div>
+                    <pre><code class="language-css">.c-switch input { appearance: none; position: absolute; opacity: 0; }
+.c-track {
+  width: 46px; height: 28px; background: #e2e8f0;
+  border-radius: 999px; position: relative; transition: 180ms;
+}
+.c-track::after {
+  content: ""; position: absolute; width: 22px; height: 22px;
+  background: #ffffff; border-radius: 50%; top: 3px; left: 3px; transition: 180ms;
+}
+.c-switch input:checked + .c-track { background: var(--color-primary); }
+.c-switch input:checked + .c-track::after { transform: translateX(18px); }</code></pre>
+                </div>
+
+                <div class="box">
+                    <h4>Botones de opción (Radio) personalizados</h4>
+                    <div class="custom-demo horizontal">
+                        <label class="c-radio">
+                            <input type="radio" name="plan" checked>
+                            <span class="r-dot" aria-hidden="true"></span>
+                            Plan Starter
+                        </label>
+                        <label class="c-radio">
+                            <input type="radio" name="plan">
+                            <span class="r-dot" aria-hidden="true"></span>
+                            Plan Pro
+                        </label>
+                        <label class="c-radio">
+                            <input type="radio" name="plan">
+                            <span class="r-dot" aria-hidden="true"></span>
+                            Plan Enterprise
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 5: Formulario Integrado -->
+            <section aria-labelledby="demo-form">
+                <h2 id="demo-form">5. Laboratorio Final: Formulario 100% CSS + Validación reactiva</h2>
+                <p>
+                    Integración completa sin JavaScript: validación progresiva con <code>:user-valid</code> / <code>:user-invalid</code>, realce de tarjeta con <code>:focus-within</code>, controles custom accesibles y bloqueo visual del envío mediante <code>form:invalid</code>.
+                </p>
+
+                <div class="box form-final-wrapper">
+                    <form class="form-final" onsubmit="return false" novalidate>
+                        <div class="form-grid">
+                            <div class="ff-group">
+                                <label for="ff-name">Nombre completo *</label>
+                                <input id="ff-name" class="ff-input" type="text" placeholder="Melvin López" required minlength="3" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$">
+                                <span class="ff-hint">Solo letras y espacios (mín. 3 caracteres)</span>
+                                <span class="ff-error">Ingresa al menos 3 letras válidas</span>
+                            </div>
+
+                            <div class="ff-group">
+                                <label for="ff-email2">Correo corporativo *</label>
+                                <input id="ff-email2" class="ff-input" type="email" placeholder="melvin@empresa.com" required>
+                                <span class="ff-hint">Ejemplo: nombre@dominio.com</span>
+                                <span class="ff-error">Correo electrónico no válido</span>
+                            </div>
+
+                            <div class="ff-group">
+                                <label for="ff-pass">Contraseña *</label>
+                                <input id="ff-pass" class="ff-input" type="password" placeholder="Ej. Pass1234" required minlength="8" pattern="(?=.*\d)(?=.*[A-Z]).{8,}">
+                                <span class="ff-hint">Mínimo 8 caracteres, una mayúscula y un número</span>
+                                <span class="ff-error">Debe tener 8+ caracteres, 1 mayúscula y 1 número</span>
+                            </div>
+
+                            <div class="ff-group">
+                                <label for="ff-country">País de residencia</label>
+                                <select id="ff-country" class="ff-input">
+                                    <option value="">Selecciona un país</option>
+                                    <option value="pe">Perú</option>
+                                    <option value="mx">México</option>
+                                    <option value="es">España</option>
+                                    <option value="co">Colombia</option>
+                                </select>
+                                <span class="ff-hint">Campo opcional</span>
+                            </div>
+                        </div>
+
+                        <div class="ff-checks">
+                            <label class="c-check">
+                                <input type="checkbox" required>
+                                Acepto los <a href="#demo-form">términos y condiciones</a> *
+                            </label>
+
+                            <label class="c-switch">
+                                <input type="checkbox" role="switch" checked>
+                                <span class="c-track" aria-hidden="true"></span>
+                                Recibir actualizaciones técnicas del producto
+                            </label>
+
+                            <div class="ff-radios" role="radiogroup" aria-label="Plan preferido">
+                                <span class="ff-radios-label">Plan preferido:</span>
+                                <label class="c-radio">
+                                    <input type="radio" name="plan2" checked>
+                                    <span class="r-dot" aria-hidden="true"></span>
+                                    Starter
+                                </label>
+                                <label class="c-radio">
+                                    <input type="radio" name="plan2">
+                                    <span class="r-dot" aria-hidden="true"></span>
+                                    Pro
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="ff-footer">
+                            <button type="submit" class="ff-submit">Crear cuenta</button>
+                            <p class="ff-form-status">Estado controlado declarativamente mediante <code>form:invalid .ff-submit</code> — completa los campos marcados con <code>*</code> para activarlo.</p>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="box">
+                    <h4>Patrones arquitectónicos clave</h4>
+                    <pre><code class="language-css">/* Deshabilita visualmente el envío mientras el formulario sea inválido */
+.form-final:invalid .ff-submit {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* Eleva el contenedor cuando cualquier campo interno recibe foco */
+.ff-group:focus-within {
+  background: rgba(37, 99, 235, 0.04);
+  border-color: var(--color-primary);
+}
+
+/* Revela mensajes de error solo tras interacción */
+.ff-input:user-invalid ~ .ff-error { display: block; }
+.ff-input:user-valid { border-color: #16a34a; }</code></pre>
+                </div>
+
+                <aside class="box callout" aria-label="Checklist de accesibilidad en formularios">
+                    <div class="callout-header">
+                        <span class="callout-tag">Checklist de Accesibilidad (A11y) en Formularios</span>
+                    </div>
+                    <p>
+                        <strong>1.</strong> Nunca ocultes controles con <code>display: none</code>; utiliza <code>appearance: none</code> para preservar el árbol de accesibilidad. 
+                        <strong>2.</strong> Mantén siempre visible el anillo <code>:focus-visible</code> en tus controles personalizados. 
+                        <strong>3.</strong> Vincula cada <code>&lt;label for="..."&gt;</code> con su <code>id</code> y añade <code>role="switch"</code> en interruptores binarios. 
+                        <strong>4.</strong> Prefiere <code>:user-valid</code> / <code>:user-invalid</code> para no mostrar errores prematuros.
+                    </p>
+                </aside>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <p>CSS Avanzado - A06 Formularios y Estados UI - 2026</p>
+    </footer>
+</body>
+</html>

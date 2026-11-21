@@ -1,0 +1,804 @@
+/* ==========================================================================
+   1. DESIGN TOKENS (Sistema unificado del repositorio)
+   ========================================================================== */
+:root {
+    --color-text: #1f2937;
+    --color-text-strong: #0f172a;
+    --color-muted: #64748b;
+    --color-surface: #ffffff;
+    --color-surface-subtle: #f8fafc;
+    --color-primary: #2563eb;
+    --color-primary-dark: #1d4ed8;
+    --color-primary-soft: rgba(37, 99, 235, 0.08);
+    --color-border: rgba(15, 23, 42, 0.09);
+    --color-code: #be123c;
+    --color-success: #16a34a;
+    --color-danger: #dc2626;
+
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 8px;
+    --radius-pill: 999px;
+
+    --shadow-soft: 0 20px 60px rgba(15, 23, 42, 0.07);
+    --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.04);
+
+    --transition-fast: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    accent-color: var(--color-primary);
+}
+
+/* ==========================================================================
+   2. RESET Y BASE (Arquitectura Mobile-First)
+   ========================================================================== */
+html {
+    font-size: 16px;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--color-text);
+    background:
+        radial-gradient(circle at top center, rgba(37, 99, 235, 0.09), transparent 40%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+    line-height: 1.65;
+    padding: clamp(1rem, 2.5vw, 2.5rem);
+    -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+}
+
+a {
+    color: var(--color-primary);
+}
+
+kbd {
+    background: var(--color-surface-subtle);
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 0.1rem 0.35rem;
+    font-size: 0.82em;
+    font-family: ui-monospace, monospace;
+}
+
+/* ==========================================================================
+   3. ESTRUCTURA Y TIPOGRAFÍA
+   ========================================================================== */
+.page-header,
+.notes,
+footer {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 1.75rem;
+}
+
+.badge-module {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    padding: 0.25rem 0.7rem;
+    border-radius: var(--radius-pill);
+    margin-bottom: 0.75rem;
+}
+
+.notes {
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: clamp(1.25rem, 3.5vw, 2.5rem);
+}
+
+h1, h2, h3, h4 {
+    color: var(--color-text-strong);
+    line-height: 1.25;
+    margin-top: 0;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
+
+h1 {
+    font-size: clamp(1.85rem, 3.5vw, 2.85rem);
+    color: var(--color-primary);
+    margin: 0.2rem 0 0.5rem;
+}
+
+h2 {
+    font-size: clamp(1.3rem, 2.2vw, 1.65rem);
+    color: var(--color-primary);
+    margin: 0 0 0.85rem;
+}
+
+h4 {
+    font-size: 0.98rem;
+    margin-bottom: 0.55rem;
+}
+
+p {
+    text-wrap: pretty;
+}
+
+.lead {
+    color: var(--color-muted);
+    max-width: 75ch;
+    font-size: clamp(1rem, 1.4vw, 1.12rem);
+    margin: 0;
+}
+
+.page-header hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(37, 99, 235, 0.35), rgba(37, 99, 235, 0.05) 70%, transparent);
+    margin: 1.5rem 0 0;
+}
+
+section + section {
+    margin-top: 2.25rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.small-note {
+    font-size: 0.86rem;
+    color: var(--color-muted);
+    margin: 0.6rem 0 0;
+}
+
+/* ==========================================================================
+   4. CÓDIGO, CONTENEDORES Y CALLOUTS
+   ========================================================================== */
+code {
+    color: var(--color-code);
+    background: rgba(190, 18, 60, 0.07);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.35rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.88em;
+}
+
+/* Armonía tipográfica: los <code> dentro de encabezados usan la paleta primaria */
+:is(h1, h2, h3, h4) code {
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    font-size: 0.85em;
+}
+
+pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 1.1rem 1.25rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow-x: auto;
+    margin: 1rem 0 0;
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+
+pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border: none;
+    font-size: inherit;
+}
+
+.box {
+    padding: 1.25rem;
+    margin: 1rem 0;
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+}
+
+.callout {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(255, 255, 255, 0.95) 100%);
+    border: 1px solid rgba(37, 99, 235, 0.22);
+    padding: 1.25rem 1.4rem;
+}
+
+.callout-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.45rem;
+}
+
+.callout-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+}
+
+.callout-tag::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+.callout p {
+    margin: 0;
+    color: var(--color-text-strong);
+}
+
+.demo-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    margin: 1rem 0;
+}
+
+@media (min-width: 768px) {
+    .demo-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.demo-card {
+    margin: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.demo-card pre {
+    margin-top: auto;
+}
+
+/* ==========================================================================
+   5. DEMOS DE VALIDACIÓN (:placeholder-shown / :user-valid / :user-invalid)
+   ========================================================================== */
+.demo-form {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0.5rem 0 1rem;
+}
+
+.f-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-text-strong);
+}
+
+.f-input {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1.5px solid #cbd5e1;
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem;
+    font-family: inherit;
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.f-input:placeholder-shown {
+    border-color: #cbd5e1;
+    background: var(--color-surface);
+}
+
+.f-input:user-invalid {
+    border-color: var(--color-danger);
+    background: #fef2f2;
+}
+
+.f-input:user-valid {
+    border-color: var(--color-success);
+    background: #f0fdf4;
+}
+
+.f-input:in-range:not(:placeholder-shown) {
+    border-color: var(--color-success);
+    background: #f0fdf4;
+}
+
+.f-input:out-of-range {
+    border-color: var(--color-danger);
+    background: #fef2f2;
+}
+
+.f-hint {
+    font-size: 0.78rem;
+    color: var(--color-muted);
+}
+
+.f-error {
+    display: none;
+    font-size: 0.78rem;
+    color: var(--color-danger);
+    font-weight: 600;
+}
+
+.f-input:user-invalid ~ .f-error,
+.f-input:out-of-range ~ .f-error {
+    display: block;
+}
+
+/* ==========================================================================
+   6. DEMOS DE FOCO (:focus vs :focus-visible vs :focus-within)
+   ========================================================================== */
+.focus-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.focus-card {
+    min-width: 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1rem;
+    background: var(--color-surface-subtle);
+    display: flex;
+    flex-direction: column;
+}
+
+.focus-card.good {
+    border-color: #bbf7d0;
+    background: #f0fdf4;
+}
+
+.focus-card pre {
+    margin-top: auto;
+}
+
+.f-btn {
+    align-self: flex-start;
+    background: var(--color-text-strong);
+    color: #ffffff;
+    border: none;
+    padding: 0.55rem 1rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+}
+
+/* Anulamos el :focus-visible global en este botón específico para demostrar :focus puro */
+.f-btn.focus-only:focus-visible {
+    outline: none;
+}
+
+.f-btn.focus-only:focus {
+    outline: 3px solid var(--color-danger);
+    outline-offset: 2px;
+}
+
+.f-btn.focus-visible:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.field-group {
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 0.75rem;
+    background: var(--color-surface);
+    transition: border-color var(--transition-fast), background-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.field-group label {
+    font-size: 0.84rem;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--color-text-strong);
+}
+
+.field-group input {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 0.45rem 0.65rem;
+    font-family: inherit;
+}
+
+.field-group:focus-within {
+    border-color: var(--color-primary);
+    background: rgba(37, 99, 235, 0.04);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* ==========================================================================
+   7. DEMO DE ACCENT-COLOR
+   ========================================================================== */
+.accent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1rem;
+}
+
+.accent-block {
+    border: 1px dashed #cbd5e1;
+    border-radius: 10px;
+    padding: 1rem;
+    background: var(--color-surface-subtle);
+}
+
+/* Restablece el valor nativo del sistema operativo para contrastar con :root */
+.accent-block.default-accent {
+    accent-color: auto;
+}
+
+.accent-block.themed {
+    border: 1px solid #93c5fd;
+    background: #eff6ff;
+    accent-color: var(--color-primary);
+}
+
+.accent-label {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.18rem 0.6rem;
+    border-radius: var(--radius-pill);
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    color: var(--color-muted);
+    margin-bottom: 0.75rem;
+}
+
+.accent-label.good {
+    background: #f0fdf4;
+    color: var(--color-success);
+    border-color: #bbf7d0;
+}
+
+.accent-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    align-items: center;
+}
+
+/* ==========================================================================
+   8. CONTROLES PERSONALIZADOS ACCESIBLES (Checkbox, Switch, Radio)
+   ========================================================================== */
+.custom-demo {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.custom-demo.horizontal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    align-items: center;
+}
+
+/* --- Checkbox personalizado con appearance: none --- */
+.c-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.92rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.c-check input {
+    appearance: none;
+    -webkit-appearance: none;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    border: 1.5px solid #94a3b8;
+    border-radius: 5px;
+    display: grid;
+    place-items: center;
+    background: var(--color-surface);
+    transition: background-color var(--transition-fast), border-color var(--transition-fast);
+    cursor: pointer;
+}
+
+.c-check input:checked {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.c-check input:checked::after {
+    content: "✓";
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.c-check input:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* --- Switch accesible (input visualmente oculto + track hermano) --- */
+.c-switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 0.92rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.c-switch input {
+    appearance: none;
+    -webkit-appearance: none;
+    margin: 0;
+    width: 46px;
+    height: 28px;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.c-track {
+    width: 46px;
+    height: 28px;
+    background: #cbd5e1;
+    border-radius: var(--radius-pill);
+    position: relative;
+    transition: background-color var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.c-track::after {
+    content: "";
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background: #ffffff;
+    border-radius: 50%;
+    top: 3px;
+    left: 3px;
+    transition: transform var(--transition-fast);
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.22);
+}
+
+.c-switch input:checked + .c-track {
+    background: var(--color-primary);
+}
+
+.c-switch input:checked + .c-track::after {
+    transform: translateX(18px);
+}
+
+.c-switch input:focus-visible + .c-track {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* --- Radio button personalizado --- */
+.c-radio {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.92rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.c-radio input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.r-dot {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    border: 1.5px solid #94a3b8;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--color-surface);
+    transition: border-color var(--transition-fast);
+}
+
+.r-dot::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    transform: scale(0);
+    transition: transform var(--transition-fast);
+}
+
+.c-radio input:checked + .r-dot {
+    border-color: var(--color-primary);
+}
+
+.c-radio input:checked + .r-dot::after {
+    transform: scale(1);
+}
+
+.c-radio input:focus-visible + .r-dot {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   9. LABORATORIO FINAL: FORMULARIO INTEGRADO
+   ========================================================================== */
+.form-final-wrapper {
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+}
+
+.form-final {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1rem;
+}
+
+.ff-group {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+    padding: 0.85rem;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    background: var(--color-surface);
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.ff-group:focus-within {
+    border-color: var(--color-primary);
+    background: rgba(37, 99, 235, 0.04);
+}
+
+.ff-group label {
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--color-text-strong);
+}
+
+.ff-input {
+    width: 100%;
+    padding: 0.55rem 0.75rem;
+    border: 1.5px solid #cbd5e1;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-family: inherit;
+    background: var(--color-surface);
+}
+
+.ff-input:placeholder-shown {
+    border-color: #cbd5e1;
+}
+
+.ff-input:user-invalid {
+    border-color: var(--color-danger);
+    background: #fef2f2;
+}
+
+.ff-input:user-valid {
+    border-color: var(--color-success);
+    background: #f0fdf4;
+}
+
+.ff-hint {
+    font-size: 0.76rem;
+    color: var(--color-muted);
+}
+
+.ff-error {
+    display: none;
+    font-size: 0.76rem;
+    color: var(--color-danger);
+    font-weight: 600;
+}
+
+.ff-input:user-invalid ~ .ff-error {
+    display: block;
+}
+
+.ff-checks {
+    display: grid;
+    justify-items: start;
+    gap: 0.85rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed #e2e8f0;
+}
+
+.ff-radios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem 1.25rem;
+    align-items: center;
+    margin-top: 0.2rem;
+}
+
+.ff-radios-label {
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--color-text-strong);
+}
+
+.ff-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.85rem 1.25rem;
+}
+
+.ff-submit {
+    background: var(--color-primary);
+    color: #ffffff;
+    border: none;
+    padding: 0.7rem 1.35rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.ff-submit:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-1px);
+}
+
+.form-final:invalid .ff-submit {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.ff-form-status {
+    font-size: 0.82rem;
+    color: var(--color-muted);
+    margin: 0;
+}
+
+/* ==========================================================================
+   10. PIE DE PÁGINA
+   ========================================================================== */
+footer {
+    margin-top: 2.25rem;
+    padding-top: 1.25rem;
+    text-align: center;
+    color: var(--color-muted);
+    font-size: 0.88rem;
+    border-top: 1px solid var(--color-border);
+}
