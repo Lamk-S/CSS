@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Apuntes avanzados de CSS: content-visibility, contain, will-change, text-wrap balance/pretty y optimización del pipeline de rendering.">
+    <title>A05 - Performance y Rendering — CSS Avanzado</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header class="page-header">
+        <span class="badge-module">Módulo A05 · Performance &amp; Rendering Pipeline</span>
+        <h1>Performance y Rendering</h1>
+        <p class="lead">
+            El motor CSS no solo pinta píxeles: decide <em>cuánto trabajo computacional realiza el navegador</em>. 
+            Con <code>content-visibility</code> y <code>contain</code> omites el renderizado fuera de pantalla, con <code>will-change</code> preparas capas GPU bajo demanda, y con <code>text-wrap</code> equilibras titulares sin JavaScript.
+        </p>
+        <hr aria-hidden="true">
+    </header>
+
+    <main>
+        <article class="notes">
+            <!-- SECCIÓN 1: content-visibility -->
+            <section aria-labelledby="cv">
+                <h2 id="cv">1. <code>content-visibility</code> — Renderizado bajo demanda</h2>
+                <p>
+                    Por defecto, el navegador calcula estilos, <em>layout</em> y <em>paint</em> de todo el árbol DOM inicial, incluso de miles de nodos que están muy por debajo del <em>viewport</em>. 
+                    <code>content-visibility: auto</code> instruye al motor a omitir el renderizado de los elementos fuera de pantalla conservando su espacio reservado.
+                </p>
+
+                <div class="box">
+                    <h4>Sintaxis recomendada para listas, feeds y catálogos extensos</h4>
+                    <pre><code class="language-css">.feed-card {
+  content-visibility: auto;
+  /* Reserva altura estimada y recuerda la real tras el primer renderizado */
+  contain-intrinsic-size: auto 74px;
+}</code></pre>
+                    <p class="small-note">
+                        <strong>Regla clave:</strong> Acompaña siempre <code>content-visibility: auto</code> con <code>contain-intrinsic-size</code>. 
+                        Sin un tamaño intrínseco de reserva, la barra de desplazamiento (<em>scrollbar</em>) saltará bruscamente al hacer scroll conforme entren nuevos elementos.
+                    </p>
+                </div>
+
+                <div class="box">
+                    <h4>Valores de <code>content-visibility</code> y casos de uso</h4>
+                    <div class="table-wrapper">
+                        <table class="compare-table">
+                            <thead>
+                                <tr>
+                                    <th>Valor</th>
+                                    <th>Comportamiento y uso</th>
+                                    <th>Consideración técnica</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>auto</code></td>
+                                    <td>Omite <em>layout</em> y <em>paint</em> fuera del <em>viewport</em> + margen de proximidad. Ideal para listas largas y artículos extensos.</td>
+                                    <td>Requiere <code>contain-intrinsic-size</code> bien calibrado para evitar saltos de scroll.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>hidden</code></td>
+                                    <td>Omite el renderizado por completo manteniendo el estado interno del DOM (útil en pestañas o paneles inactivos).</td>
+                                    <td>No es alcanzable por foco ni búsqueda en página (<code>Ctrl+F</code>) hasta volver a <code>visible</code>.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>visible</code></td>
+                                    <td>Comportamiento por defecto: renderiza todo el sub-árbol inmediatamente.</td>
+                                    <td>Alto coste inicial en árboles con más de 1,000 nodos complejos.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: contain -->
+            <section aria-labelledby="contain">
+                <h2 id="contain">2. <code>contain</code> — Aislamiento del ciclo de renderizado</h2>
+                <p>
+                    La propiedad <code>contain</code> establece un contrato con el motor de renderizado: garantiza que las mutaciones internas de un componente no alterarán el flujo ni el pintado del resto del documento.
+                </p>
+
+                <div class="box">
+                    <h4>Niveles de contención y shorthands</h4>
+                    <pre><code class="language-css">/* Aislamiento estándar para componentes independientes */
+.component {
+  contain: content; /* Equivale a: layout paint style */
+}
+
+/* Aislamiento total para widgets o contenedores de dimensiones fijas */
+.widget {
+  contain: strict;  /* Equivale a: size layout paint style */
+  height: 240px;
+}</code></pre>
+                    <div class="contain-grid">
+                        <article class="contain-card">
+                            <span class="contain-tag">layout</span>
+                            <h3>Aísla el Layout</h3>
+                            <p>Los cambios internos no disparan un <em>reflow</em> global en elementos hermanos o ancestros.</p>
+                        </article>
+                        <article class="contain-card">
+                            <span class="contain-tag">paint</span>
+                            <h3>Aísla el Paint</h3>
+                            <p>Los descendientes no se dibujan fuera de los límites de la caja, creando un contexto de apilamiento y recorte.</p>
+                        </article>
+                        <article class="contain-card">
+                            <span class="contain-tag">size</span>
+                            <h3>Aísla el Tamaño</h3>
+                            <p>Las dimensiones del contenedor no dependen de sus hijos. Exige definir ancho/alto explícito para no colapsar a <code>0px</code>.</p>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: will-change -->
+            <section aria-labelledby="willchange">
+                <h2 id="willchange">3. <code>will-change</code> — Promoción controlada a capa GPU</h2>
+                <p>
+                    <code>will-change</code> es una pista de optimización previa: advierte al navegador que una propiedad va a cambiar de forma inminente para que prepare una capa de composición en GPU. 
+                    Aplicarlo de forma masiva satura la memoria de vídeo (VRAM) y degrada los tiempos de carga.
+                </p>
+
+                <div class="box">
+                    <h4>Uso correcto frente a anti-patrón global</h4>
+                    <div class="wc-compare">
+                        <div class="compare-block bad">
+                            <span class="compare-label bad">Anti-patrón — Promoción global permanente</span>
+                            <pre><code class="language-css">/* NUNCA hacer esto */
+* {
+  will-change: transform, opacity;
+}</code></pre>
+                            <p>Fuerza cientos de texturas persistentes en GPU, disparando el consumo de memoria y retrasando el primer pintado.</p>
+                        </div>
+
+                        <div class="compare-block good">
+                            <span class="compare-label good">Correcto — Activación previa a la interacción</span>
+                            <pre><code class="language-css">.card {
+  transition: transform 180ms ease;
+}
+
+.card:hover,
+.card:focus-visible {
+  will-change: transform;
+  transform: translateY(-3px);
+}</code></pre>
+                            <p>La capa se asigna justo al iniciar la interacción y el navegador la libera automáticamente al finalizar.</p>
+                        </div>
+                    </div>
+
+                    <aside class="callout" aria-label="Regla de oro sobre will-change">
+                        <div class="callout-header">
+                            <span class="callout-tag">Regla de Oro en Composición GPU</span>
+                        </div>
+                        <p>
+                            <strong>Anima exclusivamente propiedades de composición (<code>transform</code> y <code>opacity</code>)</strong> y reserva <code>will-change</code> para estados previos a la animación o secuencias complejas donde detectes caídas de fotogramas en el panel <em>Performance</em>.
+                        </p>
+                    </aside>
+                </div>
+
+                <div class="demo-grid">
+                    <div class="box demo-card">
+                        <h4>Demo: Layout Thrashing (<code>left</code>) vs Compositor (<code>transform</code>)</h4>
+                        <div class="perf-demo">
+                            <div class="ball track-layout">left: 0 → 90px (Layout + Paint)</div>
+                            <div class="ball track-transform">transform: translateX (Solo GPU)</div>
+                        </div>
+                        <p class="small-note">Activa <strong>DevTools &gt; Rendering &gt; Paint flashing</strong>: la barra superior parpadea en verde en cada frame; la inferior corre íntegra en la GPU.</p>
+                    </div>
+
+                    <div class="box demo-card">
+                        <h4>Demo: <code>will-change: transform</code> en interacción</h4>
+                        <p class="small-note">Pasa el cursor o enfoca cada tarjeta para promover su capa de composición solo durante el estado activo.</p>
+                        <div class="wc-cards">
+                            <button type="button" class="wc-card">Card 01</button>
+                            <button type="button" class="wc-card">Card 02</button>
+                            <button type="button" class="wc-card">Card 03</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: text-wrap -->
+            <section aria-labelledby="textwrap">
+                <h2 id="textwrap">4. <code>text-wrap</code> — Tipografía equilibrada sin huérfanas</h2>
+                <p>
+                    Las palabras sueltas al final de un titular (<em>viudas</em> o <em>huérfanas</em>) rompen la jerarquía visual. 
+                    <code>text-wrap: balance</code> y <code>text-wrap: pretty</code> resuelven el salto de línea de forma nativa sin insertar <code>&amp;nbsp;</code> ni scripts.
+                </p>
+
+                <div class="box">
+                    <div class="wrap-grid">
+                        <div class="wrap-example">
+                            <span class="wrap-label">Default — <code>text-wrap: wrap</code></span>
+                            <h3 class="t-default">Curso avanzado de CSS moderno con arquitectura escalable para sistemas empresariales</h3>
+                            <p class="small-note">Flujo estándar: puede dejar una sola palabra suelta en la última línea.</p>
+                        </div>
+
+                        <div class="wrap-example balanced">
+                            <span class="wrap-label good">Titulares — <code>text-wrap: balance</code></span>
+                            <h3 class="t-balance">Curso avanzado de CSS moderno con arquitectura escalable para sistemas empresariales</h3>
+                            <p class="small-note">Iguala el ancho de cada línea. Ideal para encabezados cortos (hasta 6 líneas).</p>
+                        </div>
+
+                        <div class="wrap-example pretty">
+                            <span class="wrap-label good">Párrafos — <code>text-wrap: pretty</code></span>
+                            <p class="t-pretty">Al redactar párrafos largos, el algoritmo de ajuste evalúa las últimas líneas del bloque para evitar que una palabra quede aislada al final.</p>
+                            <p class="small-note">Optimizado para cuerpos de texto sin penalizar el rendimiento en bloques extensos.</p>
+                        </div>
+                    </div>
+
+                    <pre><code class="language-css">h1, h2, h3 {
+  text-wrap: balance; /* Equilibra titulares y encabezados */
+}
+
+p, li {
+  text-wrap: pretty;  /* Evita palabras huérfanas al final de párrafos */
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 5: Laboratorio comparativo -->
+            <section aria-labelledby="demo-lista">
+                <h2 id="demo-lista">5. Laboratorio: Lista de 200 nodos con y sin <code>content-visibility</code></h2>
+                <p>
+                    Genera dos listas idénticas de 200 tarjetas. La columna izquierda renderiza todos los nodos de forma tradicional; la derecha aplica <code>content-visibility: auto</code> + <code>contain-intrinsic-size</code>.
+                </p>
+
+                <div class="box">
+                    <div class="perf-controls">
+                        <button type="button" id="btn-generate" class="btn-primary">Generar 200 cards por lista</button>
+                        <button type="button" id="btn-clear" class="btn-ghost">Limpiar</button>
+                        <span class="perf-stats" id="perf-stats" role="status" aria-live="polite">Listas vacías — Pulsa generar</span>
+                    </div>
+
+                    <div class="lists-compare">
+                        <div class="list-wrapper">
+                            <span class="compare-label bad">Sin optimización — 200 nodos renderizados</span>
+                            <div class="perf-list" id="list-no-cv" aria-label="Lista sin content-visibility"></div>
+                        </div>
+                        <div class="list-wrapper">
+                            <span class="compare-label good">Con content-visibility: auto — Viewport + buffer</span>
+                            <div class="perf-list cv-optimized" id="list-cv" aria-label="Lista optimizada con content-visibility"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="box callout" aria-label="Cómo auditar en Chrome DevTools">
+                    <div class="callout-header">
+                        <span class="callout-tag">Auditoría en Chrome DevTools</span>
+                    </div>
+                    <p>
+                        Abre <strong>DevTools &gt; Performance</strong>, pulsa <em>Record</em> y haz scroll rápido en ambas listas durante 3 segundos. 
+                        Al detener la grabación observarás cómo en la lista optimizada caen drásticamente los tiempos de <em>Recalculate Style</em>, <em>Layout</em> y <em>Paint</em>. Activa también <em>Layout Shift Regions</em> en el panel <em>Rendering</em> para comprobar que <code>contain-intrinsic-size</code> previene saltos visuales.
+                    </p>
+                </aside>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <p>CSS Avanzado - A05 Performance y Rendering - 2026</p>
+    </footer>
+
+    <script>
+        const listNoCV = document.getElementById('list-no-cv');
+        const listCV = document.getElementById('list-cv');
+        const btnGen = document.getElementById('btn-generate');
+        const btnClear = document.getElementById('btn-clear');
+        const stats = document.getElementById('perf-stats');
+
+        function createCard(i) {
+            const el = document.createElement('article');
+            el.className = 'perf-card';
+            const title = i % 3 === 0
+                ? 'Edición limitada de algodón orgánico con detalles premium'
+                : i % 2 === 0
+                    ? 'Camiseta esencial de corte regular'
+                    : 'Hoodie técnico';
+            const stock = i % 2 ? 'En stock' : 'Stock bajo';
+
+            el.innerHTML = `
+                <div class="pc-media">IMG ${String(i).padStart(3, '0')}</div>
+                <div class="pc-info">
+                    <h3>Producto ${i} — ${title}</h3>
+                    <p>$${20 + (i % 40)}.00 • ${stock}</p>
+                </div>
+            `;
+            return el;
+        }
+
+        btnGen.addEventListener('click', () => {
+            const start = performance.now();
+            listNoCV.innerHTML = '';
+            listCV.innerHTML = '';
+
+            const frag1 = document.createDocumentFragment();
+            const frag2 = document.createDocumentFragment();
+
+            for (let i = 1; i <= 200; i++) {
+                frag1.appendChild(createCard(i));
+                const c2 = createCard(i);
+                c2.classList.add('cv-auto');
+                frag2.appendChild(c2);
+            }
+
+            listNoCV.appendChild(frag1);
+            listCV.appendChild(frag2);
+
+            const end = performance.now();
+            stats.textContent = `400 nodos generados en ${(end - start).toFixed(1)} ms — Haz scroll en cada panel`;
+        });
+
+        btnClear.addEventListener('click', () => {
+            listNoCV.innerHTML = '';
+            listCV.innerHTML = '';
+            stats.textContent = 'Listas vacías — Pulsa generar';
+        });
+    </script>
+</body>
+</html>
