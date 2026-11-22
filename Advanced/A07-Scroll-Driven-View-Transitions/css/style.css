@@ -1,0 +1,682 @@
+/* ==========================================================================
+   1. DESIGN TOKENS + REGISTRO @property (CSS Houdini)
+   ========================================================================== */
+@property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+:root {
+    --color-text: #1f2937;
+    --color-text-strong: #0f172a;
+    --color-muted: #64748b;
+    --color-surface: #ffffff;
+    --color-surface-subtle: #f8fafc;
+    --color-primary: #2563eb;
+    --color-primary-dark: #1d4ed8;
+    --color-primary-soft: rgba(37, 99, 235, 0.08);
+    --color-border: rgba(15, 23, 42, 0.09);
+    --color-code: #be123c;
+    --color-success: #16a34a;
+    --color-danger: #dc2626;
+
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 8px;
+    --radius-pill: 999px;
+
+    --shadow-soft: 0 20px 60px rgba(15, 23, 42, 0.07);
+    --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.04);
+
+    --transition-fast: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* View Transitions MPA: transición automática entre documentos HTML */
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-old(root) {
+    animation: vt-fade-out 280ms ease both;
+}
+
+::view-transition-new(root) {
+    animation: vt-fade-in 320ms ease both;
+}
+
+@keyframes vt-fade-out {
+    to {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+}
+
+@keyframes vt-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+}
+
+/* ==========================================================================
+   2. RESET Y BASE (Arquitectura Mobile-First)
+   ========================================================================== */
+html {
+    font-size: 16px;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--color-text);
+    background:
+        radial-gradient(circle at top center, rgba(37, 99, 235, 0.09), transparent 40%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+    line-height: 1.65;
+    padding: clamp(1rem, 2.5vw, 2.5rem);
+    -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+}
+
+/* ==========================================================================
+   3. ESTRUCTURA Y TIPOGRAFÍA
+   ========================================================================== */
+.page-header,
+.notes,
+footer {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 1.75rem;
+}
+
+.badge-module {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    padding: 0.25rem 0.7rem;
+    border-radius: var(--radius-pill);
+    margin-bottom: 0.75rem;
+}
+
+.notes {
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: clamp(1.25rem, 3.5vw, 2.5rem);
+}
+
+h1, h2, h3, h4 {
+    color: var(--color-text-strong);
+    line-height: 1.25;
+    margin-top: 0;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
+
+h1 {
+    font-size: clamp(1.85rem, 3.5vw, 2.85rem);
+    color: var(--color-primary);
+    margin: 0.2rem 0 0.5rem;
+}
+
+h2 {
+    font-size: clamp(1.3rem, 2.2vw, 1.65rem);
+    color: var(--color-primary);
+    margin: 0 0 0.85rem;
+}
+
+h4 {
+    font-size: 0.98rem;
+    margin-bottom: 0.55rem;
+}
+
+p {
+    text-wrap: pretty;
+}
+
+.lead {
+    color: var(--color-muted);
+    max-width: 75ch;
+    font-size: clamp(1rem, 1.4vw, 1.12rem);
+    margin: 0;
+}
+
+.page-header hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(37, 99, 235, 0.35), rgba(37, 99, 235, 0.05) 70%, transparent);
+    margin: 1.5rem 0 0;
+}
+
+section + section {
+    margin-top: 2.25rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.small-note {
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    margin: 0.75rem 0 0;
+}
+
+/* ==========================================================================
+   4. CÓDIGO, CONTENEDORES Y CALLOUTS
+   ========================================================================== */
+code {
+    color: var(--color-code);
+    background: rgba(190, 18, 60, 0.07);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.35rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.88em;
+}
+
+/* Armonía tipográfica: los <code> dentro de encabezados usan la paleta primaria */
+:is(h1, h2, h3, h4) code {
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    font-size: 0.85em;
+}
+
+pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 1.1rem 1.25rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow-x: auto;
+    margin: 1rem 0 0;
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+
+pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border: none;
+    font-size: inherit;
+}
+
+.box {
+    padding: 1.25rem;
+    margin: 1rem 0;
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+}
+
+.callout {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(255, 255, 255, 0.95) 100%);
+    border: 1px solid rgba(37, 99, 235, 0.22);
+    padding: 1.25rem 1.4rem;
+}
+
+.callout-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.45rem;
+}
+
+.callout-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+}
+
+.callout-tag::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+.callout p {
+    margin: 0;
+    color: var(--color-text-strong);
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    margin-top: 0.85rem;
+}
+
+.compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.compare-table th,
+.compare-table td {
+    border: 1px solid #e2e8f0;
+    padding: 0.65rem 0.8rem;
+    text-align: left;
+}
+
+.compare-table th {
+    background: var(--color-surface-subtle);
+    color: var(--color-text-strong);
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   5. DEMO REVEAL — animation-timeline: view()
+   ========================================================================== */
+.reveal-stage {
+    max-height: 290px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1rem;
+    background: var(--color-surface-subtle);
+    display: grid;
+    gap: 1rem;
+}
+
+.reveal-card {
+    background: var(--color-surface);
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.1rem;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+}
+
+.rc-tag {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: var(--color-text-strong);
+    color: #93c5fd;
+    padding: 0.15rem 0.55rem;
+    border-radius: var(--radius-pill);
+    margin-bottom: 0.45rem;
+}
+
+.reveal-card h3 {
+    font-size: 1rem;
+    margin: 0 0 0.3rem;
+}
+
+.reveal-card p {
+    font-size: 0.88rem;
+    color: var(--color-muted);
+    margin: 0;
+}
+
+@supports (animation-timeline: view()) {
+    .reveal-card {
+        animation: reveal-card linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 35%;
+    }
+
+    @keyframes reveal-card {
+        from {
+            opacity: 0;
+            transform: translateY(24px) scale(0.97);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+}
+
+/* ==========================================================================
+   6. DEMO @property — GRADIENTES ANIMADOS
+   ========================================================================== */
+.property-demo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.gradient-orb {
+    min-height: 150px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    color: #ffffff;
+    font-weight: 700;
+    padding: 1rem;
+    background: conic-gradient(from var(--angle), #2563eb, #7c3aed, #db2777, #f59e0b, #2563eb);
+    animation: spin-angle 4s linear infinite;
+}
+
+.gradient-orb small {
+    display: block;
+    font-weight: 400;
+    opacity: 0.92;
+    font-size: 0.78rem;
+    margin-top: 0.3rem;
+}
+
+/* Borde cónico animado mediante doble background-clip (sin z-index negativo) */
+.gradient-card {
+    border: 2.5px solid transparent;
+    border-radius: 12px;
+    padding: 1.1rem;
+    background:
+        linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+        conic-gradient(from var(--angle), #2563eb, #7c3aed, #db2777, #2563eb) border-box;
+    animation: spin-angle 3.5s linear infinite;
+}
+
+.gradient-card h3 {
+    font-size: 1rem;
+    margin: 0 0 0.35rem;
+}
+
+.gradient-card p {
+    font-size: 0.88rem;
+    color: var(--color-muted);
+    margin: 0;
+}
+
+@keyframes spin-angle {
+    to {
+        --angle: 360deg;
+    }
+}
+
+/* ==========================================================================
+   7. DEMO HEADER COMPACTABLE + BARRA DE PROGRESO (Named Scroll Timeline)
+   ========================================================================== */
+.scroll-demo-wrapper {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--color-surface-subtle);
+    timeline-scope: --box-scroll;
+}
+
+.progress-track {
+    height: 4px;
+    background: #e2e8f0;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #2563eb, #7c3aed);
+    transform-origin: left;
+    transform: scaleX(0);
+}
+
+.demo-scroll-box {
+    height: 360px;
+    overflow-y: auto;
+    position: relative;
+    background: var(--color-surface);
+    scroll-timeline-name: --box-scroll;
+    scroll-timeline-axis: block;
+}
+
+.shrinking-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    justify-content: space-between;
+    padding: 1.15rem 1.25rem;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.sh-logo {
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+    color: var(--color-text-strong);
+}
+
+.sh-logo span {
+    color: var(--color-primary);
+}
+
+.sh-nav {
+    display: flex;
+    gap: 1rem;
+}
+
+.sh-nav a {
+    color: var(--color-muted);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+.sh-nav a:hover {
+    color: var(--color-primary);
+}
+
+.sh-cta {
+    background: var(--color-primary);
+    color: #ffffff;
+    border: none;
+    padding: 0.45rem 0.9rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.scroll-content {
+    padding: 1.25rem;
+}
+
+.scroll-content h3 {
+    margin: 0 0 0.6rem;
+}
+
+.scroll-content p {
+    color: var(--color-muted);
+    font-size: 0.92rem;
+}
+
+@supports (animation-timeline: scroll()) {
+    .progress-bar {
+        animation: progress-grow linear both;
+        animation-timeline: --box-scroll;
+    }
+
+    .shrinking-header {
+        animation: shrink-header linear both;
+        animation-timeline: --box-scroll;
+        animation-range: 0 120px;
+    }
+
+    .sh-logo {
+        animation: logo-shrink linear both;
+        animation-timeline: --box-scroll;
+        animation-range: 0 120px;
+    }
+
+    @keyframes progress-grow {
+        to {
+            transform: scaleX(1);
+        }
+    }
+
+    @keyframes shrink-header {
+        to {
+            padding-block: 0.5rem;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+        }
+    }
+
+    @keyframes logo-shrink {
+        to {
+            font-size: 1.02rem;
+        }
+    }
+}
+
+/* ==========================================================================
+   8. DEMO VIEW TRANSITIONS API
+   ========================================================================== */
+.vt-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: #ffffff;
+    border: none;
+    padding: 0.55rem 0.95rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-dark);
+}
+
+.vt-status {
+    font-size: 0.82rem;
+    color: var(--color-muted);
+}
+
+.vt-stage {
+    position: relative;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--color-surface-subtle);
+}
+
+.vt-view {
+    display: none;
+    padding: 1.25rem;
+}
+
+.vt-view.is-active {
+    display: block;
+}
+
+.vt-hero-img {
+    height: 88px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    color: #ffffff;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    margin-bottom: 0.85rem;
+}
+
+.vt-hero-img.alt {
+    height: 124px;
+    background: linear-gradient(135deg, #db2777, #f59e0b);
+}
+
+.vt-view h3 {
+    margin: 0 0 0.4rem;
+}
+
+.vt-view p {
+    font-size: 0.9rem;
+    color: var(--color-muted);
+    margin: 0;
+}
+
+.vt-tags {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    margin-top: 0.8rem;
+}
+
+.vt-tags span {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    border: 1px solid #e2e8f0;
+    color: var(--color-text-strong);
+}
+
+/* Solo la vista visible declara view-transition-name para evitar colisión de nombres */
+.vt-view.is-active .vt-hero-title {
+    view-transition-name: vt-title;
+}
+
+.vt-view.is-active .vt-hero-img {
+    view-transition-name: vt-hero;
+}
+
+::view-transition-group(vt-title),
+::view-transition-group(vt-hero) {
+    animation-duration: 420ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   9. PIE DE PÁGINA Y ACCESIBILIDAD DE MOVIMIENTO
+   ========================================================================== */
+footer {
+    margin-top: 2.25rem;
+    padding-top: 1.25rem;
+    text-align: center;
+    color: var(--color-muted);
+    font-size: 0.88rem;
+    border-top: 1px solid var(--color-border);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

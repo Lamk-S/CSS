@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Apuntes avanzados de CSS: Scroll-Driven Animations (scroll() y view()), View Transitions API y propiedades @property animables.">
+    <title>A07 - Animaciones de Nueva Generación — CSS Avanzado</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header class="page-header">
+        <span class="badge-module">Módulo A07 · Scroll-Driven + View Transitions + @property</span>
+        <h1>Animaciones de Nueva Generación</h1>
+        <p class="lead">
+            Antes animabas únicamente en función del tiempo (<code>animation-duration: 2s</code>). 
+            Hoy la línea de tiempo puede ser el progreso del <em>scroll</em> mediante <code>scroll()</code> y <code>view()</code>, los gradientes interpolan con <code>@property</code>, y la <strong>View Transitions API</strong> morphing de vistas sin librerías externas.
+        </p>
+        <hr aria-hidden="true">
+    </header>
+
+    <main>
+        <article class="notes">
+            <!-- SECCIÓN 1: Scroll-Driven Animations -->
+            <section aria-labelledby="scroll-driven">
+                <h2 id="scroll-driven">1. Scroll-Driven Animations — El scroll como línea de tiempo</h2>
+                <p>
+                    En una animación clásica, <code>animation-timeline</code> vale <code>auto</code> (tiempo del reloj). 
+                    Con <strong>Scroll-Driven Animations</strong>, el avance de los <code>@keyframes</code> se vincula directamente al desplazamiento: 
+                    <code>scroll()</code> rastrea la posición de la barra de desplazamiento y <code>view()</code> mide la visibilidad del elemento al cruzar el <em>viewport</em>.
+                </p>
+
+                <div class="box">
+                    <h4>Dos tipos de línea de tiempo y rangos de ejecución</h4>
+                    <pre><code class="language-css">/* 1. Barra de progreso vinculada al scroll del documento */
+.progress-bar {
+  animation: grow linear both;
+  animation-timeline: scroll(root);
+}
+
+@keyframes grow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* 2. Aparición progresiva al entrar en pantalla (sin IntersectionObserver) */
+.card {
+  animation: reveal linear both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 35%;
+}
+
+@keyframes reveal {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}</code></pre>
+
+                    <div class="table-wrapper">
+                        <table class="compare-table">
+                            <thead>
+                                <tr>
+                                    <th>Función Timeline</th>
+                                    <th>Qué mide</th>
+                                    <th>Caso de uso principal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>scroll(root)</code></td>
+                                    <td>Progreso de scroll de toda la página</td>
+                                    <td>Indicador de lectura superior, parallax global, cabeceras compactables</td>
+                                </tr>
+                                <tr>
+                                    <td><code>scroll(nearest)</code> / <code>scroll()</code></td>
+                                    <td>Progreso del ancestro desplazable más cercano</td>
+                                    <td>Contenedores con <code>overflow: auto</code>, carruseles horizontales</td>
+                                </tr>
+                                <tr>
+                                    <td><code>view()</code></td>
+                                    <td>Intersección del propio elemento dentro del área visible</td>
+                                    <td><em>Scroll reveal</em>, tarjetas escalonadas, transiciones de entrada/salida</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="small-note">
+                        <strong>Control con <code>animation-range</code>:</strong> delimita el tramo exacto de la animación usando palabras clave de fase: 
+                        <code>entry</code> (entrada), <code>cover</code> (recorrido completo), <code>contain</code> (totalmente visible) y <code>exit</code> (salida).
+                    </p>
+                </div>
+
+                <div class="box">
+                    <h4>Demo en vivo: Reveal con <code>animation-timeline: view()</code> — Haz scroll dentro de la caja</h4>
+                    <div class="reveal-stage" id="reveal-stage" tabindex="0" aria-label="Área desplazable con demostración de view timeline">
+                        <article class="reveal-card">
+                            <span class="rc-tag">Reveal 01</span>
+                            <h3>Cero JavaScript, cero IntersectionObserver</h3>
+                            <p>Cada tarjeta calcula su propio progreso de entrada mediante <code>animation-timeline: view()</code> ejecutándose en el hilo compositor.</p>
+                        </article>
+                        <article class="reveal-card">
+                            <span class="rc-tag">Reveal 02</span>
+                            <h3><code>animation-range: entry 0% cover 35%</code></h3>
+                            <p>La interpolación comienza en el instante en que el borde superior cruza el contenedor y culmina al cubrir el 35%.</p>
+                        </article>
+                        <article class="reveal-card">
+                            <span class="rc-tag">Reveal 03</span>
+                            <h3>Reversible automáticamente</h3>
+                            <p>Al retroceder el scroll hacia arriba, la animación se rebobina de forma fluida y determinista.</p>
+                        </article>
+                        <article class="reveal-card">
+                            <span class="rc-tag">Reveal 04</span>
+                            <h3>Rendimiento a 60/120 fps</h3>
+                            <p>Al animar <code>opacity</code> y <code>transform</code>, no se dispara <em>Layout</em> ni <em>Paint</em> durante el desplazamiento.</p>
+                        </article>
+                    </div>
+                    <pre><code class="language-css">.reveal-card {
+  animation: reveal-card linear both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 35%;
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: @property animada -->
+            <section aria-labelledby="property">
+                <h2 id="property">2. <code>@property</code> animada — Gradientes interpolables en GPU</h2>
+                <p>
+                    Por defecto, una Custom Property (<code>--angle: 0deg</code>) se trata como una cadena de texto sin tipo, por lo que CSS no puede calcular valores intermedios. 
+                    Al registrarla con <code>@property</code> y definir <code>syntax: "&lt;angle&gt;"</code>, el navegador interpola cada grado dentro de <code>conic-gradient()</code>.
+                </p>
+
+                <div class="box">
+                    <h4>Orbe cónico rotatorio y borde iluminado con <code>@property --angle</code></h4>
+                    <div class="property-demo">
+                        <div class="gradient-orb">
+                            <div>
+                                <span>Conic Gradient</span>
+                                <small>--angle: 0deg → 360deg</small>
+                            </div>
+                        </div>
+                        <div class="gradient-card">
+                            <h3>Tarjeta con borde cónico animado</h3>
+                            <p>Usa <code>background-clip: padding-box, border-box</code> junto a <code>@property --angle</code> para animar el borde sin hacks de <code>z-index</code> negativo.</p>
+                        </div>
+                    </div>
+
+                    <pre><code class="language-css">@property --angle {
+  syntax: "&lt;angle&gt;";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.gradient-card {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    conic-gradient(from var(--angle), #2563eb, #7c3aed, #db2777, #2563eb) border-box;
+  animation: spin-angle 4s linear infinite;
+}
+
+@keyframes spin-angle {
+  to { --angle: 360deg; }
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: View Transitions API -->
+            <section aria-labelledby="vt">
+                <h2 id="vt">3. View Transitions API — Transiciones entre vistas y páginas</h2>
+                <p>
+                    La <strong>View Transitions API</strong> captura una instantánea visual del estado anterior y del nuevo estado del DOM, generando pseudo-elementos (<code>::view-transition-old()</code> y <code>::view-transition-new()</code>) que permiten interpolar posición, tamaño y opacidad entre vistas.
+                </p>
+
+                <div class="box">
+                    <h4>Dos modalidades: MPA (entre documentos) y SPA (mismo documento)</h4>
+                    <pre><code class="language-css">/* MODO 1 — MPA: transición automática entre páginas HTML del mismo origen */
+@view-transition {
+  navigation: auto;
+}
+
+/* MODO 2 — Elementos compartidos (morphing): solo 1 elemento activo con cada nombre */
+.vt-view.is-active .vt-hero-img   { view-transition-name: vt-hero; }
+.vt-view.is-active .vt-hero-title { view-transition-name: vt-title; }</code></pre>
+                    <pre><code class="language-javascript">// Disparo en SPA con degradación progresiva
+if (document.startViewTransition) {
+  document.startViewTransition(() =&gt; updateDOM());
+} else {
+  updateDOM();
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: Demo Header + Progress Bar -->
+            <section aria-labelledby="demo-header">
+                <h2 id="demo-header">4. Demo: Header compactable + Barra de progreso (100% CSS)</h2>
+                <p>
+                    Sin una sola línea de JavaScript: un <em>Named Scroll Timeline</em> (<code>scroll-timeline-name: --box-scroll</code>) sincroniza tanto la barra de progreso superior como la compactación de la cabecera <code>position: sticky</code> durante los primeros <code>120px</code> de scroll.
+                </p>
+
+                <div class="box">
+                    <div class="scroll-demo-wrapper">
+                        <div class="progress-track" aria-hidden="true">
+                            <div class="progress-bar"></div>
+                        </div>
+                        <div class="demo-scroll-box" id="demo-scroll-box" tabindex="0" aria-label="Demo de cabecera que se encoge al hacer scroll">
+                            <header class="shrinking-header">
+                                <div class="sh-logo">Lamk<span>·</span>CSS</div>
+                                <nav class="sh-nav" aria-label="Navegación de demostración">
+                                    <a href="#demo-header">Inicio</a>
+                                    <a href="#demo-header">Módulos</a>
+                                    <a href="#demo-header">Docs</a>
+                                </nav>
+                                <button type="button" class="sh-cta">Empezar</button>
+                            </header>
+                            <div class="scroll-content">
+                                <h3>Desplázate hacia abajo dentro de esta ventana</h3>
+                                <p>Observa cómo la barra superior se completa al 100% del recorrido y la cabecera reduce su relleno, achica el logotipo y proyecta sombra automáticamente mediante <code>animation-timeline: --box-scroll</code>.</p>
+                                <p>Las animaciones vinculadas al scroll eliminan los antiguos listeners <code>window.addEventListener('scroll')</code> que bloqueaban el hilo principal y provocaban caídas de fotogramas en dispositivos móviles.</p>
+                                <p>Al combinar <code>animation-range: 0 120px</code> en el header y el rango completo en <code>.progress-bar</code>, ambos elementos reaccionan a la misma línea de tiempo con diferentes curvas de progreso.</p>
+                                <p>Este patrón es ideal para barras de navegación editoriales, indicadores de progreso de lectura y galerías interactivas sin sobrecarga de JavaScript.</p>
+                                <p>Fin del contenido de demostración — vuelve hacia arriba para ver cómo el header recupera su altura expandida.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <pre><code class="language-css">.scroll-demo-wrapper {
+  timeline-scope: --box-scroll;
+}
+
+.demo-scroll-box {
+  scroll-timeline-name: --box-scroll;
+}
+
+.progress-bar {
+  animation: progress-grow linear both;
+  animation-timeline: --box-scroll;
+}
+
+.shrinking-header {
+  position: sticky;
+  top: 0;
+  animation: shrink-header linear both;
+  animation-timeline: --box-scroll;
+  animation-range: 0 120px;
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 5: Demo View Transitions -->
+            <section aria-labelledby="demo-vt">
+                <h2 id="demo-vt">5. Demo: Morphing entre vistas con View Transitions API</h2>
+                <p>
+                    Pulsa <strong>Cambiar vista</strong>. Como únicamente la vista activa posee <code>view-transition-name: vt-hero</code> y <code>vt-title</code>, el navegador interpola suavemente el banner y el encabezado entre ambas tarjetas.
+                </p>
+
+                <div class="box">
+                    <div class="vt-controls">
+                        <button type="button" id="btn-vt" class="btn-primary">Cambiar vista — View Transition</button>
+                        <span class="vt-status" id="vt-status" role="status" aria-live="polite">Detectando soporte…</span>
+                    </div>
+
+                    <div class="vt-stage" id="vt-stage">
+                        <div class="vt-view is-active" data-view="home">
+                            <div class="vt-hero-img">Vista General · Dashboard</div>
+                            <h3 class="vt-hero-title">Dashboard — Vista Principal</h3>
+                            <p>En esta vista el banner es compacto y horizontal. Al cambiar de vista, su posición, altura y gradiente se transforman continuamente hacia el estado de detalle.</p>
+                            <div class="vt-tags">
+                                <span>Home</span>
+                                <span>Overview</span>
+                                <span>SPA Transition</span>
+                            </div>
+                        </div>
+
+                        <div class="vt-view" data-view="detail">
+                            <div class="vt-hero-img alt">Módulo A07 · Vista Detalle</div>
+                            <h3 class="vt-hero-title">Detalle Técnico del Módulo A07</h3>
+                            <p>El morphing ocurre sin cálculos manuales FLIP en JavaScript: el navegador empareja ambos estados mediante <code>view-transition-name</code>.</p>
+                            <div class="vt-tags">
+                                <span>Detalle</span>
+                                <span>A07</span>
+                                <span>View Transitions</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <pre><code class="language-css">/* Asignar el nombre solo al elemento visible evita colisiones de unicidad */
+.vt-view.is-active .vt-hero-title { view-transition-name: vt-title; }
+.vt-view.is-active .vt-hero-img   { view-transition-name: vt-hero; }
+
+::view-transition-group(vt-hero),
+::view-transition-group(vt-title) {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}</code></pre>
+                </div>
+
+                <aside class="box callout" aria-label="Compatibilidad y degradación progresiva">
+                    <div class="callout-header">
+                        <span class="callout-tag">Compatibilidad y Degradación Progresiva</span>
+                    </div>
+                    <p>
+                        Encapsula siempre las reglas de <em>Scroll-Driven Animations</em> dentro de <code>@supports (animation-timeline: scroll())</code> y verifica <code>'startViewTransition' in document</code> antes de invocar la API. 
+                        De este modo, los navegadores sin soporte reciben una experiencia estática funcional sin errores ni contenido oculto.
+                    </p>
+                </aside>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <p>CSS Avanzado - A07 Scroll-Driven + View Transitions - 2026</p>
+    </footer>
+
+    <script>
+        const btnVT = document.getElementById('btn-vt');
+        const status = document.getElementById('vt-status');
+        const views = document.querySelectorAll('.vt-view');
+
+        const supported = typeof document.startViewTransition === 'function';
+        status.textContent = supported
+            ? 'Soporte: View Transitions API disponible'
+            : 'Soporte: Fallback instantáneo activo';
+
+        function toggleView() {
+            const update = () => {
+                views.forEach((v) => v.classList.toggle('is-active'));
+            };
+
+            if (supported) {
+                document.startViewTransition(update);
+            } else {
+                update();
+            }
+        }
+
+        btnVT.addEventListener('click', toggleView);
+    </script>
+</body>
+</html>

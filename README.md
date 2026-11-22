@@ -3,10 +3,10 @@
 [![HTML5](https://img.shields.io/badge/HTML5-Semántico-E34F26?style=flat-square&logo=html5&logoColor=white)](https://developer.mozilla.org/es/docs/Web/HTML)
 [![CSS3](https://img.shields.io/badge/CSS3-Moderno_&_Vanilla-1572B6?style=flat-square&logo=css3&logoColor=white)](https://developer.mozilla.org/es/docs/Web/CSS)
 [![Arquitectura](https://img.shields.io/badge/Enfoque-Mobile_First_&_A11y-10B981?style=flat-square)](https://github.com/Lamk-S/CSS)
-[![Progreso](https://img.shields.io/badge/Módulos-18%2F18_Completados-2563EB?style=flat-square)](#roadmap-del-curso)
+[![Progreso](https://img.shields.io/badge/Módulos-19%2F19_Completados-2563EB?style=flat-square)](#roadmap-del-curso)
 [![Licencia](https://img.shields.io/badge/Licencia-MIT-64748B?style=flat-square)](#licencia)
 
-Repositorio de ingeniería frontend dedicado al aprendizaje progresivo de **CSS moderno**, desde sus fundamentos hasta arquitectura de layouts (Flexbox, Grid y Subgrid), diseño responsivo, animaciones aceleradas por GPU, selectores relacionales, sistemas de Design Tokens, posicionamiento anclado nativo, control de cascada mediante `@layer` y `@scope`, optimización del pipeline de renderizado y validación declarativa de formularios. Cada módulo funciona como una pieza de documentación interactiva autocontenida.
+Repositorio de ingeniería frontend dedicado al aprendizaje progresivo de **CSS moderno**, desde sus fundamentos hasta arquitectura de layouts (Flexbox, Grid y Subgrid), diseño responsivo, animaciones aceleradas por GPU, selectores relacionales, sistemas de Design Tokens, posicionamiento anclado nativo, control de cascada mediante `@layer` y `@scope`, optimización del pipeline de renderizado, validación declarativa de formularios y animaciones vinculadas al scroll y transiciones de vista. Cada módulo funciona como una pieza de documentación interactiva autocontenida.
 
 🔗 **Repositorio:** [github.com/Lamk-S/CSS](https://github.com/Lamk-S/CSS)
 
@@ -26,7 +26,7 @@ Este proyecto centraliza apuntes estructurados bajo una premisa de **aprender co
 | :--- | :--- | :--- |
 | **`Basic/`** | Fundamentos del lenguaje: cascada, especificidad, modelos de color, tipografía web, fondos y pseudo-selectores. | `B01` – `B04` |
 | **`Intermediate/`** | Arquitectura de interfaz: unidades relativas, modelo de caja, posicionamiento, Flexbox, CSS Grid, diseño responsivo y *motion UI*. | `I01` – `I08` |
-| **`Advanced/`** | Ingeniería de sistemas CSS: selectores modernos (`:is`, `:where`, `:not`, `:has`), `@property`, `color-mix()`, `light-dark()`, `subgrid`, Anchor Positioning, `@layer`, `@scope`, optimización de renderizado y estados UI de formularios. | `A01` – `A06` |
+| **`Advanced/`** | Ingeniería de sistemas CSS: selectores modernos (`:is`, `:where`, `:not`, `:has`), `@property`, `color-mix()`, `light-dark()`, `subgrid`, Anchor Positioning, `@layer`, `@scope`, optimización de renderizado, formularios declarativos, Scroll-Driven Animations y View Transitions API. | `A01` – `A07` |
 
 ---
 
@@ -41,6 +41,7 @@ Este proyecto centraliza apuntes estructurados bajo una premisa de **aprender co
 7. Desarrollar micro-interacciones a **60fps** respetando las preferencias de movimiento del usuario (`prefers-reduced-motion`).
 8. Diseñar componentes autónomos y escalables mediante **Selectores Modernos**, **Design Tokens**, **Anchor Positioning + Popover API**, **Cascade Layers (`@layer`)** y **Donut Scoping (`@scope`)**.
 9. Optimizar el ciclo de renderizado del navegador (`content-visibility`, `contain`, `will-change`, `text-wrap`) y construir formularios accesibles con validación nativa sin JavaScript (`:user-valid`, `:user-invalid`, `:focus-visible`, `accent-color`).
+10. Orquestar animaciones vinculadas al desplazamiento con **Scroll-Driven Animations** (`scroll()`, `view()`, `animation-range`), interpolar gradientes con `@property` y ejecutar transiciones fluidas entre vistas con la **View Transitions API**.
 
 ---
 
@@ -49,7 +50,7 @@ Este proyecto centraliza apuntes estructurados bajo una premisa de **aprender co
 - **Lenguajes:** HTML5 semántico, CSS3 moderno (Vanilla).
 - **Arquitectura CSS:** Cascade Layers (`@layer`), encapsulamiento nativo (`@scope`), CSS Nesting (`&`), Design Tokens en 3 capas (Primitivos → Semánticos → Componentes), metodología *Mobile-First* (`min-width`), `box-sizing: border-box` global.
 - **Sistemas de Layout:** Flujo normal, `float`/`clearfix`, **Flexbox**, **CSS Grid** (`repeat()`, `auto-fit`, `minmax()`, `grid-template-areas`) y **CSS Subgrid**.
-- **Funciones, Rendering y APIs modernas:** `@property` (CSS Houdini), `color-mix()`, `light-dark()`, `:has()`, `:is()`, `:where()`, `:user-valid` / `:user-invalid`, `:focus-visible`, `accent-color`, `appearance: none`, `anchor-name`, `position-area`, `position-try-fallbacks`, Popover API (`popover`), `content-visibility`, `contain`, `will-change`, `text-wrap` (`balance` / `pretty`), `clamp()`, `@container` (*Container Queries*), `backdrop-filter`, `@keyframes`.
+- **Funciones, Rendering y APIs modernas:** `@property` (CSS Houdini), `color-mix()`, `light-dark()`, `:has()`, `:is()`, `:where()`, `:user-valid` / `:user-invalid`, `:focus-visible`, `accent-color`, `appearance: none`, `anchor-name`, `position-area`, `position-try-fallbacks`, Popover API (`popover`), `content-visibility`, `contain`, `will-change`, `text-wrap` (`balance` / `pretty`), `animation-timeline` (`scroll()`, `view()`), `scroll-timeline-name`, `animation-range`, `@view-transition`, `view-transition-name`, `clamp()`, `@container` (*Container Queries*), `backdrop-filter`, `@keyframes`.
 - **Tipografía e Iconografía:** `@font-face` local (`.woff2` / `.woff` con `font-display: swap`), Google Fonts (`Inter`, `Merriweather`) y Font Awesome 6.
 - **Entorno recomendado:** Visual Studio Code + extensión *Live Server* y navegadores modernos (Chrome, Firefox, Edge, Safari).
 
@@ -60,63 +61,66 @@ Este proyecto centraliza apuntes estructurados bajo una premisa de **aprender co
 ```text
 CSS/
 ├── Basic/
-│   ├── B01-Introduction/                  # Sintaxis, cascada, herencia y especificidad
+│   ├── B01-Introduction/                      # Sintaxis, cascada, herencia y especificidad
 │   │   ├── index.html
 │   │   └── css/styles.css
-│   ├── B02-Colors/                        # Modelos de color, canal alfa vs opacity y gradientes
+│   ├── B02-Colors/                            # Modelos de color, canal alfa vs opacity y gradientes
 │   │   ├── index.html
 │   │   └── css/styles.css
-│   ├── B03-Typography/                    # @font-face, Google Fonts, unidades tipográficas y legibilidad
+│   ├── B03-Typography/                        # @font-face, Google Fonts, unidades tipográficas y legibilidad
 │   │   ├── index.html
 │   │   ├── css/style.css
 │   │   └── fonts/
-│   └── B04-Backgrounds-Pseudo/            # Fondos múltiples, overlays, pseudoclases y pseudoelementos
+│   └── B04-Backgrounds-Pseudo/                # Fondos múltiples, overlays, pseudoclases y pseudoelementos
 │       ├── index.html
 │       └── css/style.css
 │
 ├── Intermediate/
-│   ├── I01-CSS-Units/                     # Unidades absolutas, relativas (em/rem/ch) y viewport
+│   ├── I01-CSS-Units/                         # Unidades absolutas, relativas (em/rem/ch) y viewport
 │   │   ├── index.html
 │   │   └── css/style.css
-│   ├── I02-CSS-Layouts/                   # Flujo normal, display, float, clearfix y columnas
+│   ├── I02-CSS-Layouts/                       # Flujo normal, display, float, clearfix y columnas
 │   │   ├── index.html
 │   │   └── css/style.css
-│   ├── I03-Box-Model/                     # Capas de caja, shorthand y content-box vs border-box
+│   ├── I03-Box-Model/                         # Capas de caja, shorthand y content-box vs border-box
 │   │   ├── index.html
 │   │   └── css/style.css
-│   ├── I04-Positioning/                   # static, relative, absolute, fixed, sticky y z-index
+│   ├── I04-Positioning/                       # static, relative, absolute, fixed, sticky y z-index
 │   │   ├── index.html
 │   │   └── css/style.css
-│   ├── I05-Flexbox/                       # Layout unidimensional, ejes, alineación y patrones UI
+│   ├── I05-Flexbox/                           # Layout unidimensional, ejes, alineación y patrones UI
 │   │   ├── index.html
 │   │   └── css/style.css
-│   ├── I06-Grid/                          # Layout bidimensional, fr, repeat(), minmax() y áreas
+│   ├── I06-Grid/                              # Layout bidimensional, fr, repeat(), minmax() y áreas
 │   │   ├── index.html
 │   │   └── css/style.css
-│   ├── I07-Responsive/                    # Mobile-First, breakpoints, clamp() y Container Queries
+│   ├── I07-Responsive/                        # Mobile-First, breakpoints, clamp() y Container Queries
 │   │   ├── index.html
 │   │   └── css/style.css
-│   └── I08-Animations/                    # Transiciones, transformaciones GPU, @keyframes y 60fps
+│   └── I08-Animations/                        # Transiciones, transformaciones GPU, @keyframes y 60fps
 │       ├── index.html
 │       └── css/style.css
 │
 ├── Advanced/
-│   ├── A01-Modern-Selectors/              # :is(), :where(), :not() complejo y :has() (parent selector)
+│   ├── A01-Modern-Selectors/                  # :is(), :where(), :not() complejo y :has() (parent selector)
 │   │   ├── index.html
 │   │   └── css/style.css
-│   ├── A02-Design-Tokens-Theming/         # Design Tokens, @property, color-mix(), light-dark() y theming
+│   ├── A02-Design-Tokens-Theming/             # Design Tokens, @property, color-mix(), light-dark() y theming
 │   │   ├── index.html
 │   │   └── css/style.css
-│   ├── A03-Subgrid-Anchor-Positioning/    # CSS Subgrid, Anchor Positioning y Popover API sin JS
+│   ├── A03-Subgrid-Anchor-Positioning/        # CSS Subgrid, Anchor Positioning y Popover API sin JS
 │   │   ├── index.html
 │   │   └── css/style.css
-│   ├── A04-Layer-Scope-Arquitectura/      # @layer, @scope (donut scope), CSS Nesting y arquitectura
+│   ├── A04-Layer-Scope-Arquitectura/          # @layer, @scope (donut scope), CSS Nesting y arquitectura
 │   │   ├── index.html
 │   │   └── css/style.css
-│   ├── A05-Performance-Rendering/         # content-visibility, contain, will-change y text-wrap
+│   ├── A05-Performance-Rendering/             # content-visibility, contain, will-change y text-wrap
 │   │   ├── index.html
 │   │   └── css/style.css
-│   └── A06-Forms-States-UI/               # :user-valid, :focus-visible, accent-color y controles custom
+│   ├── A06-Forms-States-UI/                   # :user-valid, :focus-visible, accent-color y controles custom
+│   │   ├── index.html
+│   │   └── css/style.css
+│   └── A07-Scroll-Driven-View-Transitions/    # scroll(), view(), @property gradientes y View Transitions API
 │       ├── index.html
 │       └── css/style.css
 │
@@ -270,7 +274,7 @@ CSS/
 </details>
 
 <details open>
-<summary><strong>A05 - Performance y Rendering:</strong> Optimización del Pipeline del Navegador — <code>Advanced/A05-Performance-Rendering/</code></summary>
+<summary><strong>A05 - Performance y Rendering:</strong> Pipeline de Renderizado y Optimización — <code>Advanced/A05-Performance-Rendering/</code></summary>
 <br>
 
 - **Conceptos:** Renderizado bajo demanda fuera del *viewport* con `content-visibility: auto` y prevención de saltos de scroll (*CLS*) con `contain-intrinsic-size`, aislamiento de sub-árboles del ciclo de renderizado mediante `contain` (`layout`, `paint`, `size`, `content`, `strict`), promoción controlada a capa GPU con `will-change` frente a anti-patrones globales, y equilibrio tipográfico nativo sin huérfanas con `text-wrap: balance` y `text-wrap: pretty`.
@@ -278,11 +282,19 @@ CSS/
 </details>
 
 <details open>
-<summary><strong>A06 - Formularios y Estados UI:</strong> Validación y Controles Accesibles sin JS — <code>Advanced/A06-Forms-States-UI/</code></summary>
+<summary><strong>A06 - Formularios y Estados UI:</strong> Validación Nativa y Controles Accesibles — <code>Advanced/A06-Forms-States-UI/</code></summary>
 <br>
 
 - **Conceptos:** Ciclo de vida declarativo de campos con `:placeholder-shown`, `:user-valid`, `:user-invalid`, `:in-range` y `:out-of-range`, gestión moderna de estados de foco (`:focus-visible` vs `:focus` y `:focus-within`), *theming* nativo de controles del sistema con `accent-color`, y creación de checkboxes, switches (`role="switch"`) y radios personalizados accesibles usando `appearance: none` sin ocultar el `<input>` del árbol de accesibilidad.
 - **Laboratorios:** Campos con validación reactiva tras interacción, comparativa de anillos de foco por ratón frente a teclado, contraste entre `accent-color: auto` y color de marca, controles custom 100% accesibles y formulario completo de registro gobernado por `form:invalid`.
+</details>
+
+<details open>
+<summary><strong>A07 - Animaciones de Nueva Generación:</strong> Scroll-Driven, View Transitions y <code>@property</code> — <code>Advanced/A07-Scroll-Driven-View-Transitions/</code></summary>
+<br>
+
+- **Conceptos:** Animaciones vinculadas al desplazamiento mediante `animation-timeline: scroll()` y `view()` con control de fases en `animation-range` (`entry`, `cover`, `contain`, `exit`), *Named Scroll Timelines* (`scroll-timeline-name` + `timeline-scope`), registro de variables tipadas con `@property` para interpolar gradientes cónicos (`conic-gradient`), y transiciones fluidas en MPA (`@view-transition`) y SPA (`document.startViewTransition`) mediante `view-transition-name`.
+- **Laboratorios:** Tarjetas con revelación progresiva por `view()`, orbe y borde cónico rotatorio con `@property --angle`, cabecera `sticky` compactable sincronizada con barra de progreso mediante *Named Scroll Timeline*, y morphing interactivo entre vistas con la View Transitions API.
 </details>
 
 ---
@@ -299,7 +311,7 @@ Este proyecto no requiere compilación ni instalación de paquetes.
 
 2. **Abrir con Live Server (Recomendado):**
    - Abre la carpeta en **Visual Studio Code**.
-   - Haz clic derecho sobre cualquier archivo `index.html` (por ejemplo, `Advanced/A06-Forms-States-UI/index.html`) y selecciona **Open with Live Server**.
+   - Haz clic derecho sobre cualquier archivo `index.html` (por ejemplo, `Advanced/A07-Scroll-Driven-View-Transitions/index.html`) y selecciona **Open with Live Server**.
 
 3. **Apertura directa:**
    - También puedes abrir cualquier archivo `index.html` directamente en tu navegador web.
@@ -310,7 +322,7 @@ Este proyecto no requiere compilación ni instalación de paquetes.
 
 - **Consistencia visual:** Todos los módulos comparten un sistema de tokens (`--color-primary`, `--radius-md`, `--shadow-card`) para mantener coherencia editorial.
 - **Aislamiento de componentes:** Los ejemplos interactivos viven encapsulados dentro de contenedores `.box` o acotados mediante `@scope` y `@layer` para evitar colisiones de estilos.
-- **Accesibilidad (a11y):** Uso de atributos ARIA (`aria-labelledby`, `aria-pressed`, `role="switch"`, `role="tooltip"`, `role="menu"`), navegación por teclado (`:focus-visible`, `:focus-within`), controles nativos semánticos (`appearance: none`) y soporte para reducción de movimiento (`prefers-reduced-motion`).
+- **Accesibilidad (a11y) y Degradación Progresiva:** Uso de atributos ARIA (`aria-labelledby`, `aria-pressed`, `role="switch"`, `role="tooltip"`, `role="menu"`), navegación por teclado (`:focus-visible`, `:focus-within`), soporte para reducción de movimiento (`prefers-reduced-motion`) y feature queries (`@supports`) para APIs modernas.
 
 ---
 
@@ -334,6 +346,7 @@ Este proyecto no requiere compilación ni instalación de paquetes.
 - [x] **A04** — `@layer`, `@scope` y Arquitectura (`@layer`, *Donut Scope*, CSS Nesting)
 - [x] **A05** — Performance y Rendering (`content-visibility`, `contain`, `will-change`, `text-wrap`)
 - [x] **A06** — Formularios y Estados UI (`:user-valid`, `:focus-visible`, `accent-color`, controles custom)
+- [x] **A07** — Animaciones de Nueva Generación (`scroll()`, `view()`, `@property`, View Transitions API)
 
 ---
 
