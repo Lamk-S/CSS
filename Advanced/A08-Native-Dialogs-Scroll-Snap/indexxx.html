@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Apuntes avanzados de CSS: CSS Scroll Snap, elemento nativo dialog con ::backdrop, @starting-style, transition-behavior allow-discrete y acordeones con interpolate-size.">
+    <title>A08 - Diálogos Nativos, @starting-style y Scroll Snap — CSS Avanzado</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header class="page-header">
+        <span class="badge-module">Módulo A08 · Native UI + @starting-style + Scroll Snap</span>
+        <h1>Diálogos Nativos, <code>@starting-style</code> y Scroll Snap</h1>
+        <p class="lead">
+            Tres capacidades históricas que antes obligaban a instalar librerías de JavaScript ahora son nativas en CSS y HTML: 
+            carruseles con física magnética mediante <strong>Scroll Snap</strong>, modales accesibles en el <em>Top Layer</em> con <code>&lt;dialog&gt;</code> y animaciones desde <code>display: none</code> o hacia <code>height: auto</code> con <code>@starting-style</code> e <code>interpolate-size</code>.
+        </p>
+        <hr aria-hidden="true">
+    </header>
+
+    <main>
+        <article class="notes">
+            <!-- SECCIÓN 1: CSS Scroll Snap -->
+            <section aria-labelledby="scroll-snap">
+                <h2 id="scroll-snap">1. CSS Scroll Snap — Carruseles e inercia magnética nativa</h2>
+                <p>
+                    <strong>CSS Scroll Snap</strong> permite controlar dónde se detiene el desplazamiento de un contenedor tras soltar el gesto táctil o la rueda del ratón. 
+                    Al delegar la física al compositor del navegador, el deslizamiento conserva la aceleración nativa del sistema operativo sin cálculos de coordenadas en JavaScript.
+                </p>
+
+                <div class="box">
+                    <h4>Propiedades en el contenedor vs en los ítems</h4>
+                    <pre><code class="language-css">/* Contenedor desplazable (Track) */
+.carousel-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(82%, 320px);
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory; /* Eje + rigor de enganche */
+  scroll-padding-inline: 1rem;   /* Margen interno de seguridad al alinear */
+  overscroll-behavior-x: contain;/* Evita navegar atrás/adelante al llegar al borde */
+}
+
+/* Cada tarjeta dentro del carrusel */
+.carousel-slide {
+  scroll-snap-align: center;     /* start | center | end */
+  scroll-snap-stop: always;      /* Obliga a detenerse en cada slide al deslizar rápido */
+}</code></pre>
+
+                    <div class="table-wrapper">
+                        <table class="compare-table">
+                            <thead>
+                                <tr>
+                                    <th>Propiedad</th>
+                                    <th>Valores clave</th>
+                                    <th>Efecto en la experiencia de usuario</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>scroll-snap-type</code></td>
+                                    <td><code>x mandatory</code> / <code>y proximity</code></td>
+                                    <td><code>mandatory</code> fuerza siempre el anclaje al soltar; <code>proximity</code> solo engancha si el ítem queda cerca del borde.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>scroll-snap-align</code></td>
+                                    <td><code>start</code>, <code>center</code>, <code>end</code></td>
+                                    <td>Define qué punto del ítem se alinea con el punto de captura del contenedor.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>scroll-snap-stop</code></td>
+                                    <td><code>normal</code> / <code>always</code></td>
+                                    <td><code>always</code> impide que un gesto rápido salte 3 o 4 tarjetas de golpe (ideal para onboarding o galerías).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>scroll-padding</code></td>
+                                    <td><code>1rem</code> / <code>80px 0 0</code></td>
+                                    <td>Compensa el espacio de cabeceras fijas (<code>sticky</code>) o padding lateral para que el ítem no quede recortado.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <h4>Demo en vivo: Carrusel horizontal con <code>scroll-snap-type: x mandatory</code></h4>
+                    <p class="small-note" style="margin-top:0; margin-bottom:0.85rem;">Desliza horizontalmente con trackpad, pantalla táctil o los botones laterales. Observa cómo cada tarjeta encaja exactamente al centro.</p>
+
+                    <div class="snap-controls">
+                        <button type="button" class="btn-ghost" id="snap-prev" aria-label="Tarjeta anterior">← Anterior</button>
+                        <button type="button" class="btn-ghost" id="snap-next" aria-label="Tarjeta siguiente">Siguiente →</button>
+                    </div>
+
+                    <div class="snap-track" id="snap-track" tabindex="0" role="region" aria-label="Galería deslizable de arquitecturas CSS">
+                        <article class="snap-slide">
+                            <span class="slide-badge">Slide 01 · Center Snap</span>
+                            <h3>Física nativa de 120Hz</h3>
+                            <p>El desplazamiento corre en el hilo compositor del navegador sin <code>requestAnimationFrame</code> ni librerías externas.</p>
+                        </article>
+                        <article class="snap-slide">
+                            <span class="slide-badge">Slide 02 · Mandatory</span>
+                            <h3>Alineación determinista</h3>
+                            <p>Con <code>scroll-snap-align: center</code> y <code>scroll-padding-inline</code> las tarjetas nunca quedan cortadas a medias.</p>
+                        </article>
+                        <article class="snap-slide">
+                            <span class="slide-badge">Slide 03 · Snap Stop</span>
+                            <h3>Control de velocidad</h3>
+                            <p><code>scroll-snap-stop: always</code> garantiza que el usuario no pase por alto diapositivas críticas al deslizar rápido.</p>
+                        </article>
+                        <article class="snap-slide">
+                            <span class="slide-badge">Slide 04 · Overscroll</span>
+                            <h3>Contención de gestos</h3>
+                            <p><code>overscroll-behavior-x: contain</code> evita disparar el gesto de retroceso del navegador al alcanzar el límite.</p>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: <dialog> nativo + @starting-style -->
+            <section aria-labelledby="dialog-starting">
+                <h2 id="dialog-starting">2. <code>&lt;dialog&gt;</code> nativo + <code>@starting-style</code> — Modales sin librerías</h2>
+                <p>
+                    El elemento HTML <code>&lt;dialog&gt;</code> abierto con <code>.showModal()</code> vive en el <strong>Top Layer</strong> del navegador (por encima de cualquier <code>z-index</code>), gestiona automáticamente la tecla <kbd>Esc</kbd>, bloquea la interacción con el fondo (<em>inert</em>) y estiliza el velo trasero mediante <code>::backdrop</code>.
+                </p>
+                <p>
+                    Históricamente, animar la apertura y cierre de un modal era difícil porque pasaba de <code>display: none</code> a <code>display: block</code>. 
+                    Con <code>@starting-style</code> y <code>transition-behavior: allow-discrete</code> puedes animar tanto la entrada como la salida en CSS puro.
+                </p>
+
+                <div class="box">
+                    <h4>Ciclo completo de entrada y salida de un <code>&lt;dialog&gt;</code></h4>
+                    <pre><code class="language-css">dialog.native-modal {
+  opacity: 0;
+  transform: translateY(16px) scale(0.96);
+  transition:
+    opacity 260ms ease,
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    overlay 260ms allow-discrete,
+    display 260ms allow-discrete;
+}
+
+/* Estado abierto */
+dialog.native-modal[open] {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Fotograma 0 justo al pasar de display: none a display: block */
+@starting-style {
+  dialog.native-modal[open] {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+}
+
+/* Velo del Top Layer */
+dialog.native-modal::backdrop {
+  background: rgba(15, 23, 42, 0);
+  backdrop-filter: blur(0px);
+  transition: background-color 260ms ease, backdrop-filter 260ms ease, overlay 260ms allow-discrete, display 260ms allow-discrete;
+}
+
+dialog.native-modal[open]::backdrop {
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+}
+
+@starting-style {
+  dialog.native-modal[open]::backdrop {
+    background: rgba(15, 23, 42, 0);
+    backdrop-filter: blur(0px);
+  }
+}</code></pre>
+
+                    <div class="modal-demo-bar">
+                        <button type="button" class="btn-primary" id="btn-open-modal">Abrir Modal Nativo (<code>showModal()</code>)</button>
+                        <span class="small-note" style="margin:0;">Prueba cerrarlo con el botón, haciendo clic en el backdrop o pulsando <kbd>Esc</kbd>.</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: Acordeón nativo hacia height: auto -->
+            <section aria-labelledby="accordion-auto">
+                <h2 id="accordion-auto">3. Acordeones nativos hacia <code>height: auto</code> — <code>interpolate-size</code> y Grid</h2>
+                <p>
+                    Animar un elemento desplegable desde <code>height: 0</code> hasta su altura intrínseca (<code>height: auto</code>) fue durante años uno de los mayores retos de CSS. 
+                    Hoy disponemos de dos técnicas limpias: <code>interpolate-size: allow-keywords</code> sobre <code>&lt;details&gt;::details-content</code> y la técnica universal con CSS Grid (<code>grid-template-rows: 0fr → 1fr</code>).
+                </p>
+
+                <div class="box">
+                    <h4>Dos estrategias modernas sin medir <code>scrollHeight</code> en JS</h4>
+                    <pre><code class="language-css">/* Estrategia 1 (Estándar moderno): interpolación directa de keywords */
+:root {
+  interpolate-size: allow-keywords;
+}
+
+details.faq-item::details-content {
+  block-size: 0;
+  overflow-y: clip;
+  transition: block-size 280ms ease, content-visibility 280ms allow-discrete;
+}
+
+details.faq-item[open]::details-content {
+  block-size: auto;
+}</code></pre>
+
+                    <div class="faq-list">
+                        <details class="faq-item" open>
+                            <summary>¿Por qué <code>&lt;dialog&gt;</code> supera a un <code>&lt;div class="modal"&gt;</code> tradicional?</summary>
+                            <div class="faq-body">
+                                <p>Porque utiliza el <strong>Top Layer</strong> nativo del navegador: nunca queda atrapado dentro de un contenedor padre con <code>overflow: hidden</code>, <code>transform</code> o <code>z-index</code> inferior, y gestiona automáticamente la accesibilidad de teclado y cierre con <kbd>Esc</kbd>.</p>
+                            </div>
+                        </details>
+
+                        <details class="faq-item">
+                            <summary>¿Qué hace exactamente <code>transition-behavior: allow-discrete</code>?</summary>
+                            <div class="faq-body">
+                                <p>Permite que propiedades discretas (como <code>display</code> o <code>overlay</code>) esperen a que finalice la transición de opacidad y escala antes de cambiar a <code>display: none</code>, evitando que el modal desaparezca de golpe al cerrarse.</p>
+                            </div>
+                        </details>
+
+                        <details class="faq-item">
+                            <summary>¿Cómo funciona el fallback universal con Grid (<code>0fr → 1fr</code>)?</summary>
+                            <div class="faq-body">
+                                <p>En navegadores que aún no soportan <code>interpolate-size</code>, envolver el contenido en un contenedor con <code>display: grid; grid-template-rows: 0fr; transition: grid-template-rows 280ms ease;</code> y cambiar a <code>1fr</code> al abrir logra una transición fluida hacia altura automática con soporte universal.</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: Laboratorio Final Integrado -->
+            <section aria-labelledby="lab-final">
+                <h2 id="lab-final">4. Laboratorio Final: Galería Scroll Snap + Vista rápida en Modal Nativo</h2>
+                <p>
+                    Combinación de producción: catálogo deslizable con <strong>Scroll Snap</strong> donde cada tarjeta abre su ficha ampliada dentro de un único <code>&lt;dialog&gt;</code> nativo animado con <code>@starting-style</code>.
+                </p>
+
+                <div class="box">
+                    <div class="catalog-snap" role="region" aria-label="Catálogo de componentes nativos">
+                        <article class="product-snap-card">
+                            <div class="psc-visual v1">Top Layer</div>
+                            <h3>Modal Accesible</h3>
+                            <p>Gestión de foco, <code>::backdrop</code> con desenfoque y cierre nativo por teclado.</p>
+                            <button type="button" class="btn-primary btn-sm" data-modal-title="Modal Accesible en Top Layer" data-modal-desc="Construido con <dialog> y showModal(). El navegador convierte el resto del documento en inerte automáticamente y anima la entrada y salida mediante @starting-style y allow-discrete.">
+                                Vista rápida
+                            </button>
+                        </article>
+
+                        <article class="product-snap-card">
+                            <div class="psc-visual v2">Scroll Snap</div>
+                            <h3>Carrusel Magnético</h3>
+                            <p>Desplazamiento fluido por ejes con <code>scroll-snap-type: x mandatory</code>.</p>
+                            <button type="button" class="btn-primary btn-sm" data-modal-title="Carrusel Magnético con Scroll Snap" data-modal-desc="Alineación nativa al centro con scroll-snap-align: center y parada obligatoria por tarjeta con scroll-snap-stop: always, garantizando 120fps sin dependencias.">
+                                Vista rápida
+                            </button>
+                        </article>
+
+                        <article class="product-snap-card">
+                            <div class="psc-visual v3">Auto Height</div>
+                            <h3>Acordeón Fluido</h3>
+                            <p>Apertura progresiva hacia <code>block-size: auto</code> con <code>interpolate-size</code>.</p>
+                            <button type="button" class="btn-primary btn-sm" data-modal-title="Acordeón Nativo hacia Altura Automática" data-modal-desc="Emplea <details> y <summary> semánticos junto con interpolate-size: allow-keywords para animar de 0 a auto sin calcular alturas en JavaScript.">
+                                Vista rápida
+                            </button>
+                        </article>
+                    </div>
+                </div>
+
+                <aside class="box callout" aria-label="Resumen de cierre del curso avanzado">
+                    <div class="callout-header">
+                        <span class="callout-tag">Cierre del Programa Avanzado · Arquitectura CSS Moderna</span>
+                    </div>
+                    <p>
+                        Al combinar <strong>Scroll Snap</strong>, <strong><code>&lt;dialog&gt;</code> + <code>@starting-style</code></strong>, <strong>Popover + Anchor Positioning</strong> (A03) y <strong>Scroll-Driven Animations</strong> (A07), más del 80% de los componentes interactivos que antes requerían paquetes externos se resuelven hoy directamente en la plataforma web nativa.
+                    </p>
+                </aside>
+            </section>
+        </article>
+    </main>
+
+    <dialog class="native-modal" id="course-modal" aria-labelledby="modal-title">
+        <div class="modal-header">
+            <span class="badge-module" style="margin-bottom:0;">Top Layer · &lt;dialog&gt;</span>
+            <button type="button" class="modal-close" id="btn-close-modal" aria-label="Cerrar ventana modal">✕</button>
+        </div>
+        <div class="modal-body">
+            <h3 id="modal-title">Modal Nativo con <code>@starting-style</code></h3>
+            <p id="modal-desc">
+                Este diálogo está renderizado en el <strong>Top Layer</strong> del navegador. Su entrada y salida están animadas con <code>@starting-style</code> y <code>transition-behavior: allow-discrete</code> sin necesidad de librerías externas.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-ghost" id="btn-cancel-modal">Cerrar</button>
+            <button type="button" class="btn-primary" id="btn-confirm-modal">Entendido</button>
+        </div>
+    </dialog>
+
+    <footer>
+        <p>CSS Avanzado - A08 Diálogos Nativos, @starting-style y Scroll Snap - 2026</p>
+    </footer>
+
+    <script>
+        // 1. Controles auxiliares del carrusel Scroll Snap
+        const snapTrack = document.getElementById('snap-track');
+        const btnPrev = document.getElementById('snap-prev');
+        const btnNext = document.getElementById('snap-next');
+
+        btnPrev.addEventListener('click', () => {
+            snapTrack.scrollBy({ left: -300, behavior: 'smooth' });
+        });
+
+        btnNext.addEventListener('click', () => {
+            snapTrack.scrollBy({ left: 300, behavior: 'smooth' });
+        });
+
+        // 2. Control mínimo del elemento nativo <dialog>
+        const modal = document.getElementById('course-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDesc = document.getElementById('modal-desc');
+        const openBtn = document.getElementById('btn-open-modal');
+        const closeBtns = [
+            document.getElementById('btn-close-modal'),
+            document.getElementById('btn-cancel-modal'),
+            document.getElementById('btn-confirm-modal')
+        ];
+
+        openBtn.addEventListener('click', () => {
+            modalTitle.innerHTML = 'Modal Nativo con <code>@starting-style</code>';
+            modalDesc.textContent = 'Este diálogo está renderizado en el Top Layer del navegador. Su entrada y salida están animadas con @starting-style y transition-behavior: allow-discrete sin librerías externas.';
+            modal.showModal();
+        });
+
+        // Botones de vista rápida
+        document.querySelectorAll('[data-modal-title]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                modalTitle.textContent = btn.dataset.modalTitle;
+                modalDesc.textContent = btn.dataset.modalDesc;
+                modal.showModal();
+            });
+        });
+
+        closeBtns.forEach((btn) => btn.addEventListener('click', () => modal.close()));
+
+        // Cerrar al hacer clic fuera del cuadro del diálogo (en el ::backdrop)
+        modal.addEventListener('click', (event) => {
+            const rect = modal.getBoundingClientRect();
+            const isOutside =
+                event.clientX < rect.left ||
+                event.clientX > rect.right ||
+                event.clientY < rect.top ||
+                event.clientY > rect.bottom;
+
+            if (isOutside) {
+                modal.close();
+            }
+        });
+    </script>
+</body>
+</html>
