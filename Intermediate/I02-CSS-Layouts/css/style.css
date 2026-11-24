@@ -1,219 +1,426 @@
-/*
-=========================================
-style.css - Diagramación (Layouts)
-Objetivo:
-Entender el control de dimensiones, el 
-flujo del documento mediante display, 
-y la construcción de filas y columnas 
-usando la técnica tradicional de floats.
-=========================================
-*/
-
+/* ==========================================================================
+   1. DESIGN TOKENS (Sistema unificado del repositorio)
+   ========================================================================== */
 :root {
-    /* Paleta base */
     --color-text: #1f2937;
-    --color-bg: hsl(220, 25%, 97%);
+    --color-text-strong: #0f172a;
+    --color-muted: #64748b;
     --color-surface: #ffffff;
-    --color-primary: rgb(37, 99, 235);
-    --color-primary-soft: rgba(37, 99, 235, 0.12);
-    --color-border: rgba(15, 23, 42, 0.10);
-    --color-muted: #6b7280;
-    --color-code: #b91c1c;
+    --color-surface-subtle: #f8fafc;
+    --color-primary: #2563eb;
+    --color-primary-dark: #1d4ed8;
+    --color-primary-soft: rgba(37, 99, 235, 0.08);
+    --color-border: rgba(15, 23, 42, 0.09);
+    --color-code: #be123c;
 
-    /* Variables de diseño */
     --radius-lg: 20px;
     --radius-md: 14px;
-    --shadow-soft: 0 20px 60px rgba(15, 23, 42, 0.08);
-    --shadow-card: 0 10px 30px rgba(15, 23, 42, 0.06);
+    --radius-sm: 8px;
+    --radius-pill: 999px;
+
+    --shadow-soft: 0 20px 60px rgba(15, 23, 42, 0.07);
+    --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.04);
 }
 
-/*
---------------------------------------------------
-Base del documento
---------------------------------------------------
-*/
+/* ==========================================================================
+   2. RESET Y BASE (Arquitectura Mobile-First)
+   ========================================================================== */
 html {
     font-size: 16px;
     scroll-behavior: smooth;
-    /* Box-sizing border-box es CRÍTICO para maquetar con columnas */
+    /* Crítico para que padding y border se incluyan dentro del width calculado */
     box-sizing: border-box;
 }
 
-/* Heredamos border-box a todos los elementos */
-*, *:before, *:after {
+*, *::before, *::after {
     box-sizing: inherit;
 }
 
 body {
     margin: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: var(--color-text);
     background:
-        radial-gradient(circle at top, rgba(37, 99, 235, 0.08), transparent 35%),
+        radial-gradient(circle at top center, rgba(37, 99, 235, 0.09), transparent 40%),
         linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
     line-height: 1.65;
-    padding: clamp(1rem, 2vw, 2rem);
+    padding: clamp(1rem, 2.5vw, 2.5rem);
+    -webkit-font-smoothing: antialiased;
 }
 
-header, .notes { max-width: 980px; margin: 0 auto; }
-/* Quitamos footer de la lista de max-width general para aplicar tu estilo exacto abajo */
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+}
 
-header { margin-bottom: 1.5rem; }
+/* ==========================================================================
+   3. ESTRUCTURA Y TIPOGRAFÍA
+   ========================================================================== */
+.page-header,
+.notes,
+.page-footer {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 1.75rem;
+}
+
+.badge-module {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    padding: 0.25rem 0.7rem;
+    border-radius: var(--radius-pill);
+    margin-bottom: 0.75rem;
+}
 
 .notes {
-    background: rgba(255, 255, 255, 0.82);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-soft);
-    padding: clamp(1.25rem, 3vw, 2.25rem);
+    padding: clamp(1.25rem, 3.5vw, 2.5rem);
 }
 
-h1, h2, h3, h4 { color: var(--color-primary); line-height: 1.2; margin-top: 0; }
-h1 { font-size: clamp(2rem, 3vw, 3rem); letter-spacing: -0.03em; margin-bottom: 0.5rem; }
-h2 { font-size: clamp(1.35rem, 2vw, 1.7rem); margin-bottom: 0.75rem; }
-h3 { font-size: 1.15rem; margin-bottom: 0.5rem; }
-h4 { margin-bottom: 0.5rem; }
+h1, h2, h3, h4 {
+    color: var(--color-text-strong);
+    line-height: 1.25;
+    margin-top: 0;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
 
-.lead { color: var(--color-muted); max-width: 65ch; margin: 0 0 1rem; font-size: 1.1rem; }
-header hr { border: none; height: 1px; background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.35), transparent); margin: 1.25rem 0 0; }
-section + section { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border); }
-p { margin: 0 0 1rem; }
-ul { padding-left: 1.25rem; margin: 0 0 1rem; }
-li + li { margin-top: 0.5rem; }
+h1 {
+    font-size: clamp(1.85rem, 3.5vw, 2.85rem);
+    color: var(--color-primary);
+    margin: 0.2rem 0 0.5rem;
+}
 
-code { 
-    color: var(--color-code); 
-    background: rgba(185, 28, 28, 0.06); 
-    padding: 0.15rem 0.35rem; 
-    border-radius: 0.35rem; 
-    font-family: monospace; 
-    font-size: 0.95em; 
+h2 {
+    font-size: clamp(1.3rem, 2.2vw, 1.65rem);
+    color: var(--color-primary);
+    margin: 0 0 0.85rem;
+}
+
+h3 {
+    font-size: 1.15rem;
+    margin: 1.35rem 0 0.5rem;
+}
+
+h4 {
+    font-size: 0.98rem;
+    margin-bottom: 0.65rem;
+}
+
+p {
+    margin: 0 0 1rem;
+    text-wrap: pretty;
+}
+
+ul {
+    padding-left: 1.25rem;
+    margin: 0 0 1.1rem;
+}
+
+li + li {
+    margin-top: 0.5rem;
+}
+
+.lead {
+    color: var(--color-muted);
+    max-width: 75ch;
+    font-size: clamp(1rem, 1.4vw, 1.12rem);
+    margin: 0;
+}
+
+.page-header hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(37, 99, 235, 0.35), rgba(37, 99, 235, 0.05) 70%, transparent);
+    margin: 1.5rem 0 0;
+}
+
+section + section {
+    margin-top: 2.25rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+}
+
+/* ==========================================================================
+   4. CÓDIGO, CONTENEDORES Y CALLOUTS
+   ========================================================================== */
+code {
+    color: var(--color-code);
+    background: rgba(190, 18, 60, 0.07);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.35rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.88em;
+}
+
+:is(h1, h2, h3, h4) code {
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    font-size: 0.85em;
+}
+
+pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 1.1rem 1.25rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow-x: auto;
+    margin: 1rem 0 0;
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+
+pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border: none;
+    font-size: inherit;
 }
 
 .box {
     padding: 1.25rem;
     margin: 1rem 0;
     border-radius: var(--radius-md);
-    background-color: var(--color-surface);
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     box-shadow: var(--shadow-card);
 }
 
-/*
---------------------------------------------------
-1. Demo: Ancho y Alto (max-width)
---------------------------------------------------
-*/
+.callout {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(255, 255, 255, 0.95) 100%);
+    border: 1px solid rgba(37, 99, 235, 0.22);
+    padding: 1.25rem 1.4rem;
+}
+
+.callout-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.45rem;
+}
+
+.callout-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+}
+
+.callout-tag::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+.callout p {
+    margin: 0;
+    color: var(--color-text-strong);
+}
+
+/* ==========================================================================
+   5. DEMO 1: DIMENSIONES SEGURAS (max-width)
+   ========================================================================== */
 .demo-box {
     background-color: var(--color-primary-soft);
-    border: 1px dashed var(--color-primary);
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin: 1rem auto; /* El auto centra la caja si es más pequeña que su contenedor */
+    border: 1.5px dashed var(--color-primary);
+    padding: 1.25rem;
+    border-radius: var(--radius-sm);
+    margin: 0.5rem auto 0;
     text-align: center;
+}
+
+.demo-box p {
+    margin: 0;
+    font-size: 0.92rem;
+    color: var(--color-text-strong);
 }
 
 .width-demo {
-    /* Clave para diseño responsivo: no usa 'width', usa 'max-width' */
-    max-width: 400px;
+    width: 100%;
+    max-width: 420px;
 }
 
-/*
---------------------------------------------------
-2. Demo: Float y el hack Clearfix
---------------------------------------------------
-*/
-.demo-float-img {
-    float: left; /* Empuja el bloque a la izquierda */
-    width: 120px;
-    height: 120px;
-    background-color: var(--color-primary);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-weight: bold;
-    border-radius: 8px;
-    margin-right: 1.25rem; /* Separación con el texto */
+/* ==========================================================================
+   6. DEMO 2: DISPLAY, FLOAT Y FLOW-ROOT / CLEARFIX
+   ========================================================================== */
+.display-demo-strip {
+    background: var(--color-surface-subtle);
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-sm);
+    padding: 0.85rem;
+}
+
+.badge-display {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.4rem 0.7rem;
+    border-radius: 6px;
     margin-bottom: 0.5rem;
 }
 
-/* El Hack Clearfix: Fundamental cuando trabajamos con floats.
-   Asegura que el contenedor abrace a los elementos flotantes
-   y no colapse. */
-.clearfix::after {
-    content: "";
-    display: table;
-    clear: both;
+.badge-display.is-block {
+    display: block;
+    background: #dbeafe;
+    color: #1e3a8a;
+    border: 1px solid #93c5fd;
 }
 
-/*
---------------------------------------------------
-3. Demo: Diagramación por Filas (Block)
---------------------------------------------------
-*/
-.layout-rows > * {
+.badge-display.is-inline {
+    display: inline;
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+
+.badge-display.is-inline-block {
+    display: inline-block;
+    height: 44px;
+    line-height: 28px;
+    margin-left: 0.4rem;
+    margin-bottom: 0;
+    background: #dcfce7;
+    color: #14532d;
+    border: 1px solid #86efac;
+}
+
+.float-container {
+    /* Crea un nuevo Block Formatting Context: contiene elementos flotantes sin hacks */
+    display: flow-root;
+    background: var(--color-surface-subtle);
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-sm);
     padding: 1rem;
+}
+
+.float-container p {
+    margin: 0;
+    font-size: 0.94rem;
+}
+
+.demo-float-img {
+    float: left;
+    width: 112px;
+    height: 112px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    color: #ffffff;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    line-height: 1.3;
+    border-radius: var(--radius-sm);
+    margin-right: 1.15rem;
+    margin-bottom: 0.4rem;
+}
+
+/* ==========================================================================
+   7. DEMO 3: DIAGRAMACIÓN POR FILAS (Block Flow)
+   ========================================================================== */
+.layout-rows > * {
+    padding: 0.9rem 1rem;
     text-align: center;
     font-weight: 600;
-    border-radius: 6px;
-    color: var(--color-text);
+    font-size: 0.92rem;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-strong);
 }
 
-/* Al ser elementos en bloque, naturalmente forman filas */
 .row-header {
-    background-color: #dbeafe; /* Azul muy claro */
-    margin-bottom: 10px;
-}
-.row-main {
-    background-color: #f1f5f9; /* Gris muy claro */
-    min-height: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 10px;
-}
-.row-footer {
-    background-color: #e2e8f0; /* Gris claro */
+    background-color: #dbeafe;
+    border: 1px solid #bfdbfe;
+    margin-bottom: 0.65rem;
 }
 
-/*
---------------------------------------------------
-4. Demo: Diagramación por Columnas (Float)
---------------------------------------------------
-*/
+.row-main {
+    background-color: var(--color-surface-subtle);
+    border: 1px solid #e2e8f0;
+    min-height: 140px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 0.65rem;
+}
+
+.row-footer {
+    background-color: #e2e8f0;
+    border: 1px solid #cbd5e1;
+}
+
+/* ==========================================================================
+   8. DEMO 4: DIAGRAMACIÓN POR COLUMNAS (Mobile-First + Float)
+   ========================================================================== */
+.layout-columns {
+    display: flow-root;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
 .col {
-    float: left; /* Hace que se pongan una al lado de la otra */
-    width: 33.333%; /* Tres columnas = 100 / 3 */
-    padding: 1rem;
-    background-color: var(--color-bg);
-    border: 1px solid var(--color-border);
+    width: 100%;
+    padding: 1rem 1.1rem;
+    background-color: var(--color-surface-subtle);
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.col:last-child {
+    border-bottom: none;
 }
 
 .col:nth-child(2) {
-    background-color: #f8fafc;
+    background-color: var(--color-surface);
 }
 
-/* Responsive: Convertir columnas a filas en pantallas pequeñas */
-@media (max-width: 768px) {
+.col p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-muted);
+}
+
+@media (min-width: 768px) {
     .col {
-        float: none;
-        width: 100%; /* Ocupan todo el ancho de nuevo */
+        float: left;
+        width: 33.333%;
+        border-bottom: none;
+        border-right: 1px solid #e2e8f0;
+    }
+
+    .col:last-child {
+        border-right: none;
     }
 }
 
-/*
---------------------------------------------------
-Footer
---------------------------------------------------
-*/
-footer {
-    margin-top: 2rem;
-    padding-top: 1rem;
+/* ==========================================================================
+   9. PIE DE PÁGINA
+   ========================================================================== */
+.page-footer {
+    margin-top: 2.25rem;
+    padding-top: 1.25rem;
     text-align: center;
     color: var(--color-muted);
-    font-size: 0.95rem;
+    font-size: 0.88rem;
     border-top: 1px solid var(--color-border);
 }
