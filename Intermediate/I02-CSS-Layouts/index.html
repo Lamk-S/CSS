@@ -3,86 +3,162 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Diagramación en CSS — Nivel Intermedio</title>
+    <meta name="description" content="Apuntes de CSS Intermedio: control de dimensiones (max-width, min-height), modos de display (block, inline, inline-block, flow-root) y diagramación con float y clearfix.">
+    <title>I02 - Diagramación en CSS (Layouts) — Nivel Intermedio</title>
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-    <header>
+    <header class="page-header">
+        <span class="badge-module">Módulo I02 · Document Flow &amp; Classic Layouts</span>
         <h1>Diagramación en CSS (Layouts)</h1>
-        <p class="lead">Guía para controlar el flujo del documento: dimensiones, comportamientos de visualización (display) y maquetación tradicional con flotantes.</p>
-        <hr>
+        <p class="lead">
+            Fundamentos para controlar el flujo normal del documento: restricciones de tamaño seguro (<code>max-width</code>, <code>min-height</code>), comportamientos de visualización (<code>display</code>) y maquetación histórica con <code>float</code> y <code>flow-root</code>.
+        </p>
+        <hr aria-hidden="true">
     </header>
 
     <main>
         <article class="notes">
-
-            <!-- SECCIÓN 1: Ancho y Alto -->
+            <!-- SECCIÓN 1: Dimensiones Seguras -->
             <section aria-labelledby="dimensiones">
-                <h2 id="dimensiones">1. Ancho y Alto de las Cajas</h2>
-                <p>Controlar las dimensiones es el primer paso para diagramar. No siempre queremos que una caja ocupe el 100% del espacio, ni que se rompa en pantallas pequeñas.</p>
+                <h2 id="dimensiones">1. Control de Dimensiones: Estático vs Fluido</h2>
+                <p>
+                    Fijar dimensiones rígidas con <code>width</code> y <code>height</code> suele provocar desbordamientos horizontales en pantallas estrechas o recortes cuando el texto crece. 
+                    En diseño responsivo se priorizan las cotas mínimas y máximas.
+                </p>
+
                 <ul>
-                    <li><strong><code>width</code> y <code>height</code>:</strong> Definen el ancho y alto estático.</li>
-                    <li><strong><code>max-width</code> y <code>min-height</code>:</strong> Son más seguros para el diseño responsivo. <code>max-width: 100%</code> asegura que una imagen o caja nunca desborde su contenedor.</li>
+                    <li><strong><code>width</code> y <code>height</code>:</strong> Establecen dimensiones exactas y rígidas. Ignoran si el contenedor padre dispone de menos espacio.</li>
+                    <li><strong><code>max-width</code>:</strong> Permite que el elemento se encoja fluidamente hasta el 100% de su padre, pero impide que crezca más allá del límite definido.</li>
+                    <li><strong><code>min-height</code>:</strong> Garantiza una altura mínima estética, permitiendo que la caja crezca verticalmente si el contenido interno se expande.</li>
                 </ul>
 
-                <div class="demo-box width-demo">
-                    <p>Esta caja usa <code>max-width: 400px;</code>. En pantallas grandes no pasará de 400px, pero en celulares se encogerá fluidamente.</p>
+                <div class="box">
+                    <h4>Demo: Contenedor centrado con <code>max-width: 420px</code></h4>
+                    <div class="demo-box width-demo">
+                        <p>Esta caja declara <code>width: 100%; max-width: 420px;</code>. En escritorio se detiene en 420px; en móviles se adapta sin generar scroll horizontal.</p>
+                    </div>
+                    <pre><code class="language-css">.responsive-card {
+  width: 100%;
+  max-width: 420px;
+  min-height: 120px;
+  margin-inline: auto;
+}</code></pre>
                 </div>
             </section>
 
-            <!-- SECCIÓN 2: Display, Float y Clear -->
+            <!-- SECCIÓN 2: Display, Float y Clearfix / Flow-Root -->
             <section aria-labelledby="display-float">
-                <h2 id="display-float">2. Display, Float y Clear</h2>
-                <p>El comportamiento natural de los elementos web se define por su propiedad <code>display</code>. Los elementos en <code>block</code> ocupan toda la línea, mientras que los <code>inline</code> se ajustan a su contenido.</p>
-                
-                <h3>El uso de <code>float</code></h3>
-                <p>Originalmente creado para que el texto rodeara las imágenes (como en los periódicos). Al aplicar <code>float: left</code> o <code>right</code>, sacamos al elemento del flujo normal.</p>
-                
-                <div class="box clearfix">
-                    <div class="demo-float-img">IMG Flotante</div>
-                    <p>Este texto rodea a la caja flotante. Como la caja tiene <code>float: left;</code>, se alinea a la izquierda y permite que el contenido de texto suba y ocupe el espacio a su derecha. Es vital usar la técnica <strong>clearfix</strong> en el contenedor padre para evitar que su altura colapse cuando contiene elementos flotantes.</p>
+                <h2 id="display-float">2. <code>display</code>, <code>float</code> y Contención de Flotantes</h2>
+                <p>
+                    El flujo normal (<em>Normal Flow</em>) ubica los elementos según su propiedad <code>display</code>: los elementos <code>block</code> ocupan todo el ancho disponible apilándose verticalmente, mientras que los <code>inline</code> fluyen en línea con el texto ignorando <code>width</code>, <code>height</code> y márgenes verticales.
+                </p>
+
+                <div class="box">
+                    <h4>Comparativa de comportamientos de <code>display</code></h4>
+                    <div class="display-demo-strip">
+                        <span class="badge-display is-block"><code>display: block</code> (100% ancho, nueva línea)</span>
+                        <span class="badge-display is-inline"><code>inline</code> (solo contenido)</span>
+                        <span class="badge-display is-inline-block"><code>inline-block</code> (en línea + acepta dimensiones)</span>
+                    </div>
+                </div>
+
+                <h3>El mecanismo de <code>float</code> y el colapso del padre</h3>
+                <p>
+                    Diseñado originalmente para envolver texto alrededor de imágenes editoriales, <code>float: left</code> o <code>right</code> extrae el elemento del flujo normal. 
+                    Como el contenedor padre deja de calcular la altura de sus hijos flotantes, se requiere crear un <strong>Block Formatting Context (BFC)</strong> mediante <code>display: flow-root</code> (moderno) o la técnica <code>.clearfix::after</code> (clásica).
+                </p>
+
+                <div class="box">
+                    <h4>Demo: Texto envolviendo un bloque con <code>float: left</code> y <code>display: flow-root</code></h4>
+                    <div class="float-container">
+                        <div class="demo-float-img">IMG<br>Float Left</div>
+                        <p>
+                            Este párrafo fluye naturalmente alrededor de la caja flotante situada a la izquierda. 
+                            Gracias a que el contenedor padre declara <code>display: flow-root</code> (la alternativa nativa sin pseudo-elementos al clásico hack <code>clearfix</code>), el borde y fondo del contenedor abrazan por completo la altura de la imagen sin colapsar.
+                        </p>
+                    </div>
+                    <pre><code class="language-css">.float-container {
+  display: flow-root; /* Crea un nuevo BFC: contiene hijos flotantes sin hacks */
+}
+
+/* Equivalente histórico para navegadores antiguos: */
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}</code></pre>
                 </div>
             </section>
 
             <!-- SECCIÓN 3: Diagramación por Filas -->
             <section aria-labelledby="filas">
-                <h2 id="filas">3. Diagramación por Filas</h2>
-                <p>Es el flujo natural (normal flow) de los elementos de bloque (<code>display: block</code>). Se apilan uno debajo del otro de arriba hacia abajo. Ideal para la estructura principal: Cabecera, Contenido y Pie de página.</p>
+                <h2 id="filas">3. Diagramación por Filas (Flujo de Bloque)</h2>
+                <p>
+                    Cuando los contenedores mantienen su comportamiento natural de bloque (<code>display: block</code>), se apilan secuencialmente de arriba hacia abajo formando filas estructurales sin necesidad de propiedades adicionales.
+                </p>
 
-                <div class="box layout-rows">
-                    <header class="row-header">Cabecera (Header)</header>
-                    <main class="row-main">Contenido Principal (Main)</main>
-                    <footer class="row-footer">Pie de Página (Footer)</footer>
+                <div class="box">
+                    <h4>Demo: Esqueleto vertical por bloques</h4>
+                    <div class="layout-rows">
+                        <div class="row-header">Cabecera (Header · 100% ancho)</div>
+                        <div class="row-main">Contenido Principal (Main · <code>min-height: 140px</code>)</div>
+                        <div class="row-footer">Pie de Página (Footer · 100% ancho)</div>
+                    </div>
                 </div>
             </section>
 
             <!-- SECCIÓN 4: Diagramación por Columnas -->
             <section aria-labelledby="columnas">
-                <h2 id="columnas">4. Diagramación por Columnas</h2>
-                <p>Antes de la llegada de Flexbox y CSS Grid, la diagramación por columnas se lograba casi exclusivamente utilizando <code>float</code> y anchos en porcentajes (%).</p>
-                <p>Si queremos 3 columnas, les damos <code>width: 33.33%</code> y <code>float: left</code> a cada una.</p>
+                <h2 id="columnas">4. Diagramación por Columnas (Enfoque Mobile-First)</h2>
+                <p>
+                    Antes de Flexbox y CSS Grid, las rejillas multicolumna se construían combinando <code>box-sizing: border-box</code>, anchos porcentuales (<code>33.333%</code>) y <code>float: left</code>. 
+                    Aplicando arquitectura <strong>Mobile-First</strong>, las columnas se apilan al <code>100%</code> en móviles y flotan lado a lado únicamente a partir de <code>768px</code>.
+                </p>
 
-                <div class="box layout-columns clearfix">
-                    <div class="col">
-                        <h4>Columna 1</h4>
-                        <p>Ancho: 33.33%</p>
+                <div class="box">
+                    <h4>Demo: Rejilla de 3 columnas con <code>float</code> + <code>flow-root</code></h4>
+                    <div class="layout-columns">
+                        <div class="col">
+                            <h4>Columna 1</h4>
+                            <p><code>width: 33.333%</code> en escritorio; <code>100%</code> en móvil.</p>
+                        </div>
+                        <div class="col">
+                            <h4>Columna 2</h4>
+                            <p><code>box-sizing: border-box</code> evita que el padding desborde el 100%.</p>
+                        </div>
+                        <div class="col">
+                            <h4>Columna 3</h4>
+                            <p>Contenedor padre protegido con <code>display: flow-root</code>.</p>
+                        </div>
                     </div>
-                    <div class="col">
-                        <h4>Columna 2</h4>
-                        <p>Flotando a la izquierda</p>
-                    </div>
-                    <div class="col">
-                        <h4>Columna 3</h4>
-                        <p>Contenedor con clearfix</p>
-                    </div>
+                    <pre><code class="language-css">/* Mobile-First: apilado en pantallas pequeñas */
+.col {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .col {
+    float: left;
+    width: 33.333%;
+  }
+}</code></pre>
                 </div>
-            </section>
 
+                <aside class="box callout" aria-label="Evolución hacia Flexbox y Grid">
+                    <div class="callout-header">
+                        <span class="callout-tag">Contexto Arquitectónico</span>
+                    </div>
+                    <p>
+                        En proyectos modernos, utiliza <code>float</code> únicamente para que el texto rodee imágenes dentro de artículos editoriales. Para construir sistemas de columnas, barras de navegación y alineaciones bidimensionales, utiliza <strong>Flexbox</strong> (Módulo I03) y <strong>CSS Grid</strong> (Módulo I04).
+                    </p>
+                </aside>
+            </section>
         </article>
     </main>
 
-    <footer>
-        <p>CSS - Nivel Intermedio - 2026</p>
+    <footer class="page-footer">
+        <p>CSS Intermedio - I02 Diagramación en CSS - 2026</p>
     </footer>
 </body>
 </html>
