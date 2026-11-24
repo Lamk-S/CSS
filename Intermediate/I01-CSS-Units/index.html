@@ -3,99 +3,140 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Unidades de Medida en CSS — Nivel Intermedio</title>
+    <meta name="description" content="Apuntes de CSS Intermedio: unidades de medida absolutas (px) y relativas (em, rem, ch, vw, vh, dvh) para interfaces escalables y accesibles.">
+    <title>I01 - Unidades de Medida en CSS — Nivel Intermedio</title>
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-    <header>
+    <header class="page-header">
+        <span class="badge-module">Módulo I01 · CSS Units &amp; Scalability</span>
         <h1>Unidades de Medida en CSS</h1>
-        <p class="lead">Guía definitiva para entender unidades absolutas, relativas, tipográficas y del viewport para crear interfaces escalables y accesibles.</p>
-        <hr>
+        <p class="lead">
+            Guía técnica para dominar las unidades absolutas, relativas tipográficas (<code>em</code>, <code>rem</code>, <code>ch</code>) y del viewport (<code>vw</code>, <code>vh</code>, <code>dvh</code>), construyendo interfaces responsivas y respetuosas con las preferencias de accesibilidad del usuario.
+        </p>
+        <hr aria-hidden="true">
     </header>
-
+    
     <main>
         <article class="notes">
-
             <!-- SECCIÓN 1: Unidades Absolutas -->
             <section aria-labelledby="unidades-absolutas">
                 <h2 id="unidades-absolutas">1. Unidades Absolutas</h2>
-                <p>Las unidades absolutas tienen un tamaño fijo. No cambian independientemente del tamaño de la pantalla, el contenedor o las preferencias del usuario. Son ideales para cosas que <strong>nunca deben cambiar de tamaño</strong>, como bordes o sombras, pero no se recomiendan para tipografía o anchos de contenedores responsivos.</p>
-                
+                <p>
+                    Las unidades absolutas representan dimensiones fijas que no escalan según el contenedor ni según la configuración de tamaño de fuente del navegador. 
+                    Son apropiadas para detalles estructurales finos como grosores de borde (<code>1px</code>) o desplazamientos de sombra, pero desaconsejables para tipografía o contenedores fluidos.
+                </p>
+
                 <ul>
-                    <li><strong><code>px</code> (Píxeles):</strong> La unidad más común en pantallas. Un píxel CSS no siempre es igual a un píxel físico del monitor, pero es la medida base.</li>
-                    <li><strong><code>cm</code>, <code>mm</code>, <code>in</code> (Físicas):</strong> Centímetros, milímetros y pulgadas. Se usan casi exclusivamente para hojas de estilo de impresión (<code>@media print</code>).</li>
+                    <li><strong><code>px</code> (Píxeles CSS):</strong> Unidad de referencia en pantalla. Aunque un píxel CSS se mapea a múltiples píxeles físicos en pantallas Retina/HiDPI, su escala visual permanece rígida.</li>
+                    <li><strong><code>cm</code>, <code>mm</code>, <code>in</code>, <code>pt</code> (Físicas):</strong> Centímetros, milímetros, pulgadas y puntos tipográficos. Reservadas casi exclusivamente para hojas de estilo de impresión (<code>@media print</code>).</li>
                 </ul>
 
                 <div class="box demo-absolute">
-                    <p class="px-box">Esta caja tiene un ancho de exactamente <code>300px</code>. Si tu pantalla es más pequeña que esto, generará un scroll horizontal (lo cual es un problema en diseño web).</p>
+                    <h4>Demo: Contenedor rígido con <code>width: 300px</code></h4>
+                    <div class="px-box">
+                        Esta caja mide exactamente <code>300px</code> de ancho. Si el contenedor padre es más estrecho que 300px, provocará desbordamiento horizontal.
+                    </div>
+                    <pre><code class="language-css">.px-box {
+  width: 300px; /* Dimensión fija: ignora el ancho disponible del padre */
+}</code></pre>
                 </div>
             </section>
 
-            <!-- SECCIÓN 2: Unidades Relativas (Tipográficas) -->
+            <!-- SECCIÓN 2: Unidades Relativas Tipográficas -->
             <section aria-labelledby="unidades-relativas-texto">
-                <h2 id="unidades-relativas-texto">2. Unidades Relativas (Tipografía)</h2>
-                <p>Su tamaño se calcula en relación con otro valor (como el tamaño de fuente del padre o del documento base). Son fundamentales para la <strong>accesibilidad</strong>, ya que respetan si el usuario tiene configurada una letra más grande en su navegador.</p>
+                <h2 id="unidades-relativas-texto">2. Unidades Relativas Tipográficas (<code>em</code>, <code>rem</code>, <code>ch</code>)</h2>
+                <p>
+                    Su valor final se calcula dinámicamente a partir de una referencia tipográfica. 
+                    Son esenciales para la <strong>accesibilidad</strong>: si un usuario aumenta el tamaño de fuente predeterminado de su navegador de <code>16px</code> a <code>20px</code>, toda la interfaz construida con <code>rem</code> y <code>em</code> escala proporcionalmente.
+                </p>
 
-                <h3>El problema de <code>em</code> vs la solución de <code>rem</code></h3>
                 <ul>
-                    <li><strong><code>em</code>:</strong> Relativo al <code>font-size</code> de su contenedor padre directo. <strong>Cuidado:</strong> Si anidas elementos con <code>em</code>, sus tamaños se multiplican (efecto cascada/bola de nieve).</li>
-                    <li><strong><code>rem</code> (Root em):</strong> Relativo al <code>font-size</code> del elemento raíz (<code>&lt;html&gt;</code>). Evita el problema de la cascada y mantiene todo predecible. ¡Es el estándar moderno!</li>
-                    <li><strong><code>ch</code> (Character):</strong> Equivale al ancho del número "0" en la fuente actual. Excelente para limitar el ancho de párrafos y mejorar la lectura.</li>
+                    <li><strong><code>em</code>:</strong> Relativo al <code>font-size</code> del elemento padre (o del propio elemento cuando se usa en <code>padding</code>/<code>margin</code>). Si se anida en múltiples niveles, produce un crecimiento exponencial compuesto.</li>
+                    <li><strong><code>rem</code> (Root em):</strong> Relativo exclusivamente al <code>font-size</code> del elemento raíz (<code>&lt;html&gt;</code>, por defecto <code>16px</code>). Elimina el efecto compuesto y mantiene una escala predecible en toda la aplicación.</li>
+                    <li><strong><code>ch</code> (Character):</strong> Equivale al ancho del glifo <code>"0"</code> en la fuente y tamaño activos. Es el estándar de oro para limitar el ancho de columnas de lectura entre <code>55ch</code> y <code>70ch</code>.</li>
                 </ul>
 
                 <div class="demo-grid">
                     <!-- Demo de EM -->
-                    <div class="box">
-                        <h4 style="margin-top:0;">Comportamiento de <code>em</code></h4>
+                    <div class="box demo-card">
+                        <h4><code>em</code> anidado — Efecto compuesto (<code>1.2em</code>)</h4>
                         <div class="em-parent">
-                            Soy el padre (1.5em)
+                            Padre: <code>1.2em</code> (19.2px)
                             <div class="em-child">
-                                Soy el hijo (1.5em). ¡Me he multiplicado!
+                                Hijo: <code>1.2em</code> (23.04px)
                                 <div class="em-grandchild">
-                                    Soy el nieto (1.5em). ¡Soy gigante!
+                                    Nieto: <code>1.2em</code> (27.65px)
                                 </div>
                             </div>
                         </div>
+                        <pre><code class="language-css">/* 16px × 1.2 × 1.2 × 1.2 = 27.65px */
+.em-level { font-size: 1.2em; }</code></pre>
                     </div>
-                    
+
                     <!-- Demo de REM -->
-                    <div class="box">
-                        <h4 style="margin-top:0;">Comportamiento de <code>rem</code></h4>
+                    <div class="box demo-card">
+                        <h4><code>rem</code> anidado — Escala constante (<code>1.2rem</code>)</h4>
                         <div class="rem-parent">
-                            Soy el padre (1.5rem)
+                            Padre: <code>1.2rem</code> (19.2px)
                             <div class="rem-child">
-                                Soy el hijo (1.5rem). Mantengo el mismo tamaño.
+                                Hijo: <code>1.2rem</code> (19.2px)
                                 <div class="rem-grandchild">
-                                    Soy el nieto (1.5rem). Sigo predecible.
+                                    Nieto: <code>1.2rem</code> (19.2px)
                                 </div>
                             </div>
                         </div>
+                        <pre><code class="language-css">/* Siempre 16px × 1.2 = 19.2px */
+.rem-level { font-size: 1.2rem; }</code></pre>
                     </div>
+                </div>
+
+                <div class="box">
+                    <h4>Demo: Medida óptima de lectura con <code>max-width: 60ch</code></h4>
+                    <p class="ch-reading-box">
+                        Este bloque limita su anchura máxima a <code>60ch</code>. Independientemente de si la ventana mide 1000px o 1920px, cada línea mantiene entre 55 y 65 caracteres, evitando la fatiga visual al saltar de una línea a la siguiente.
+                    </p>
                 </div>
             </section>
 
-            <!-- SECCIÓN 3: Unidades Relativas (Viewport) -->
+            <!-- SECCIÓN 3: Unidades del Viewport -->
             <section aria-labelledby="unidades-viewport">
-                <h2 id="unidades-viewport">3. Unidades del Viewport (Pantalla)</h2>
-                <p>Estas unidades son relativas a las dimensiones de la ventana del navegador (el viewport). Son mágicas para crear secciones a pantalla completa o elementos que se adaptan al redimensionar la ventana.</p>
+                <h2 id="unidades-viewport">3. Unidades del Viewport (<code>vw</code>, <code>vh</code>, <code>dvh</code>, <code>vmin</code>)</h2>
+                <p>
+                    Las unidades de viewport calculan su tamaño como un porcentaje directo de las dimensiones de la ventana visible del navegador, permitiendo crear secciones de pantalla completa o proporciones fluidas sin JavaScript.
+                </p>
+
                 <ul>
-                    <li><strong><code>vw</code> (Viewport Width):</strong> 1vw = 1% del ancho total de la pantalla.</li>
-                    <li><strong><code>vh</code> (Viewport Height):</strong> 1vh = 1% del alto total de la pantalla. (Ej: <code>100vh</code> ocupa toda la altura visible).</li>
-                    <li><strong><code>vmin</code> / <code>vmax</code>:</strong> El valor mínimo o máximo entre <code>vw</code> y <code>vh</code>. Muy útiles para mantener proporciones perfectas en móviles y escritorio.</li>
+                    <li><strong><code>vw</code> (Viewport Width):</strong> <code>1vw</code> equivale al 1% del ancho total del viewport (incluyendo la barra de desplazamiento vertical si existe).</li>
+                    <li><strong><code>vh</code> y <code>dvh</code> (Viewport Height):</strong> <code>100vh</code> representa el alto clásico de pantalla; en navegadores móviles con barras de direcciones retráctiles, <code>100dvh</code> (<em>Dynamic Viewport Height</em>) ajusta la altura en tiempo real sin recortar contenido inferior.</li>
+                    <li><strong><code>vmin</code> / <code>vmax</code>:</strong> Evalúan el lado más corto o más largo de la pantalla, ideales para tipografía o figuras que deben conservar proporción tanto en vertical (<em>portrait</em>) como en horizontal (<em>landscape</em>).</li>
                 </ul>
 
                 <div class="box demo-viewport">
+                    <h4>Demo: Caja fluida basada en <code>vw</code></h4>
                     <div class="vw-box">
-                        Mi ancho es <code>50vw</code>. ¡Cambia el tamaño de tu navegador y verás cómo crezco o encojo dinámicamente!
+                        Mi ancho es proporcional al viewport (<code>50vw</code> en escritorio). Redimensiona la ventana para observar el ajuste continuo.
                     </div>
+                    <pre><code class="language-css">.hero-banner {
+  min-height: 100dvh; /* Altura completa real en móvil y escritorio */
+  width: min(90vw, 1200px);
+}</code></pre>
                 </div>
-            </section>
 
+                <aside class="box callout" aria-label="Regla práctica de selección de unidades">
+                    <div class="callout-header">
+                        <span class="callout-tag">Regla Práctica de Selección</span>
+                    </div>
+                    <p>
+                        Usa <strong><code>rem</code></strong> para tamaños de fuente y espaciados globales; <strong><code>em</code></strong> cuando quieras que el padding de un botón o icono escale proporcionalmente a su propio texto; <strong><code>ch</code></strong> para anchos de párrafos; y <strong><code>%</code> / <code>fr</code> / <code>dvh</code></strong> para estructuras de layout.
+                    </p>
+                </aside>
+            </section>
         </article>
     </main>
 
     <footer>
-        <p>CSS - Nivel Intermedio - 2026</p>
+        <p>CSS Intermedio - I01 Unidades de Medida - 2026</p>
     </footer>
 </body>
 </html>
