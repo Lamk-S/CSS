@@ -1,244 +1,429 @@
-/*
-=========================================
-style.css - Posicionamiento
-Objetivo:
-Demostrar visualmente cómo los elementos
-escapan del flujo normal usando relative,
-absolute, sticky, y cómo se apilan con z-index.
-=========================================
-*/
-
+/* ==========================================================================
+   1. DESIGN TOKENS (Sistema unificado del repositorio)
+   ========================================================================== */
 :root {
-    /* Paleta base de la serie */
     --color-text: #1f2937;
-    --color-bg: hsl(220, 25%, 97%);
+    --color-text-strong: #0f172a;
+    --color-muted: #64748b;
     --color-surface: #ffffff;
-    --color-primary: rgb(37, 99, 235);
-    --color-border: rgba(15, 23, 42, 0.10);
-    --color-muted: #6b7280;
-    --color-code: #b91c1c;
+    --color-surface-subtle: #f8fafc;
+    --color-primary: #2563eb;
+    --color-primary-dark: #1d4ed8;
+    --color-primary-soft: rgba(37, 99, 235, 0.08);
+    --color-border: rgba(15, 23, 42, 0.09);
+    --color-code: #be123c;
 
-    /* Colores para demos de z-index */
-    --color-z1: #94a3b8; /* Gris */
-    --color-z2: #38bdf8; /* Celeste */
-    --color-z3: #f43f5e; /* Rosa/Rojo */
+    /* Tokens didácticos para capas de profundidad (z-index) */
+    --color-z1: #475569;
+    --color-z2: #0284c7;
+    --color-z3: #e11d48;
 
     --radius-lg: 20px;
     --radius-md: 14px;
-    --shadow-card: 0 10px 30px rgba(15, 23, 42, 0.06);
+    --radius-sm: 8px;
+    --radius-pill: 999px;
+
+    --shadow-soft: 0 20px 60px rgba(15, 23, 42, 0.07);
+    --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.04);
 }
 
-/*
---------------------------------------------------
-Base del documento
---------------------------------------------------
-*/
-html { font-size: 16px; scroll-behavior: smooth; box-sizing: border-box; }
-*, *:before, *:after { box-sizing: inherit; }
+/* ==========================================================================
+   2. RESET Y BASE (Arquitectura Mobile-First)
+   ========================================================================== */
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    box-sizing: border-box;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
 
 body {
     margin: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: var(--color-text);
     background:
-        radial-gradient(circle at top, rgba(37, 99, 235, 0.08), transparent 35%),
+        radial-gradient(circle at top center, rgba(37, 99, 235, 0.09), transparent 40%),
         linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
     line-height: 1.65;
-    padding: clamp(1rem, 2vw, 2rem);
+    padding: clamp(1rem, 2.5vw, 2.5rem);
+    -webkit-font-smoothing: antialiased;
 }
 
-header, .notes { max-width: 980px; margin: 0 auto; }
-header { margin-bottom: 1.5rem; }
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+}
+
+/* ==========================================================================
+   3. ESTRUCTURA Y TIPOGRAFÍA
+   ========================================================================== */
+.page-header,
+.notes,
+.page-footer {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 1.75rem;
+}
+
+.badge-module {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    padding: 0.25rem 0.7rem;
+    border-radius: var(--radius-pill);
+    margin-bottom: 0.75rem;
+}
 
 .notes {
-    background: rgba(255, 255, 255, 0.82);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-card);
-    padding: clamp(1.25rem, 3vw, 2.25rem);
+    box-shadow: var(--shadow-soft);
+    padding: clamp(1.25rem, 3.5vw, 2.5rem);
 }
 
-h1, h2, h3, h4 { color: var(--color-primary); line-height: 1.2; margin-top: 0; }
-h1 { font-size: clamp(2rem, 3vw, 3rem); letter-spacing: -0.03em; margin-bottom: 0.5rem; }
-h2 { font-size: clamp(1.35rem, 2vw, 1.7rem); margin: 2rem 0 0.75rem; }
-h3 { font-size: 1.15rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: #1e40af; }
+h1, h2, h3, h4 {
+    color: var(--color-text-strong);
+    line-height: 1.25;
+    margin-top: 0;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
 
-.lead { color: var(--color-muted); max-width: 65ch; margin: 0 0 1rem; font-size: 1.1rem; }
-header hr { border: none; height: 1px; background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.35), transparent); margin: 1.25rem 0 0; }
-section + section { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border); }
-p { margin: 0 0 1rem; }
-ul { padding-left: 1.25rem; margin: 0 0 1rem; }
+h1 {
+    font-size: clamp(1.85rem, 3.5vw, 2.85rem);
+    color: var(--color-primary);
+    margin: 0.2rem 0 0.5rem;
+}
 
-code { 
-    color: var(--color-code); 
-    background: rgba(185, 28, 28, 0.06); 
-    padding: 0.15rem 0.35rem; 
-    border-radius: 0.35rem; 
-    font-family: monospace; 
+h2 {
+    font-size: clamp(1.3rem, 2.2vw, 1.65rem);
+    color: var(--color-primary);
+    margin: 0 0 0.85rem;
+}
+
+h3 {
+    font-size: 1.12rem;
+    margin: 1.5rem 0 0.45rem;
+    color: var(--color-primary-dark);
+}
+
+h4 {
+    font-size: 0.98rem;
+    margin-bottom: 0.65rem;
+}
+
+p {
+    margin: 0 0 1rem;
+    text-wrap: pretty;
+}
+
+ul {
+    padding-left: 1.25rem;
+    margin: 0 0 1.1rem;
+}
+
+li + li {
+    margin-top: 0.5rem;
+}
+
+.lead {
+    color: var(--color-muted);
+    max-width: 75ch;
+    font-size: clamp(1rem, 1.4vw, 1.12rem);
+    margin: 0;
+}
+
+.page-header hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(37, 99, 235, 0.35), rgba(37, 99, 235, 0.05) 70%, transparent);
+    margin: 1.5rem 0 0;
+}
+
+section + section {
+    margin-top: 2.25rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+}
+
+/* ==========================================================================
+   4. CÓDIGO, CONTENEDORES Y CALLOUTS
+   ========================================================================== */
+code {
+    color: var(--color-code);
+    background: rgba(190, 18, 60, 0.07);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.35rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.88em;
+}
+
+:is(h1, h2, h3, h4) code {
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    font-size: 0.85em;
+}
+
+pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 1.1rem 1.25rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow-x: auto;
+    margin: 1rem 0 0;
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+
+pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border: none;
+    font-size: inherit;
 }
 
 .box {
-    padding: 1.5rem;
-    margin: 1.5rem 0;
+    padding: 1.25rem;
+    margin: 1rem 0;
     border-radius: var(--radius-md);
-    background-color: var(--color-surface);
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     box-shadow: var(--shadow-card);
 }
 
-/*
---------------------------------------------------
-1. Demo: Position Relative
---------------------------------------------------
-*/
+.callout {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(255, 255, 255, 0.95) 100%);
+    border: 1px solid rgba(37, 99, 235, 0.22);
+    padding: 1.25rem 1.4rem;
+}
+
+.callout-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.45rem;
+}
+
+.callout-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+}
+
+.callout-tag::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+.callout p {
+    margin: 0;
+    color: var(--color-text-strong);
+}
+
+/* ==========================================================================
+   5. DEMO 1: POSITION RELATIVE vs STATIC
+   ========================================================================== */
 .demo-container {
-    background-color: #f1f5f9;
+    background-color: var(--color-surface-subtle);
     border: 1px dashed #cbd5e1;
 }
 
 .demo-box {
-    padding: 1rem;
-    border-radius: 6px;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-sm);
     font-weight: 600;
-    color: white;
+    font-size: 0.9rem;
+    color: #ffffff;
     text-align: center;
+}
+
+.demo-box code {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .box-static {
     background-color: #64748b;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.65rem;
+}
+
+.box-static:last-child {
+    margin-bottom: 0;
 }
 
 .box-relative {
     background-color: var(--color-primary);
-    /* Inicia la magia del posicionamiento relativo */
+    max-width: calc(100% - 20px);
     position: relative;
-    top: 20px;
-    left: 30px;
-    /* Se mueve de su punto de origen, pero el box-static de abajo 
-       no sube para ocupar su espacio. Deja un "fantasma". */
-    z-index: 10; /* Para asegurarnos que flote sobre el de abajo */
+    top: 14px;
+    left: 20px;
+    margin-bottom: 0.65rem;
+    z-index: 2;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.28);
 }
 
-/*
---------------------------------------------------
-2. Demo: Position Sticky
---------------------------------------------------
-*/
+/* ==========================================================================
+   6. DEMO 2: POSITION STICKY
+   ========================================================================== */
 .demo-scroll-box {
-    height: 180px;
-    overflow-y: auto; /* Permite hacer scroll solo dentro de esta caja */
-    background-color: #f8fafc;
-    border: 2px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: 1rem;
+    height: 190px;
+    overflow-y: auto;
+    background-color: var(--color-surface-subtle);
+    border: 1.5px solid #cbd5e1;
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1rem;
     position: relative;
+}
+
+.demo-scroll-box p {
+    margin: 0.85rem 0;
+    font-size: 0.92rem;
+    color: var(--color-text);
 }
 
 .sticky-header {
-    background-color: #10b981; /* Verde */
-    color: white;
-    padding: 0.75rem;
+    background: linear-gradient(135deg, #059669, #047857);
+    color: #ffffff;
+    padding: 0.7rem 0.9rem;
     border-radius: 6px;
-    font-weight: bold;
+    font-weight: 700;
+    font-size: 0.88rem;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    
-    /* Configuración Sticky */
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
     position: sticky;
-    top: 0; /* Cuando llegue al top 0 de su contenedor, se "pega" */
+    top: 0;
+    z-index: 5;
 }
 
-/*
---------------------------------------------------
-3. Demo: Patrón Padre Relativo / Hijo Absoluto
---------------------------------------------------
-*/
+.sticky-header code {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.22);
+}
+
+/* ==========================================================================
+   7. DEMO 3: PATRÓN PADRE RELATIVO + HIJO ABSOLUTO
+   ========================================================================== */
 .card-relative {
-    /* El contenedor padre se vuelve la "referencia" de coordenadas */
-    position: relative; 
-    
-    background-color: #eff6ff; /* Azul muy clarito */
-    border: 2px solid #bfdbfe;
-    min-height: 120px;
+    position: relative;
+    background-color: #eff6ff;
+    border: 1.5px solid #bfdbfe;
+    margin-top: 1.35rem;
+    padding-top: 1.5rem;
 }
 
 .badge-absolute {
-    /* El hijo sale del flujo y se posiciona relativo a la .card-relative */
     position: absolute;
-    
-    /* Coordenadas respecto a su padre */
-    top: -15px;
-    right: -15px;
-    
-    background-color: #ef4444; /* Rojo alerta */
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-weight: bold;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+    top: -12px;
+    right: 16px;
+    background-color: #dc2626;
+    color: #ffffff;
+    padding: 0.3rem 0.85rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.8rem;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.28);
 }
 
-/*
---------------------------------------------------
-4. Demo: Orden de Apilamiento (Z-Index)
---------------------------------------------------
-*/
+.badge-absolute code {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.22);
+}
+
+/* ==========================================================================
+   8. DEMO 4: ORDEN DE APILAMIENTO (Z-INDEX)
+   ========================================================================== */
 .z-index-demo {
-    position: relative; /* Contenedor para que los absolutos no se escapen */
-    height: 200px;
-    background-color: #f1f5f9;
+    position: relative;
+    height: 210px;
+    background-color: var(--color-surface-subtle);
+    border: 1px dashed #cbd5e1;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
 }
 
 .z-box {
     position: absolute;
-    width: 120px;
-    height: 120px;
-    color: white;
-    font-weight: bold;
+    width: 118px;
+    height: 118px;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.85rem;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
-    border: 2px solid rgba(255,255,255,0.5);
-    box-shadow: 0 10px 15px rgba(0,0,0,0.2);
+    gap: 0.25rem;
+    border-radius: var(--radius-sm);
+    border: 2px solid rgba(255, 255, 255, 0.65);
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.18);
 }
 
-/* Caja 1 (Abajo del todo) */
+.z-box code {
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.22);
+    font-size: 0.8rem;
+}
+
+.z-box small {
+    font-weight: 500;
+    opacity: 0.9;
+    font-size: 0.76rem;
+}
+
 .z-box-1 {
-    top: 20px;
-    left: 20px;
+    top: 18px;
+    left: 18px;
     background-color: var(--color-z1);
     z-index: 1;
 }
 
-/* Caja 2 (Al medio visualmente, pero z-index 2) */
 .z-box-2 {
-    top: 60px;
-    left: 60px;
+    top: 66px;
+    left: 64px;
     background-color: var(--color-z2);
     z-index: 2;
 }
 
-/* Caja 3 (Arriba del todo porque tiene el z-index mayor) */
 .z-box-3 {
     top: 40px;
-    left: 100px;
+    left: 112px;
     background-color: var(--color-z3);
     z-index: 3;
 }
 
-/*
---------------------------------------------------
-Footer
---------------------------------------------------
-*/
-footer {
-    margin-top: 2rem;
-    padding-top: 1rem;
+/* ==========================================================================
+   9. PIE DE PÁGINA
+   ========================================================================== */
+.page-footer {
+    margin-top: 2.25rem;
+    padding-top: 1.25rem;
     text-align: center;
     color: var(--color-muted);
-    font-size: 0.95rem;
+    font-size: 0.88rem;
     border-top: 1px solid var(--color-border);
 }
