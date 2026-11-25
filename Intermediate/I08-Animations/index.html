@@ -3,17 +3,17 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Apuntes técnicos de CSS Intermedio: Transiciones, Transformaciones aceleradas por GPU, Keyframes y optimización de rendimiento.">
-    <title>Transiciones, Transformaciones y Animaciones — CSS Intermedio</title>
+    <meta name="description" content="Apuntes técnicos de CSS Intermedio: Transiciones, curvas de aceleración comparadas, Transformaciones 2D/3D en GPU, Keyframes y rendimiento a 60fps.">
+    <title>I08 - Transiciones, Transformaciones y Animaciones — Nivel Intermedio</title>
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
     <header class="page-header">
-        <span class="badge-module">Módulo I08 · Motion &amp; UI Engineering</span>
+        <span class="badge-module">Módulo I08 · Motion &amp; GPU Compositing</span>
         <h1>Transiciones, Transformaciones y Animaciones</h1>
         <p class="lead">
-            Diseña micro-interacciones fluidas a 60fps sin JavaScript. Domina <code>transition</code> (interpolación de estados), 
-            <code>transform</code> (composición en GPU) y secuencias complejas con <code>@keyframes</code>.
+            Diseña micro-interacciones fluidas a 60fps sin JavaScript. Domina <code>transition</code> (interpolación entre estados), 
+            <code>transform</code> (composición acelerada por GPU) y secuencias multi-etapa con <code>@keyframes</code>.
         </p>
         <hr aria-hidden="true">
     </header>
@@ -22,53 +22,94 @@
         <article class="notes">
             <!-- SECCIÓN 1: Transiciones CSS -->
             <section aria-labelledby="transiciones">
-                <h2 id="transiciones">1. Transiciones — Interpolación suave de A a B</h2>
+                <h2 id="transiciones">1. Transiciones — Interpolación Suave de A a B</h2>
                 <p>
-                    Las transiciones permiten que un cambio de propiedad CSS ocurra de forma gradual durante un intervalo de tiempo en lugar de aplicarse instantáneamente.
+                    Las transiciones permiten que un cambio de valor en una propiedad CSS ocurra de forma gradual durante un intervalo de tiempo en lugar de aplicarse en un único fotograma.
                 </p>
 
                 <ul>
-                    <li><code>transition-property</code>: Define qué propiedad o propiedades serán observadas (evita <code>all</code> en producción).</li>
-                    <li><code>transition-duration</code>: Tiempo que tarda en completarse la interpolación (ej. <code>250ms</code> o <code>0.3s</code>).</li>
-                    <li><code>transition-timing-function</code>: Curva de aceleración (<code>ease</code>, <code>linear</code>, <code>ease-in-out</code>, <code>cubic-bezier()</code>).</li>
+                    <li><strong><code>transition-property</code>:</strong> Define qué propiedad o propiedades serán observadas (evita <code>all</code> en producción para no animar propiedades costosas por accidente).</li>
+                    <li><strong><code>transition-duration</code>:</strong> Tiempo total de la interpolación (ej. <code>220ms</code> o <code>0.25s</code>).</li>
+                    <li><strong><code>transition-timing-function</code>:</strong> Curva matemática de aceleración (<code>ease</code>, <code>linear</code>, <code>ease-in-out</code>, <code>cubic-bezier()</code>).</li>
+                    <li><strong><code>transition-delay</code>:</strong> Tiempo de espera antes de iniciar la transición.</li>
                     <li><strong>Shorthand:</strong> <code>transition: property duration timing-function delay;</code></li>
                 </ul>
 
                 <!-- Demo 1A: Botón interactivo -->
                 <div class="box">
-                    <h4>Micro-interacción en botón (Hover &amp; Active)</h4>
+                    <h4>Micro-interacción en botón (<code>:hover</code>, <code>:focus-visible</code> y <code>:active</code>)</h4>
                     <div class="stage-inline">
-                        <button type="button" class="btn-transition">Pasa el cursor aquí</button>
+                        <button type="button" class="btn-transition">Interactúa con este botón</button>
                     </div>
                     <pre><code class="language-css">.btn {
-  background: #2563eb;
-  /* Buena práctica: declarar explícitamente qué propiedades transicionan */
-  transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+  background-color: #2563eb;
+  /* Declara explícitamente qué propiedades transicionan */
+  transition:
+    background-color 0.25s ease,
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.25s ease;
 }
 
 .btn:hover {
-  background: #1d4ed8;
+  background-color: #1d4ed8;
   transform: translateY(-2px);
 }</code></pre>
                 </div>
 
-                <!-- Demo 1B: Comparativa de curvas de aceleración -->
+                <!-- Demo 1B: Comparativa minuciosa de curvas de aceleración -->
                 <div class="box">
-                    <h4>Curvas de aceleración (Timing Functions)</h4>
-                    <p class="small-note">Pasa el cursor sobre el área gris para comparar cómo cada función distribuye la velocidad en el mismo tiempo (1.2s):</p>
-                    
-                    <div class="timing-demo-area" tabindex="0" aria-label="Área interactiva de comparación de curvas de tiempo">
-                        <div class="timing-track">
-                            <div class="timing-ball ease">ease</div>
+                    <h4>Comparativa minuciosa de curvas de aceleración (<code>transition-timing-function</code>)</h4>
+                    <p class="small-note">
+                        Pasa el cursor, mantén pulsado o enfoca con <kbd>Tab</kbd> el panel para disparar los cuatro carriles simultáneamente durante <strong>2.4s</strong> y comparar su progreso frente a las marcas del <strong>25%</strong>, <strong>50%</strong> y <strong>75%</strong>:
+                    </p>
+
+                    <div class="timing-demo-area" tabindex="0" role="region" aria-label="Comparación sincronizada de cuatro curvas de tiempo CSS">
+                        <div class="timing-ruler" aria-hidden="true">
+                            <span>0%</span>
+                            <span>25%</span>
+                            <span>50%</span>
+                            <span>75%</span>
+                            <span>100%</span>
                         </div>
-                        <div class="timing-track">
-                            <div class="timing-ball linear">linear</div>
+
+                        <div class="timing-row">
+                            <div class="timing-meta">
+                                <strong><code>ease</code></strong>
+                                <span>Arranque rápido y frenado suave al final (por defecto)</span>
+                            </div>
+                            <div class="timing-track">
+                                <div class="timing-ball ease">ease</div>
+                            </div>
                         </div>
-                        <div class="timing-track">
-                            <div class="timing-ball ease-in-out">ease-in-out</div>
+
+                        <div class="timing-row">
+                            <div class="timing-meta">
+                                <strong><code>linear</code></strong>
+                                <span>Velocidad constante de principio a fin (ideal para rotación continua)</span>
+                            </div>
+                            <div class="timing-track">
+                                <div class="timing-ball linear">linear</div>
+                            </div>
                         </div>
-                        <div class="timing-track">
-                            <div class="timing-ball bounce">cubic-bezier</div>
+
+                        <div class="timing-row">
+                            <div class="timing-meta">
+                                <strong><code>ease-in-out</code></strong>
+                                <span>Aceleración simétrica lenta al inicio y al cierre</span>
+                            </div>
+                            <div class="timing-track">
+                                <div class="timing-ball ease-in-out">ease-in-out</div>
+                            </div>
+                        </div>
+
+                        <div class="timing-row">
+                            <div class="timing-meta">
+                                <strong><code>cubic-bezier(0.68, -0.55, 0.265, 1.55)</code></strong>
+                                <span>Anticipación inicial y rebote elástico que sobrepasa el destino</span>
+                            </div>
+                            <div class="timing-track">
+                                <div class="timing-ball bounce">cubic-bezier</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -78,35 +119,35 @@
             <section aria-labelledby="transformaciones">
                 <h2 id="transformaciones">2. Transformaciones — Geometría en GPU</h2>
                 <p>
-                    La propiedad <code>transform</code> modifica el espacio de coordenadas visuales de un elemento sin alterar el flujo del documento (no dispara <em>reflow</em> ni <em>layout recalculation</em>).
+                    La propiedad <code>transform</code> altera el espacio de coordenadas visuales del elemento sin modificar su geometría en el flujo del documento (no empuja a elementos vecinos ni dispara <em>reflow</em>).
                 </p>
 
                 <div class="demo-grid">
                     <div class="box demo-card">
                         <h4>Traslación (<code>translate</code>)</h4>
-                        <div class="transform-stage">
+                        <div class="transform-stage" tabindex="0" aria-label="Demo de traslación 2D">
                             <div class="transform-box translate-box">translate(20px, -10px)</div>
                         </div>
                     </div>
 
                     <div class="box demo-card">
                         <h4>Escala (<code>scale</code>)</h4>
-                        <div class="transform-stage">
+                        <div class="transform-stage" tabindex="0" aria-label="Demo de escala 2D">
                             <div class="transform-box scale-box">scale(1.18)</div>
                         </div>
                     </div>
 
                     <div class="box demo-card">
                         <h4>Rotación (<code>rotate</code>)</h4>
-                        <div class="transform-stage">
+                        <div class="transform-stage" tabindex="0" aria-label="Demo de rotación 2D">
                             <div class="transform-box rotate-box">rotate(12deg)</div>
                         </div>
                     </div>
 
                     <div class="box demo-card">
                         <h4>Transformación compuesta</h4>
-                        <div class="transform-stage">
-                            <div class="transform-box combo-box">scale + rotate</div>
+                        <div class="transform-stage" tabindex="0" aria-label="Demo de transformación compuesta">
+                            <div class="transform-box combo-box">scale(1.12) rotate(6deg)</div>
                         </div>
                     </div>
                 </div>
@@ -117,8 +158,8 @@
                     <div class="card-3d-wrapper">
                         <div class="card-3d" tabindex="0">
                             <span class="card-pill">UI Pattern</span>
-                            <h3>Hover para elevar</h3>
-                            <p>Combina <code>translateY(-6px)</code> con una sombra difusa para comunicar interactividad y jerarquía espacial.</p>
+                            <h3>Hover o Focus para elevar</h3>
+                            <p>Combina <code>translateY(-6px)</code> con una sombra difusa para comunicar interactividad y jerarquía espacial sin alterar el layout.</p>
                         </div>
                     </div>
                 </div>
@@ -126,32 +167,31 @@
 
             <!-- SECCIÓN 3: Animaciones con @keyframes -->
             <section aria-labelledby="animaciones">
-                <h2 id="animaciones">3. Animaciones continuas con <code>@keyframes</code></h2>
+                <h2 id="animaciones">3. Animaciones Continuas con <code>@keyframes</code></h2>
                 <p>
-                    Mientras que <code>transition</code> requiere un disparador (como <code>:hover</code>), las animaciones con <code>@keyframes</code> permiten definir múltiples etapas intermedias y ejecutarse automáticamente o en bucle.
+                    Mientras que <code>transition</code> requiere un cambio de estado disparador (como <code>:hover</code>), las animaciones con <code>@keyframes</code> definen múltiples fotogramas clave y pueden ejecutarse automáticamente o en bucle infinito.
                 </p>
 
                 <pre><code class="language-css">@keyframes flotar {
-  0%   { transform: translateY(0); }
-  50%  { transform: translateY(-16px); }
-  100% { transform: translateY(0); }
+  0%   { transform: translateY(4px); }
+  100% { transform: translateY(-10px); }
 }
 
 .elemento {
   /* nombre | duración | curva | retardo | iteraciones | dirección */
-  animation: flotar 1.2s ease-in-out 0.2s infinite alternate;
+  animation: flotar 1.1s ease-in-out 0s infinite alternate;
 }</code></pre>
 
                 <div class="demo-grid">
                     <div class="box demo-card">
-                        <h4>1. Spinner de carga</h4>
+                        <h4>1. Spinner de carga (<code>linear infinite</code>)</h4>
                         <div class="animation-stage">
-                            <div class="spinner" role="status" aria-label="Cargando"></div>
+                            <div class="spinner" role="status" aria-label="Indicador de carga giratorio"></div>
                         </div>
                     </div>
 
                     <div class="box demo-card">
-                        <h4>2. Indicador de estado (Pulse)</h4>
+                        <h4>2. Indicador de estado activo (<code>pulse</code>)</h4>
                         <div class="animation-stage">
                             <div class="pulse" aria-hidden="true"></div>
                         </div>
@@ -168,7 +208,7 @@
                     </div>
 
                     <div class="box demo-card">
-                        <h4>4. Rebote elástico</h4>
+                        <h4>4. Flotación alterna (<code>infinite alternate</code>)</h4>
                         <div class="animation-stage">
                             <div class="bounce-box">En movimiento</div>
                         </div>
@@ -180,10 +220,29 @@
             <section aria-labelledby="performance">
                 <h2 id="performance">4. Rendimiento (60fps) y Accesibilidad</h2>
                 <p>
-                    Para mantener una tasa constante de 60 cuadros por segundo (menos de 16.6ms por frame), anima únicamente propiedades gestionadas por la capa de composición del navegador.
+                    Para mantener una tasa constante de 60 cuadros por segundo (menos de <strong>16.6ms por frame</strong>), anima únicamente propiedades resueltas en la capa de composición (GPU) sin recalcular geometría.
                 </p>
 
                 <div class="box">
+                    <h4>Comparativa visual: GPU Composite (<code>transform</code>) vs Reflow en CPU</h4>
+                    <div class="demo-grid perf-compare-grid">
+                        <div class="perf-panel is-good">
+                            <span class="perf-badge good">✓ Óptimo · GPU Composite</span>
+                            <div class="perf-track">
+                                <div class="perf-runner gpu-runner"><code>transform: translateX()</code></div>
+                            </div>
+                            <p>Sub-píxel suave a 60fps; no provoca recalculo de layout en cada frame.</p>
+                        </div>
+
+                        <div class="perf-panel is-bad">
+                            <span class="perf-badge bad">✕ Costoso · Layout Reflow</span>
+                            <div class="perf-track">
+                                <div class="perf-runner cpu-runner"><code>left / margin-left</code></div>
+                            </div>
+                            <p>Simulación del escalonado y coste de recalcular geometría en el hilo principal.</p>
+                        </div>
+                    </div>
+
                     <div class="table-wrapper">
                         <table class="perf-table">
                             <thead>
@@ -194,7 +253,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><code>transform</code> (translate, scale, rotate)</td>
+                                    <td><code>transform</code> (<code>translate</code>, <code>scale</code>, <code>rotate</code>)</td>
                                     <td><code>width</code>, <code>height</code>, <code>padding</code>, <code>margin</code></td>
                                 </tr>
                                 <tr>
@@ -205,7 +264,7 @@
                         </table>
                     </div>
 
-                    <pre><code class="language-css">/* Accesibilidad obligatoria: respeta la configuración del sistema operativo del usuario */
+                    <pre><code class="language-css">/* Accesibilidad obligatoria: respeta la preferencia del sistema operativo */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -221,15 +280,14 @@
                         <span class="callout-tag">Estándar UI/UX &amp; A11y</span>
                     </div>
                     <p>
-                        <strong>El movimiento debe tener propósito:</strong> Las animaciones en interfaces profesionales guían la atención del usuario y confirman acciones (feedback), nunca deben bloquear la interacción ni superar los <code>300ms</code> en controles cotidianos.
+                        <strong>El movimiento debe tener propósito:</strong> Las animaciones en interfaces profesionales guían la atención del usuario y confirman acciones (<em>feedback</em>); nunca deben bloquear la interacción ni superar los <code>300ms</code> en controles cotidianos.
                     </p>
                 </aside>
             </section>
         </article>
     </main>
-
-    <footer>
-        <p>CSS - Nivel Intermedio - 2026</p>
+    <footer class="page-footer">
+        <p>CSS Intermedio - I08 Transiciones, Transformaciones y Animaciones - 2026</p>
     </footer>
 </body>
 </html>

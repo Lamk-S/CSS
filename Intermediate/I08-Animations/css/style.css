@@ -1,8 +1,7 @@
 /* ==========================================================================
-   DESIGN TOKENS (Variables globales del sistema de diseño)
+   1. DESIGN TOKENS (Sistema unificado del repositorio)
    ========================================================================== */
 :root {
-    /* Paleta de colores */
     --color-text: #1f2937;
     --color-text-strong: #0f172a;
     --color-muted: #64748b;
@@ -14,19 +13,19 @@
     --color-border: rgba(15, 23, 42, 0.09);
     --color-code: #be123c;
 
-    /* Geometría y elevación */
     --radius-lg: 20px;
     --radius-md: 14px;
     --radius-sm: 8px;
+    --radius-pill: 999px;
+
     --shadow-soft: 0 20px 60px rgba(15, 23, 42, 0.07);
     --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.04);
 
-    /* Transiciones */
     --transition-base: 220ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ==========================================================================
-   RESET Y BASE (Arquitectura Mobile-First)
+   2. RESET Y BASE (Arquitectura Mobile-First)
    ========================================================================== */
 html {
     font-size: 16px;
@@ -56,12 +55,12 @@ body {
 }
 
 /* ==========================================================================
-   ESTRUCTURA Y TIPOGRAFÍA
+   3. ESTRUCTURA Y TIPOGRAFÍA
    ========================================================================== */
 .page-header,
 .notes,
-footer {
-    max-width: 960px;
+.page-footer {
+    max-width: 1000px;
     margin: 0 auto;
 }
 
@@ -71,7 +70,7 @@ footer {
 
 .badge-module {
     display: inline-block;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -79,7 +78,7 @@ footer {
     background: var(--color-primary-soft);
     border: 1px solid rgba(37, 99, 235, 0.18);
     padding: 0.25rem 0.7rem;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     margin-bottom: 0.75rem;
 }
 
@@ -98,12 +97,13 @@ h1, h2, h3, h4 {
     line-height: 1.25;
     margin-top: 0;
     letter-spacing: -0.02em;
+    text-wrap: balance;
 }
 
 h1 {
     font-size: clamp(1.85rem, 3.5vw, 2.85rem);
     color: var(--color-primary);
-    margin-bottom: 0.5rem;
+    margin: 0.2rem 0 0.5rem;
 }
 
 h2 {
@@ -113,8 +113,8 @@ h2 {
 }
 
 h3 {
-    font-size: 1.15rem;
-    margin-bottom: 0.4rem;
+    font-size: 1.12rem;
+    margin-bottom: 0.45rem;
 }
 
 h4 {
@@ -122,10 +122,15 @@ h4 {
     margin-bottom: 0.75rem;
 }
 
+p {
+    margin: 0 0 1rem;
+    text-wrap: pretty;
+}
+
 .lead {
     color: var(--color-muted);
-    max-width: 68ch;
-    font-size: clamp(1rem, 1.4vw, 1.125rem);
+    max-width: 75ch;
+    font-size: clamp(1rem, 1.4vw, 1.12rem);
     margin: 0;
 }
 
@@ -144,6 +149,7 @@ section + section {
 
 ul {
     padding-left: 1.25rem;
+    margin: 0 0 1.1rem;
 }
 
 li + li {
@@ -156,8 +162,21 @@ li + li {
     margin: 0 0 0.85rem;
 }
 
+kbd {
+    display: inline-block;
+    padding: 0.1rem 0.4rem;
+    font-family: ui-monospace, monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-text-strong);
+    background: var(--color-surface-subtle);
+    border: 1px solid #cbd5e1;
+    border-bottom-width: 2px;
+    border-radius: 4px;
+}
+
 /* ==========================================================================
-   CÓDIGO, TARJETAS Y CALLOUT
+   4. CÓDIGO, TARJETAS Y CALLOUT
    ========================================================================== */
 code {
     color: var(--color-code);
@@ -168,6 +187,13 @@ code {
     font-size: 0.88em;
 }
 
+:is(h1, h2, h3, h4) code {
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    font-size: 0.85em;
+}
+
 pre {
     background: #0f172a;
     color: #e2e8f0;
@@ -176,7 +202,7 @@ pre {
     border: 1px solid rgba(255, 255, 255, 0.08);
     overflow-x: auto;
     margin: 1rem 0 0;
-    font-size: 0.88rem;
+    font-size: 0.86rem;
     line-height: 1.55;
 }
 
@@ -184,6 +210,7 @@ pre code {
     background: transparent;
     color: inherit;
     padding: 0;
+    border: none;
     font-size: inherit;
 }
 
@@ -239,29 +266,30 @@ pre code {
 /* Grid Mobile-First (1 columna -> 2 columnas en 768px) */
 .demo-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.25rem;
     margin: 1rem 0;
 }
 
 @media (min-width: 768px) {
     .demo-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 .demo-card {
     margin: 0;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
 /* ==========================================================================
-   DEMOS DE TRANSICIONES
+   5. DEMOS DE TRANSICIONES Y COMPARATIVA DE CURVAS
    ========================================================================== */
 .stage-inline {
-    padding: 0.5rem 0;
+    padding: 0.4rem 0;
 }
 
 .btn-transition {
@@ -280,7 +308,8 @@ pre code {
         box-shadow 0.25s ease;
 }
 
-.btn-transition:hover {
+.btn-transition:hover,
+.btn-transition:focus-visible {
     background: var(--color-primary-dark);
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
@@ -291,7 +320,7 @@ pre code {
     box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
 }
 
-/* Carriles de Timing Functions (Adaptables a cualquier ancho con Container Queries) */
+/* Carriles de Timing Functions con regla porcentual y marcas (25%, 50%, 75%) */
 .timing-demo-area {
     background: var(--color-surface-subtle);
     border: 1px solid var(--color-border);
@@ -299,45 +328,84 @@ pre code {
     padding: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.9rem;
     cursor: pointer;
+}
+
+.timing-ruler {
+    display: flex;
+    justify-content: space-between;
+    font-family: ui-monospace, monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-muted);
+    padding: 0 0.35rem;
+    border-bottom: 1px dashed #cbd5e1;
+    padding-bottom: 0.35rem;
+}
+
+.timing-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.timing-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+}
+
+.timing-meta span {
+    color: var(--color-muted);
 }
 
 .timing-track {
     container-type: inline-size;
-    background: var(--color-surface);
+    position: relative;
+    background-color: var(--color-surface);
+    background-image: linear-gradient(
+        90deg,
+        transparent calc(25% - 1px), rgba(148, 163, 184, 0.4) 25%, transparent calc(25% + 1px),
+        transparent calc(50% - 1px), rgba(148, 163, 184, 0.55) 50%, transparent calc(50% + 1px),
+        transparent calc(75% - 1px), rgba(148, 163, 184, 0.4) 75%, transparent calc(75% + 1px)
+    );
     border: 1px solid var(--color-border);
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     padding: 0.25rem;
 }
 
 .timing-ball {
-    width: 105px;
+    width: 102px;
     background: var(--color-primary);
     color: #ffffff;
     padding: 0.35rem 0.6rem;
-    border-radius: 999px;
-    font-size: 0.75rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.74rem;
     font-family: ui-monospace, SFMono-Regular, monospace;
     text-align: center;
     font-weight: 600;
     transition-property: transform;
-    transition-duration: 1.2s;
+    transition-duration: 2.4s;
+    will-change: transform;
 }
 
-/* Recorre exactamente el ancho disponible del carril sin desbordarse */
 .timing-demo-area:hover .timing-ball,
-.timing-demo-area:focus .timing-ball {
+.timing-demo-area:focus .timing-ball,
+.timing-demo-area:active .timing-ball {
     transform: translateX(calc(100cqw - 100%));
 }
 
 .timing-ball.ease        { transition-timing-function: ease; }
-.timing-ball.linear      { transition-timing-function: linear; }
-.timing-ball.ease-in-out { transition-timing-function: ease-in-out; }
-.timing-ball.bounce      { transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+.timing-ball.linear      { transition-timing-function: linear; background: #0284c7; }
+.timing-ball.ease-in-out { transition-timing-function: ease-in-out; background: #4f46e5; }
+.timing-ball.bounce      { transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55); background: #be123c; }
 
 /* ==========================================================================
-   DEMOS DE TRANSFORMACIONES (GPU)
+   6. DEMOS DE TRANSFORMACIONES (GPU)
    ========================================================================== */
 .transform-stage {
     background: var(--color-surface-subtle);
@@ -359,20 +427,31 @@ pre code {
     font-family: ui-monospace, SFMono-Regular, monospace;
     font-size: 0.82rem;
     font-weight: 600;
-    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform;
 }
 
-/* El trigger :hover está en el stage padre para evitar temblores al desplazarse la caja */
-.transform-stage:hover .translate-box { transform: translate(20px, -10px); }
-.transform-stage:hover .scale-box     { transform: scale(1.18); }
-.transform-stage:hover .rotate-box    { transform: rotate(12deg); }
-.transform-stage:hover .combo-box     { transform: scale(1.12) rotate(6deg); }
+.transform-stage:hover .translate-box,
+.transform-stage:focus-visible .translate-box,
+.transform-stage:active .translate-box { transform: translate(20px, -10px); }
+
+.transform-stage:hover .scale-box,
+.transform-stage:focus-visible .scale-box,
+.transform-stage:active .scale-box     { transform: scale(1.18); }
+
+.transform-stage:hover .rotate-box,
+.transform-stage:focus-visible .rotate-box,
+.transform-stage:active .rotate-box    { transform: rotate(12deg); }
+
+.transform-stage:hover .combo-box,
+.transform-stage:focus-visible .combo-box,
+.transform-stage:active .combo-box     { transform: scale(1.12) rotate(6deg); }
 
 /* Card con elevación */
 .card-3d-wrapper {
     display: flex;
     justify-content: center;
-    padding: 1rem 0.5rem;
+    padding: 1.1rem 0.75rem;
     background: var(--color-surface-subtle);
     border-radius: var(--radius-sm);
 }
@@ -408,7 +487,7 @@ pre code {
     color: var(--color-primary);
     background: var(--color-primary-soft);
     padding: 0.2rem 0.6rem;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     margin-bottom: 0.65rem;
 }
 
@@ -419,7 +498,7 @@ pre code {
 }
 
 /* ==========================================================================
-   DEMOS DE @KEYFRAMES
+   7. DEMOS DE @KEYFRAMES
    ========================================================================== */
 .animation-stage {
     background: var(--color-surface-subtle);
@@ -439,6 +518,7 @@ pre code {
     border-top-color: var(--color-primary);
     border-radius: 50%;
     animation: spin 0.9s linear infinite;
+    will-change: transform;
 }
 
 @keyframes spin {
@@ -461,6 +541,7 @@ pre code {
     border-radius: 50%;
     background: #10b981;
     animation: pulse-ring 1.6s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+    will-change: transform, opacity;
 }
 
 @keyframes pulse-ring {
@@ -495,9 +576,10 @@ pre code {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
     transform: translateX(-100%);
     animation: shimmer 1.5s infinite;
+    will-change: transform;
 }
 
 @keyframes shimmer {
@@ -514,6 +596,7 @@ pre code {
     font-weight: 600;
     box-shadow: 0 8px 16px -4px rgba(37, 99, 235, 0.35);
     animation: floatBounce 1.1s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+    will-change: transform;
 }
 
 @keyframes floatBounce {
@@ -522,8 +605,89 @@ pre code {
 }
 
 /* ==========================================================================
-   TABLA DE PERFORMANCE Y ACCESIBILIDAD
+   8. COMPARATIVA GPU vs CPU, TABLA Y ACCESIBILIDAD
    ========================================================================== */
+.perf-compare-grid {
+    margin-bottom: 1.25rem;
+}
+
+.perf-panel {
+    background: var(--color-surface-subtle);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.9rem;
+}
+
+.perf-panel p {
+    margin: 0.55rem 0 0;
+    font-size: 0.84rem;
+    color: var(--color-muted);
+}
+
+.perf-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.15rem 0.55rem;
+    border-radius: var(--radius-pill);
+    margin-bottom: 0.55rem;
+}
+
+.perf-badge.good {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.perf-badge.bad {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.perf-track {
+    container-type: inline-size;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.25rem;
+    overflow: hidden;
+}
+
+.perf-runner {
+    display: inline-block;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.perf-runner code {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.22);
+    font-size: 0.74rem;
+}
+
+.gpu-runner {
+    background: #16a34a;
+    animation: slideGpu 2.2s ease-in-out infinite alternate;
+    will-change: transform;
+}
+
+.cpu-runner {
+    background: #dc2626;
+    animation: slideCpuJank 2.2s steps(10, end) infinite alternate;
+}
+
+@keyframes slideGpu {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(calc(100cqw - 100%)); }
+}
+
+@keyframes slideCpuJank {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(calc(100cqw - 100%)); }
+}
+
 .table-wrapper {
     overflow-x: auto;
 }
@@ -549,9 +713,9 @@ pre code {
 }
 
 /* ==========================================================================
-   PIE DE PÁGINA Y PREFERENCIAS DEL SISTEMA
+   9. PIE DE PÁGINA Y PREFERENCIAS DE ACCESIBILIDAD
    ========================================================================== */
-footer {
+.page-footer {
     margin-top: 2.25rem;
     padding-top: 1.25rem;
     text-align: center;
@@ -560,11 +724,15 @@ footer {
     border-top: 1px solid var(--color-border);
 }
 
+/* Aplica reducción de movimiento a la UI general, preservando los escenarios
+   didácticos interactivos cuya finalidad es demostrar las curvas y keyframes */
 @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
+    html {
+        scroll-behavior: auto;
+    }
+
+    .btn-transition,
+    .card-3d {
         transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
     }
 }
