@@ -3,38 +3,45 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Modelo de Caja en CSS — Nivel Intermedio</title>
+    <meta name="description" content="Apuntes de CSS Intermedio: anatomía del Modelo de Caja (content, padding, border, margin), colapso de márgenes y diferencia crítica entre content-box y border-box.">
+    <title>I03 - El Modelo de Caja (Box Model) — Nivel Intermedio</title>
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-    <header>
+    <header class="page-header">
+        <span class="badge-module">Módulo I03 · CSS Box Model &amp; Sizing</span>
         <h1>El Modelo de Caja (Box Model)</h1>
-        <p class="lead">Comprende cómo los navegadores calculan el tamaño y el espaciado de cada elemento en la web. Todo en CSS es una caja.</p>
-        <hr>
+        <p class="lead">
+            Comprende cómo el motor de renderizado calcula las dimensiones y el espaciado de cada elemento en pantalla. 
+            Domina las cuatro capas concéntricas (<code>content</code>, <code>padding</code>, <code>border</code>, <code>margin</code>), el colapso de márgenes y el impacto decisivo de <code>box-sizing: border-box</code>.
+        </p>
+        <hr aria-hidden="true">
     </header>
 
     <main>
         <article class="notes">
-
-            <!-- SECCIÓN 1: Qué es -->
+            <!-- SECCIÓN 1: Anatomía del Modelo de Caja -->
             <section aria-labelledby="que-es">
-                <h2 id="que-es">1. ¿Qué es el Modelo de Caja?</h2>
-                <p>En HTML y CSS, <strong>todo es una caja rectangular</strong> (incluso los textos o botones con bordes redondeados). El Modelo de Caja es el conjunto de reglas que define las partes de esa caja y cómo interactúan entre sí. Se compone de 4 capas, de adentro hacia afuera:</p>
-                
+                <h2 id="que-es">1. Anatomía del Modelo de Caja</h2>
+                <p>
+                    Para el motor de layout de CSS, <strong>todo elemento es una caja rectangular</strong>, incluso cuando visualmente tiene esquinas redondeadas o formas circulares. 
+                    El Modelo de Caja gobierna el tamaño y la separación de cada caja mediante cuatro áreas concéntricas, de adentro hacia afuera:
+                </p>
+
                 <ol>
-                    <li><strong>Content (Contenido):</strong> El área donde se muestra el texto o la imagen.</li>
-                    <li><strong>Padding (Relleno):</strong> Espacio transparente <em>dentro</em> de la caja, entre el contenido y el borde.</li>
-                    <li><strong>Border (Borde):</strong> La línea visible que envuelve al padding y al contenido.</li>
-                    <li><strong>Margin (Margen):</strong> Espacio transparente <em>fuera</em> de la caja, que la separa de otros elementos.</li>
+                    <li><strong>Content (Contenido):</strong> Área interior donde se renderiza el texto, imagen o elementos hijos. Sus dimensiones se controlan con <code>width</code>/<code>height</code> o <code>inline-size</code>/<code>block-size</code>.</li>
+                    <li><strong>Padding (Relleno interior):</strong> Espacio transparente entre el contenido y el borde. Extiende el área clicable y el fondo (<code>background</code>) del elemento.</li>
+                    <li><strong>Border (Borde):</strong> Trazo que envuelve al contenido y al relleno. Ocupa espacio físico dentro de la geometría de la caja.</li>
+                    <li><strong>Margin (Margen exterior):</strong> Espacio transparente externo al borde que separa la caja de sus elementos vecinos. Nunca hereda el fondo del elemento.</li>
                 </ol>
 
-                <div class="box box-model-visual">
+                <div class="box box-model-visual" role="img" aria-label="Diagrama concéntrico del Modelo de Caja: Margin exterior, Border, Padding interior y Content en el centro">
                     <div class="layer-margin">
-                        <span>Margin (Margen exterior)</span>
+                        <span class="layer-label">Margin (Margen exterior)</span>
                         <div class="layer-border">
-                            <span>Border (Borde)</span>
+                            <span class="layer-label">Border (Borde)</span>
                             <div class="layer-padding">
-                                <span>Padding (Relleno interior)</span>
+                                <span class="layer-label">Padding (Relleno interior)</span>
                                 <div class="layer-content">
                                     Content (Contenido)
                                 </div>
@@ -44,67 +51,112 @@
                 </div>
             </section>
 
-            <!-- SECCIÓN 2: Márgenes y Paddings -->
+            <!-- SECCIÓN 2: Márgenes, Paddings y Colapso -->
             <section aria-labelledby="espaciados">
-                <h2 id="espaciados">2. Márgenes y Paddings</h2>
-                <p>Ambos generan espacio, pero de maneras totalmente distintas. El <code>padding</code> engorda el elemento por dentro (su fondo se expande), mientras que el <code>margin</code> empuja a los vecinos hacia afuera.</p>
-                <p>Podemos declararlos lado por lado (ej: <code>margin-top</code>, <code>padding-left</code>) o usando la propiedad abreviada (shorthand), que sigue el sentido de las agujas del reloj: <strong>Arriba, Derecha, Abajo, Izquierda</strong>.</p>
+                <h2 id="espaciados">2. <code>padding</code> vs <code>margin</code> y Colapso de Márgenes</h2>
+                <p>
+                    Aunque ambos generan separación visual, operan en lados opuestos del borde: <code>padding</code> expande la caja hacia adentro (arrastrando su color de fondo), mientras que <code>margin</code> empuja a los elementos adyacentes hacia afuera.
+                </p>
+                <p>
+                    Ambos aceptan la sintaxis abreviada (<em>shorthand</em>) en sentido horario: <strong>Arriba (Top) → Derecha (Right) → Abajo (Bottom) → Izquierda (Left)</strong>.
+                </p>
 
-                <pre><code class="language-css">/* Arriba: 10px | Derecha: 20px | Abajo: 15px | Izquierda: 5px */
-padding: 10px 20px 15px 5px;
+                <pre><code class="language-css">/* 4 valores: Top | Right | Bottom | Left */
+padding: 12px 24px 16px 8px;
 
-/* Arriba y Abajo: 2rem | Derecha e Izquierda: 1rem */
-margin: 2rem 1rem;</code></pre>
+/* 2 valores: Vertical (Top/Bottom) | Horizontal (Left/Right) */
+margin: 1.5rem auto; /* 'auto' en ejes horizontales centra bloques con ancho definido */</code></pre>
 
                 <div class="demo-grid">
-                    <div class="box demo-spacing">
-                        <div class="only-padding">Tengo <code>padding: 2rem</code>. Mi fondo azul crece.</div>
+                    <div class="box demo-card">
+                        <h4><code>padding: 1.75rem</code> (Espacio interno)</h4>
+                        <div class="spacing-stage">
+                            <div class="only-padding">El fondo azul y el borde crecen hacia afuera para alojar el relleno interno.</div>
+                        </div>
                     </div>
-                    <div class="box demo-spacing">
-                        <div class="only-margin">Tengo <code>margin: 2rem</code>. Empujo a mis vecinos lejos de mí.</div>
+
+                    <div class="box demo-card">
+                        <h4><code>margin: 1.25rem</code> (Espacio externo entre hermanos)</h4>
+                        <div class="spacing-stage is-stacked">
+                            <div class="only-margin">Caja A (<code>margin-bottom: 1.25rem</code>)</div>
+                            <div class="only-margin">Caja B (<code>margin-top: 1.25rem</code>)</div>
+                        </div>
+                        <p class="small-note">Nota: En bloques verticales adyacentes, los márgenes se fusionan (<em>margin collapsing</em>) tomando el mayor de ambos en lugar de sumarse.</p>
                     </div>
                 </div>
             </section>
 
-            <!-- SECCIÓN 3: Bordes -->
+            <!-- SECCIÓN 3: Bordes y Radio -->
             <section aria-labelledby="bordes">
-                <h2 id="bordes">3. Borders (Bordes)</h2>
-                <p>El borde envuelve el contenido y el padding. Para que un borde sea visible, necesita tres cosas: <strong>ancho</strong>, <strong>estilo</strong> y <strong>color</strong>.</p>
-                <p>También es aquí donde aplicamos el famoso <code>border-radius</code> para suavizar las esquinas.</p>
+                <h2 id="bordes">3. <code>border</code> y <code>border-radius</code></h2>
+                <p>
+                    Para que un borde se dibuje requiere tres subpropiedades: <code>border-width</code> (grosor), <code>border-style</code> (estilo de trazo, por defecto <code>none</code>) y <code>border-color</code>. 
+                    Con <code>border-radius</code> redondeamos sus vértices; aplicar <code>border-radius: 50%</code> sobre una caja cuadrada produce un círculo perfecto.
+                </p>
 
-                <div class="box borders-demo">
-                    <div class="border-solid">Solid + Radius</div>
-                    <div class="border-dashed">Dashed</div>
-                    <div class="border-double">Double</div>
+                <div class="box">
+                    <div class="borders-demo">
+                        <div class="border-solid"><code>solid</code><br><small>+ radius</small></div>
+                        <div class="border-dashed"><code>dashed</code><br><small>discontinuo</small></div>
+                        <div class="border-double"><code>double</code><br><small>doble línea</small></div>
+                        <div class="border-pill"><code>999px</code><br><small>píldora</small></div>
+                    </div>
+                    <pre><code class="language-css">.card-border {
+  border: 2px solid #2563eb;
+  border-radius: 14px;
+}</code></pre>
                 </div>
             </section>
 
-            <!-- SECCIÓN 4: Box-sizing -->
+            <!-- SECCIÓN 4: Box-Sizing -->
             <section aria-labelledby="box-sizing">
-                <h2 id="box-sizing">4. La magia de Box-Sizing</h2>
-                <p>Por defecto, CSS usa <code>box-sizing: content-box</code>. Esto significa que si le das a una caja un ancho del 100%, y luego le agregas padding o bordes, estos <strong>se sumarán al 100%</strong>, rompiendo el diseño y creando un scroll horizontal.</p>
-                <p>La solución moderna es usar <code>box-sizing: border-box</code>. Esto le dice a CSS: <em>"Incluye el padding y el borde dentro del ancho que declaré"</em>. ¡Es un salvavidas absoluto!</p>
+                <h2 id="box-sizing">4. <code>box-sizing</code>: <code>content-box</code> vs <code>border-box</code></h2>
+                <p>
+                    Por especificación histórica, CSS utiliza <code>box-sizing: content-box</code>. Bajo este modelo, <code>width: 100%</code> define únicamente el ancho del <strong>contenido</strong>, por lo que cualquier <code>padding</code> o <code>border</code> se suma por fuera y provoca desbordamiento horizontal.
+                </p>
+                <p>
+                    Al declarar <code>box-sizing: border-box</code>, el navegador absorbe el <code>padding</code> y el <code>border</code> dentro del ancho total declarado, haciendo que los cálculos de maquetación sean exactos.
+                </p>
 
-                <div class="box-sizing-container">
-                    <h4>Ambas cajas tienen: <code>width: 100%; padding: 2rem; border: 5px solid;</code></h4>
+                <div class="box">
+                    <h4>Comparativa directa: ambas cajas tienen <code>width: 100%; padding: 1.5rem; border: 4px solid;</code></h4>
                     
-                    <div class="sizing-bad">
-                        <strong>content-box (Por defecto)</strong><br>
-                        ¡Me desbordo de mi contenedor! 100% + padding + border = 110%
+                    <div class="box-sizing-stage">
+                        <div class="sizing-bad">
+                            <strong><code>box-sizing: content-box</code> (Comportamiento heredado)</strong>
+                            <p>Ancho real = <code>100% + 3rem (padding) + 8px (border)</code>. Sobrepasa la línea punteada que marca el límite del contenedor padre.</p>
+                        </div>
+
+                        <div class="sizing-good">
+                            <strong><code>box-sizing: border-box</code> (Estándar moderno)</strong>
+                            <p>Ancho real = exactamente <code>100%</code>. El relleno y el borde se descuentan hacia el interior sin desbordar jamás.</p>
+                        </div>
                     </div>
-                    
-                    <div class="sizing-good">
-                        <strong>border-box (La mejor práctica)</strong><br>
-                        Me mantengo exactamente al 100%. CSS reduce el espacio del contenido para absorber el padding y el borde.
-                    </div>
+
+                    <pre><code class="language-css">/* Reset universal recomendado en todo proyecto CSS */
+html {
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}</code></pre>
                 </div>
-            </section>
 
+                <aside class="box callout" aria-label="Resumen de buenas prácticas del Modelo de Caja">
+                    <div class="callout-header">
+                        <span class="callout-tag">Regla de Oro en Producción</span>
+                    </div>
+                    <p>
+                        Incluye siempre <code>box-sizing: border-box</code> en el inicio de tu hoja de estilos. Evita el colapso inesperado de márgenes utilizando <code>gap</code> dentro de contenedores <strong>Flexbox</strong> o <strong>Grid</strong> para separar elementos hermanos.
+                    </p>
+                </aside>
+            </section>
         </article>
     </main>
 
-    <footer>
-        <p>CSS - Nivel Intermedio - 2026</p>
+    <footer class="page-footer">
+        <p>CSS Intermedio - I03 Modelo de Caja - 2026</p>
     </footer>
 </body>
 </html>

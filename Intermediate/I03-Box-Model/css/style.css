@@ -1,247 +1,458 @@
-/*
-=========================================
-style.css - Modelo de Caja
-Objetivo:
-Ilustrar visualmente cómo interactúan el
-contenido, relleno, borde y margen, y 
-demostrar la importancia vital de box-sizing.
-=========================================
-*/
-
+/* ==========================================================================
+   1. DESIGN TOKENS (Sistema unificado del repositorio)
+   ========================================================================== */
 :root {
-    /* Paleta base */
     --color-text: #1f2937;
-    --color-bg: hsl(220, 25%, 97%);
+    --color-text-strong: #0f172a;
+    --color-muted: #64748b;
     --color-surface: #ffffff;
-    --color-primary: rgb(37, 99, 235);
-    --color-primary-soft: rgba(37, 99, 235, 0.12);
-    --color-border: rgba(15, 23, 42, 0.10);
-    --color-muted: #6b7280;
-    --color-code: #b91c1c;
+    --color-surface-subtle: #f8fafc;
+    --color-primary: #2563eb;
+    --color-primary-dark: #1d4ed8;
+    --color-primary-soft: rgba(37, 99, 235, 0.08);
+    --color-border: rgba(15, 23, 42, 0.09);
+    --color-code: #be123c;
 
-    /* Colores didácticos estilo DevTools para el Modelo de Caja */
-    --box-margin: #f9cc9d;  /* Naranja claro */
-    --box-border: #fce18b;  /* Amarillo claro */
-    --box-padding: #c4d79b; /* Verde claro */
-    --box-content: #9ec3e5; /* Azul claro */
+    /* Colores didácticos inspirados en Chrome/Firefox DevTools */
+    --box-margin: #fed7aa;
+    --box-border: #fef08a;
+    --box-padding: #bbf7d0;
+    --box-content: #bfdbfe;
 
-    /* Variables de diseño */
     --radius-lg: 20px;
     --radius-md: 14px;
-    --shadow-soft: 0 20px 60px rgba(15, 23, 42, 0.08);
-    --shadow-card: 0 10px 30px rgba(15, 23, 42, 0.06);
+    --radius-sm: 8px;
+    --radius-pill: 999px;
+
+    --shadow-soft: 0 20px 60px rgba(15, 23, 42, 0.07);
+    --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.04);
 }
 
-/*
---------------------------------------------------
-Base del documento
---------------------------------------------------
-*/
-html { font-size: 16px; scroll-behavior: smooth; }
+/* ==========================================================================
+   2. RESET Y BASE (Arquitectura Mobile-First)
+   ========================================================================== */
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    box-sizing: border-box;
+}
 
-/* En este módulo NO aplicaremos border-box globalmente en el selector universal (*).
-   Queremos mantener el default (content-box) para poder demostrar 
-   cómo se rompe en la Sección 4, y luego arreglarlo en la caja específica. */
+*, *::before, *::after {
+    box-sizing: inherit;
+}
 
 body {
     margin: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: var(--color-text);
     background:
-        radial-gradient(circle at top, rgba(37, 99, 235, 0.08), transparent 35%),
+        radial-gradient(circle at top center, rgba(37, 99, 235, 0.09), transparent 40%),
         linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
     line-height: 1.65;
-    padding: clamp(1rem, 2vw, 2rem);
+    padding: clamp(1rem, 2.5vw, 2.5rem);
+    -webkit-font-smoothing: antialiased;
 }
 
-header, .notes { max-width: 980px; margin: 0 auto; }
-header { margin-bottom: 1.5rem; }
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+}
+
+/* ==========================================================================
+   3. ESTRUCTURA Y TIPOGRAFÍA
+   ========================================================================== */
+.page-header,
+.notes,
+.page-footer {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 1.75rem;
+}
+
+.badge-module {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    padding: 0.25rem 0.7rem;
+    border-radius: var(--radius-pill);
+    margin-bottom: 0.75rem;
+}
 
 .notes {
-    background: rgba(255, 255, 255, 0.82);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-soft);
-    padding: clamp(1.25rem, 3vw, 2.25rem);
+    padding: clamp(1.25rem, 3.5vw, 2.5rem);
 }
 
-h1, h2, h3, h4 { color: var(--color-primary); line-height: 1.2; margin-top: 0; }
-h1 { font-size: clamp(2rem, 3vw, 3rem); letter-spacing: -0.03em; margin-bottom: 0.5rem; }
-h2 { font-size: clamp(1.35rem, 2vw, 1.7rem); margin-bottom: 0.75rem; margin-top: 2rem; }
-h4 { color: var(--color-text); margin-bottom: 1rem; }
+h1, h2, h3, h4 {
+    color: var(--color-text-strong);
+    line-height: 1.25;
+    margin-top: 0;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
 
-.lead { color: var(--color-muted); max-width: 65ch; margin: 0 0 1rem; font-size: 1.1rem; }
-header hr { border: none; height: 1px; background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.35), transparent); margin: 1.25rem 0 0; }
-section + section { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border); }
-p { margin: 0 0 1rem; }
-ol { padding-left: 1.25rem; margin: 0 0 1rem; }
-li + li { margin-top: 0.5rem; }
+h1 {
+    font-size: clamp(1.85rem, 3.5vw, 2.85rem);
+    color: var(--color-primary);
+    margin: 0.2rem 0 0.5rem;
+}
 
-code { 
-    color: var(--color-code); 
-    background: rgba(185, 28, 28, 0.06); 
-    padding: 0.15rem 0.35rem; 
-    border-radius: 0.35rem; 
-    font-family: monospace; 
-    font-size: 0.95em; 
+h2 {
+    font-size: clamp(1.3rem, 2.2vw, 1.65rem);
+    color: var(--color-primary);
+    margin: 0 0 0.85rem;
+}
+
+h4 {
+    font-size: 0.98rem;
+    margin-bottom: 0.75rem;
+}
+
+p {
+    margin: 0 0 1rem;
+    text-wrap: pretty;
+}
+
+ol {
+    padding-left: 1.25rem;
+    margin: 0 0 1.1rem;
+}
+
+li + li {
+    margin-top: 0.5rem;
+}
+
+.lead {
+    color: var(--color-muted);
+    max-width: 75ch;
+    font-size: clamp(1rem, 1.4vw, 1.12rem);
+    margin: 0;
+}
+
+.page-header hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(37, 99, 235, 0.35), rgba(37, 99, 235, 0.05) 70%, transparent);
+    margin: 1.5rem 0 0;
+}
+
+section + section {
+    margin-top: 2.25rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.small-note {
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    margin: 0.75rem 0 0;
+}
+
+/* ==========================================================================
+   4. CÓDIGO, CONTENEDORES Y CALLOUTS
+   ========================================================================== */
+code {
+    color: var(--color-code);
+    background: rgba(190, 18, 60, 0.07);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.35rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.88em;
+}
+
+:is(h1, h2, h3, h4) code {
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    font-size: 0.85em;
 }
 
 pre {
-    background: #0f172a; color: #e2e8f0; padding: 1.1rem 1.2rem;
-    border-radius: var(--radius-md); box-shadow: var(--shadow-card);
-    overflow-x: auto; margin: 1rem 0;
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 1.1rem 1.25rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow-x: auto;
+    margin: 1rem 0 0;
+    font-size: 0.86rem;
+    line-height: 1.55;
 }
-pre code { background: transparent; color: inherit; padding: 0; font-size: 0.95rem; }
+
+pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border: none;
+    font-size: inherit;
+}
 
 .box {
-    padding: 1.25rem; margin: 1rem 0;
-    border-radius: var(--radius-md); background-color: var(--color-surface);
-    border: 1px solid var(--color-border); box-shadow: var(--shadow-card);
+    padding: 1.25rem;
+    margin: 1rem 0;
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
 }
 
-.demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.callout {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(255, 255, 255, 0.95) 100%);
+    border: 1px solid rgba(37, 99, 235, 0.22);
+    padding: 1.25rem 1.4rem;
+}
 
-/*
---------------------------------------------------
-1. Demo: Gráfico del Modelo de Caja
-Simulamos visualmente las capas de DevTools.
---------------------------------------------------
-*/
+.callout-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.45rem;
+}
+
+.callout-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+}
+
+.callout-tag::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+.callout p {
+    margin: 0;
+    color: var(--color-text-strong);
+}
+
+/* Grid Mobile-First */
+.demo-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    margin: 1rem 0;
+}
+
+@media (min-width: 768px) {
+    .demo-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.demo-card {
+    margin: 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+   5. DEMO 1: DIAGRAMA VISUAL DEL MODELO DE CAJA (Estilo DevTools)
+   ========================================================================== */
 .box-model-visual {
     text-align: center;
-    font-weight: bold;
-    font-size: 0.9rem;
-    color: #1f2937;
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: var(--color-text-strong);
+}
+
+.layer-label {
+    display: inline-block;
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
 }
 
 .layer-margin {
     background-color: var(--box-margin);
-    padding: 1.5rem;
-    border: 1px dashed #d97706;
-}
-.layer-border {
-    background-color: var(--box-border);
-    padding: 1rem;
-    border: 3px solid #ca8a04;
-    margin-top: 0.5rem;
-}
-.layer-padding {
-    background-color: var(--box-padding);
-    padding: 1.5rem;
-    border: 1px dashed #65a30d;
-    margin-top: 0.5rem;
-}
-.layer-content {
-    background-color: var(--box-content);
-    padding: 2rem;
-    border: 1px dashed #2563eb;
-    margin-top: 0.5rem;
-    min-height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: clamp(0.85rem, 2.5vw, 1.35rem);
+    border: 1.5px dashed #d97706;
+    border-radius: var(--radius-sm);
 }
 
-/*
---------------------------------------------------
-2. Demo: Margin vs Padding
---------------------------------------------------
-*/
-.demo-spacing {
-    display: flex; align-items: center; justify-content: center;
-    background-color: #f1f5f9; /* Contenedor gris claro */
-    height: 100%;
+.layer-border {
+    background-color: var(--box-border);
+    padding: clamp(0.75rem, 2vw, 1.1rem);
+    border: 3px solid #ca8a04;
+    border-radius: 6px;
+    margin-top: 0.5rem;
+}
+
+.layer-padding {
+    background-color: var(--box-padding);
+    padding: clamp(0.85rem, 2.5vw, 1.35rem);
+    border: 1.5px dashed #65a30d;
+    border-radius: 6px;
+    margin-top: 0.5rem;
+}
+
+.layer-content {
+    background-color: var(--box-content);
+    padding: clamp(1rem, 3vw, 1.75rem);
+    border: 1.5px dashed var(--color-primary);
+    border-radius: 4px;
+    margin-top: 0.5rem;
+    min-height: 56px;
+    display: grid;
+    place-items: center;
+    color: #1e3a8a;
+}
+
+/* ==========================================================================
+   6. DEMO 2: MARGIN vs PADDING Y COLAPSO
+   ========================================================================== */
+.spacing-stage {
+    flex: 1;
+    display: grid;
+    place-items: center;
+    background-color: var(--color-surface-subtle);
+    border: 1px dashed #cbd5e1;
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+}
+
+.spacing-stage.is-stacked {
+    display: flow-root;
+    padding: 0;
 }
 
 .only-padding {
-    background-color: var(--color-primary-soft);
+    background-color: #dbeafe;
     border: 2px solid var(--color-primary);
-    padding: 2rem; /* El fondo azul se estira para cubrir esto */
+    color: #1e3a8a;
+    padding: 1.75rem;
+    border-radius: 6px;
     text-align: center;
-}
-
-.only-margin {
-    background-color: var(--color-primary-soft);
-    border: 2px solid var(--color-primary);
-    margin: 2rem; /* El fondo azul se mantiene pequeño, la caja empuja al gris */
-    padding: 0.5rem;
-    text-align: center;
-}
-
-/*
---------------------------------------------------
-3. Demo: Borders
---------------------------------------------------
-*/
-.borders-demo {
-    display: flex; gap: 1rem; justify-content: space-around; flex-wrap: wrap;
-    text-align: center; font-weight: bold;
-}
-.borders-demo > div { padding: 1.5rem; width: 150px; background: var(--color-bg); }
-
-.border-solid {
-    border: 4px solid var(--color-primary);
-    border-radius: var(--radius-md); /* Suaviza las esquinas */
-}
-.border-dashed {
-    border: 4px dashed #10b981; /* Verde */
-}
-.border-double {
-    border: 8px double #8b5cf6; /* Morado */
-}
-
-/*
---------------------------------------------------
-4. Demo: Box-sizing
---------------------------------------------------
-*/
-.box-sizing-container {
-    background-color: #f8fafc;
-    border: 1px solid var(--color-border);
-    padding: 1rem;
-    border-radius: var(--radius-md);
-    margin-top: 1rem;
-    /* Evita que el contenedor gris haga scroll horizontal y expone el desborde */
-}
-
-.sizing-bad, .sizing-good {
-    width: 100%;
-    padding: 2rem;
-    border: 5px solid #dc2626; /* Rojo para destacar el borde */
-    background-color: #fee2e2;
-    margin-bottom: 1rem;
+    font-size: 0.9rem;
     font-weight: 500;
 }
 
-/* La caja problemática */
-.sizing-bad {
-    box-sizing: content-box; /* El ancho base (100%) + padding + border = Desastre */
+.only-margin {
+    background-color: #dbeafe;
+    border: 2px solid var(--color-primary);
+    color: #1e3a8a;
+    margin: 1.25rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 0.88rem;
+    font-weight: 500;
 }
 
-/* La caja corregida */
+/* ==========================================================================
+   7. DEMO 3: BORDERS Y BORDER-RADIUS
+   ========================================================================== */
+.borders-demo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.borders-demo > div {
+    padding: 1.15rem 0.75rem;
+    background: var(--color-surface-subtle);
+    color: var(--color-text-strong);
+}
+
+.borders-demo small {
+    font-weight: 400;
+    color: var(--color-muted);
+    font-size: 0.78rem;
+}
+
+.border-solid {
+    border: 3px solid var(--color-primary);
+    border-radius: var(--radius-md);
+}
+
+.border-dashed {
+    border: 3px dashed #10b981;
+    border-radius: 6px;
+}
+
+.border-double {
+    border: 6px double #8b5cf6;
+    border-radius: 6px;
+}
+
+.border-pill {
+    border: 3px solid #f59e0b;
+    border-radius: var(--radius-pill);
+}
+
+/* ==========================================================================
+   8. DEMO 4: BOX-SIZING (content-box vs border-box)
+   ========================================================================== */
+.box-sizing-stage {
+    background-color: var(--color-surface-subtle);
+    border: 2px dashed #94a3b8;
+    border-radius: var(--radius-sm);
+    padding: 1rem 3.5rem 1rem 1rem;
+}
+
+.sizing-bad,
 .sizing-good {
-    border-color: #16a34a; /* Verde */
-    background-color: #dcfce7;
-    box-sizing: border-box; /* El padding y el borde se descuentan por dentro */
+    width: 100%;
+    padding: 1.25rem;
+    border: 4px solid;
+    border-radius: 6px;
+    font-size: 0.9rem;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .demo-grid { grid-template-columns: 1fr; }
-    .layer-content { padding: 1rem; }
+.sizing-bad p,
+.sizing-good p {
+    margin: 0.35rem 0 0;
+    font-size: 0.86rem;
 }
 
-/*
---------------------------------------------------
-Footer
---------------------------------------------------
-*/
-footer {
-    margin-top: 2rem;
-    padding-top: 1rem;
+/* Demostración explícita del desborde causado por content-box */
+.sizing-bad {
+    box-sizing: content-box;
+    border-color: #dc2626;
+    background-color: #fef2f2;
+    color: #991b1b;
+    margin-bottom: 1rem;
+}
+
+/* Demostración de contención exacta mediante border-box */
+.sizing-good {
+    box-sizing: border-box;
+    border-color: #16a34a;
+    background-color: #f0fdf4;
+    color: #14532d;
+}
+
+/* ==========================================================================
+   9. PIE DE PÁGINA
+   ========================================================================== */
+.page-footer {
+    margin-top: 2.25rem;
+    padding-top: 1.25rem;
     text-align: center;
     color: var(--color-muted);
-    font-size: 0.95rem;
+    font-size: 0.88rem;
     border-top: 1px solid var(--color-border);
 }
