@@ -3,31 +3,38 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CSS Grid en CSS — Nivel Intermedio</title>
+    <meta name="description" content="Apuntes de CSS Intermedio: CSS Grid Layout bidimensional, unidades fr, repeat(), minmax(), auto-fit vs auto-fill, grid-template-areas, alineación y patrón Holy Grail.">
+    <title>I06 - CSS Grid Layout — Nivel Intermedio</title>
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-    <header>
+    <header class="page-header">
+        <span class="badge-module">Módulo I06 · CSS Grid Layout</span>
         <h1>CSS Grid Layout</h1>
-        <p class="lead">El sistema de layout bidimensional mas potente de CSS. Crea grillas complejas, layouts tipo revista y estructuras responsive sin media queries con una sola línea.</p>
-        <hr>
+        <p class="lead">
+            Domina el sistema de maquetación bidimensional nativo de CSS: organiza filas y columnas simultáneamente, crea rejillas responsivas sin <em>media queries</em> y diseña estructuras complejas mediante áreas nombradas.
+        </p>
+        <hr aria-hidden="true">
     </header>
 
     <main>
         <article class="notes">
-
-            <!-- 1. Qué es Grid -->
+            <!-- SECCIÓN 1: Qué es Grid -->
             <section aria-labelledby="que-es-grid">
-                <h2 id="que-es-grid">1. Que es Grid y diferencia con Flexbox</h2>
-                <p><strong>Flexbox es unidimensional</strong> (una fila O una columna). <strong>Grid es bidimensional</strong> (filas Y columnas al mismo tiempo). Grid es para el layout macro de la pagina, Flexbox para componentes internos.</p>
+                <h2 id="que-es-grid">1. ¿Qué es CSS Grid y en qué se diferencia de Flexbox?</h2>
+                <p>
+                    Mientras <strong>Flexbox es unidimensional</strong> (controla una fila <em>o</em> una columna a la vez), <strong>CSS Grid es bidimensional</strong>: gobierna <strong>filas y columnas simultáneamente</strong>. 
+                    Como regla general, Grid define la arquitectura macro de la página o sección, y Flexbox alinea los componentes internos.
+                </p>
+
                 <ul>
-                    <li><code>display: grid</code> activa la grilla en el contenedor</li>
-                    <li>Define columnas con <code>grid-template-columns</code> y filas con <code>grid-template-rows</code></li>
-                    <li>El espacio entre celdas se controla con <code>gap</code></li>
+                    <li><strong><code>display: grid</code>:</strong> Convierte el elemento en un <em>Grid Container</em> y a sus hijos directos en <em>Grid Items</em>.</li>
+                    <li><strong><code>grid-template-columns</code> y <code>grid-template-rows</code>:</strong> Definen las pistas (<em>tracks</em>) explícitas verticales y horizontales.</li>
+                    <li><strong><code>gap</code> (<code>row-gap</code> / <code>column-gap</code>):</strong> Establece el espaciado interno entre celdas sin afectar los bordes exteriores.</li>
                 </ul>
 
                 <div class="box">
-                    <h4>Grilla basica 3x2</h4>
+                    <h4>Grilla básica explícita de 3 columnas × 2 filas</h4>
                     <div class="grid-demo basic-grid">
                         <div class="grid-item">1</div>
                         <div class="grid-item">2</div>
@@ -39,56 +46,69 @@
                     <pre><code class="language-css">.contenedor {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 100px 100px;
-  gap: 1rem;
+  grid-template-rows: 80px 80px;
+  gap: 0.75rem;
 }</code></pre>
                 </div>
             </section>
 
-            <!-- 2. Unidades fr, repeat, minmax -->
+            <!-- SECCIÓN 2: Unidades fr, repeat y minmax -->
             <section aria-labelledby="unidades-grid">
-                <h2 id="unidades-grid">2. Unidades magicas: fr, repeat() y minmax()</h2>
-                <p>La unidad <code>fr</code> (fraction) reparte el espacio sobrante. Es la clave para layouts flexibles sin calcular porcentajes.</p>
+                <h2 id="unidades-grid">2. Herramientas Clave: <code>fr</code>, <code>repeat()</code> y <code>minmax()</code></h2>
+                <p>
+                    La unidad fraccionaria <code>fr</code> distribuye el <strong>espacio libre disponible</strong> tras descontar pistas fijas y <code>gap</code>, evitando cálculos manuales de porcentajes.
+                </p>
+
                 <ul>
-                    <li><code>1fr 1fr 1fr</code> = 3 columnas iguales</li>
-                    <li><code>repeat(3, 1fr)</code> = lo mismo, mas corto</li>
-                    <li><code>200px 1fr</code> = sidebar fijo de 200px + contenido flexible</li>
-                    <li><code>minmax(200px, 1fr)</code> = minimo 200px, maximo flexible</li>
-                    <li><code>repeat(auto-fit, minmax(250px, 1fr))</code> = responsive sin media queries</li>
+                    <li><strong><code>repeat(3, 1fr)</code>:</strong> Sintaxis abreviada equivalente a <code>1fr 1fr 1fr</code>.</li>
+                    <li><strong><code>180px 1fr 1fr</code>:</strong> Combina columnas de ancho fijo con columnas elásticas.</li>
+                    <li><strong><code>minmax(min, max)</code>:</strong> Define un rango seguro de tamaño (ej. <code>minmax(0, 1fr)</code> evita que textos largos desborden una columna flexible).</li>
+                    <li><strong><code>auto-fit</code> vs <code>auto-fill</code>:</strong> Ambos generan tantas columnas como quepan; <code>auto-fit</code> colapsa las pistas vacías para estirar los ítems existentes, mientras <code>auto-fill</code> conserva el espacio de las pistas vacías.</li>
                 </ul>
 
                 <div class="demo-grid">
-                    <div class="box">
-                        <h4>repeat(3, 1fr)</h4>
+                    <div class="box demo-card">
+                        <h4><code>repeat(3, 1fr)</code></h4>
                         <div class="grid-demo three-equal">
-                            <div class="grid-item">1fr</div><div class="grid-item">1fr</div><div class="grid-item">1fr</div>
+                            <div class="grid-item"><code>1fr</code></div>
+                            <div class="grid-item"><code>1fr</code></div>
+                            <div class="grid-item"><code>1fr</code></div>
                         </div>
                     </div>
-                    <div class="box">
-                        <h4>200px + 1fr + 1fr</h4>
+
+                    <div class="box demo-card">
+                        <h4><code>160px 1fr 1fr</code> (Adaptable en móvil)</h4>
                         <div class="grid-demo sidebar-grid">
-                            <div class="grid-item">200px</div><div class="grid-item">1fr</div><div class="grid-item">1fr</div>
+                            <div class="grid-item"><code>160px</code></div>
+                            <div class="grid-item"><code>1fr</code></div>
+                            <div class="grid-item"><code>1fr</code></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="box">
-                    <h4>Responsive automatico: repeat(auto-fit, minmax(150px, 1fr))</h4>
-                    <p class="small-note">Redimensiona la ventana. No hay media queries, Grid decide cuantas columnas entran.</p>
+                    <h4>Responsividad intrínseca: <code>repeat(auto-fit, minmax(150px, 1fr))</code></h4>
+                    <p class="small-note">Redimensiona la ventana: Grid calcula automáticamente cuántas columnas de al menos 150px caben sin usar <em>media queries</em>.</p>
                     <div class="grid-demo auto-fit">
-                        <div class="grid-item">1</div><div class="grid-item">2</div><div class="grid-item">3</div>
-                        <div class="grid-item">4</div><div class="grid-item">5</div><div class="grid-item">6</div>
+                        <div class="grid-item">1</div>
+                        <div class="grid-item">2</div>
+                        <div class="grid-item">3</div>
+                        <div class="grid-item">4</div>
+                        <div class="grid-item">5</div>
+                        <div class="grid-item">6</div>
                     </div>
                 </div>
             </section>
 
-            <!-- 3. Posicionamiento -->
+            <!-- SECCIÓN 3: Posicionamiento con Líneas, Span y Áreas -->
             <section aria-labelledby="posicionamiento-grid">
-                <h2 id="posicionamiento-grid">3. Posicionando items: lineas, span y áreas</h2>
-                <p>En Grid puedes decirle a un item exactamente donde debe estar.</p>
+                <h2 id="posicionamiento-grid">3. Posicionamiento: Líneas, <code>span</code> y <code>grid-template-areas</code></h2>
+                <p>
+                    Cada línea divisoria de la grilla está numerada (empezando en <code>1</code> desde el inicio y en <code>-1</code> desde el final). Puedes expandir celdas con <code>span</code> o asignar nombres semánticos mediante <code>grid-template-areas</code>.
+                </p>
 
                 <div class="box">
-                    <h4>grid-column y grid-row con span</h4>
+                    <h4>Expansión de celdas con <code>grid-column: span 2</code> y <code>grid-row: span 2</code></h4>
                     <div class="grid-demo positioned-grid">
                         <div class="grid-item span-2">Ocupa 2 columnas<br><code>grid-column: span 2</code></div>
                         <div class="grid-item">1</div>
@@ -99,8 +119,8 @@
                 </div>
 
                 <div class="box">
-                    <h4>Grid Template Áreas - Layout visual con palabras</h4>
-                    <p>Nombras áreas y las dibujas como un ASCII art. Es el método mas legible para layouts grandes.</p>
+                    <h4><code>grid-template-areas</code> — Arquitectura visual declarativa</h4>
+                    <p>Permite dibujar la estructura del layout como una matriz textual legible. Cada cadena representa una fila y cada palabra una celda.</p>
                     <div class="grid-demo areas-demo">
                         <div class="area-header">header</div>
                         <div class="area-sidebar">sidebar</div>
@@ -109,70 +129,85 @@
                     </div>
                     <pre><code class="language-css">.layout {
   display: grid;
-  grid-template-areas:
-    "header header"
-    "sidebar main"
-    "footer footer";
   grid-template-columns: 200px 1fr;
+  grid-template-areas:
+    "header  header"
+    "sidebar main"
+    "footer  footer";
+  gap: 0.75rem;
 }
-.header { grid-area: header; }
+
+.header  { grid-area: header; }
 .sidebar { grid-area: sidebar; }
-.main { grid-area: main; }
-.footer { grid-area: footer; }</code></pre>
+.main    { grid-area: main; }
+.footer  { grid-area: footer; }</code></pre>
                 </div>
             </section>
 
-            <!-- 4. Alineación -->
+            <!-- SECCIÓN 4: Alineación -->
             <section aria-labelledby="alineacion-grid">
-                <h2 id="alineacion-grid">4. Alineación en Grid</h2>
-                <p>Grid tiene dos niveles de alineación: dentro de la celda y de la grilla completa.</p>
+                <h2 id="alineacion-grid">4. Alineación en Grid (Celda vs Grilla Completa)</h2>
+                <p>
+                    CSS Grid distingue entre alinear los ítems dentro de sus celdas y alinear el conjunto de pistas dentro del contenedor:
+                </p>
+
                 <ul>
-                    <li><code>justify-items</code> / <code>align-items</code>: alineación de items dentro de su celda</li>
-                    <li><code>justify-content</code> / <code>align-content</code>: alineación de toda la grilla cuando es mas pequeña que el contenedor</li>
-                    <li><code>place-items: center</code>: shorthand para centrar todo (justify + align)</li>
+                    <li><strong><code>justify-items</code> / <code>align-items</code>:</strong> Alinea el contenido dentro de cada celda (en eje horizontal y vertical).</li>
+                    <li><strong><code>justify-content</code> / <code>align-content</code>:</strong> Alinea toda la rejilla cuando el tamaño total de sus pistas es menor que el contenedor.</li>
+                    <li><strong><code>place-items: center</code>:</strong> Propiedad abreviada de <code>align-items: center</code> + <code>justify-items: center</code>.</li>
                 </ul>
 
                 <div class="box">
-                    <h4>Centrado absoluto con place-items: center</h4>
+                    <h4>Centrado bidireccional en 2 líneas con <code>place-items: center</code></h4>
                     <div class="grid-demo place-center">
-                        <div class="grid-item centered">Centrado con<br>place-items: center</div>
+                        <div class="grid-item centered">Centrado con<br><code>place-items: center</code></div>
                     </div>
                 </div>
             </section>
 
-            <!-- 5. Casos reales -->
+            <!-- SECCIÓN 5: Patrones Reales -->
             <section aria-labelledby="casos-reales-grid">
-                <h2 id="casos-reales-grid">5. Patrones reales con Grid</h2>
+                <h2 id="casos-reales-grid">5. Patrones Reales con CSS Grid</h2>
 
-                <h3>Galería tipo Pinterest / Dashboard</h3>
+                <h3>a) Galería / Bento Grid con relleno denso (<code>grid-auto-flow: dense</code>)</h3>
                 <div class="box">
                     <div class="grid-demo gallery-demo">
-                        <div class="gallery-item">Imagen 1</div>
-                        <div class="gallery-item tall">Imagen 2<br>(mas alta)</div>
-                        <div class="gallery-item">Imagen 3</div>
-                        <div class="gallery-item wide">Imagen 4 (wide)</div>
-                        <div class="gallery-item">Imagen 5</div>
-                        <div class="gallery-item">Imagen 6</div>
+                        <div class="gallery-item">Tarjeta 1</div>
+                        <div class="gallery-item tall">Tarjeta 2<br><small>(<code>span 2</code> filas)</small></div>
+                        <div class="gallery-item">Tarjeta 3</div>
+                        <div class="gallery-item wide">Tarjeta 4 <small>(<code>span 2</code> columnas)</small></div>
+                        <div class="gallery-item">Tarjeta 5</div>
+                        <div class="gallery-item">Tarjeta 6</div>
                     </div>
                 </div>
 
-                <h3>Holy Grail Layout - El layout clásico web</h3>
+                <h3>b) Holy Grail Layout (Mobile-First)</h3>
                 <div class="box">
                     <div class="grid-demo holy-grail">
                         <div class="hg-header">Header</div>
                         <div class="hg-nav">Nav</div>
-                        <div class="hg-main">Main Content<br><br>Grid hace esto trivial sin hacks de float o flex complejos. Header y Footer full width, sidebar y main con alturas iguales automaticamente.</div>
+                        <div class="hg-main">
+                            <strong>Main Content</strong>
+                            <p>En móvil se apila en una sola columna; a partir de <code>768px</code> adopta la estructura clásica de 3 columnas con cabecera y pie a ancho completo y alturas igualadas automáticamente.</p>
+                        </div>
                         <div class="hg-aside">Aside</div>
                         <div class="hg-footer">Footer</div>
                     </div>
                 </div>
-            </section>
 
+                <aside class="box callout" aria-label="Buenas prácticas en CSS Grid">
+                    <div class="callout-header">
+                        <span class="callout-tag">Consejo de Arquitectura</span>
+                    </div>
+                    <p>
+                        Usa <code>minmax(0, 1fr)</code> en lugar de <code>1fr</code> cuando tus celdas contengan bloques de código, tablas o textos largos sin espacios: por defecto, <code>1fr</code> equivale a <code>minmax(auto, 1fr)</code> y permite que el contenido estire la columna por encima del ancho esperado.
+                    </p>
+                </aside>
+            </section>
         </article>
     </main>
-
-    <footer>
-        <p>CSS - Nivel Intermedio - 2026</p>
+    <footer class="page-footer">
+        <p>CSS Intermedio - I06 CSS Grid Layout - 2026</p>
     </footer>
 </body>
 </html>
