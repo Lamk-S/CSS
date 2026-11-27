@@ -221,8 +221,8 @@ CSS/
 <summary><strong>I06 - Grid:</strong> Arquitectura Bidimensional con CSS Grid — <code>Intermediate/I06-Grid/</code></summary>
 <br>
 
-- **Conceptos:** Grillas bidimensionales (`display: grid`), unidad fraccionaria `fr`, funciones `repeat()` y `minmax()`, grillas intrínsecas (`auto-fit`), expansión de celdas con `span`, trazado semántico mediante `grid-template-areas` y centrado con `place-items: center`.
-- **Laboratorios:** Grilla responsiva automática sin media queries, galería asimétrica tipo *Pinterest / Dashboard* y estructura completa **Holy Grail Layout** adaptable a móvil.
+- **Conceptos:** Grillas bidimensionales (`display: grid`), unidad fraccionaria `fr`, funciones `repeat()` y `minmax(0, 1fr)`, grillas intrínsecas (`auto-fit` vs `auto-fill`), expansión de celdas con `span`, relleno denso (`grid-auto-flow: dense`), trazado semántico mediante `grid-template-areas` y centrado bidireccional con `place-items: center`.
+- **Laboratorios:** Grilla responsiva automática sin media queries, galería / Bento Grid asimétrica con relleno denso y estructura completa **Holy Grail Layout** bajo enfoque *Mobile-First*.
 </details>
 
 <details>
@@ -230,15 +230,15 @@ CSS/
 <br>
 
 - **Conceptos:** Arquitectura *Mobile-First* (`min-width`), definición de *breakpoints* basados en contenido, tipografía fluida con `clamp()`, grillas intrínsecas (`auto-fit` + `minmax()`) y **Container Queries** (`container-type: inline-size` y `@container`).
-- **Laboratorios:** Navbar responsivo *CSS-only* (patrón `:checked`), grid adaptable sin media queries y tarjeta redimensionable en vivo gobernada por `@container`.
+- **Laboratorios:** Navbar responsivo *CSS-only* accesible por teclado (patrón `:checked` + `.sr-only` + `:focus-visible`), grid adaptable sin media queries y tarjeta redimensionable en vivo gobernada por `@container`.
 </details>
 
 <details>
 <summary><strong>I08 - Animations:</strong> Transiciones, Transformaciones GPU y <code>@keyframes</code> — <code>Intermediate/I08-Animations/</code></summary>
 <br>
 
-- **Conceptos:** Interpolación con `transition`, curvas `cubic-bezier()`, transformaciones 2D/3D aceleradas por GPU (`translate`, `scale`, `rotate`), secuencias con `@keyframes` y accesibilidad mediante `@media (prefers-reduced-motion: reduce)`.
-- **Laboratorios:** Pista comparativa de curvas de aceleración, escenarios anti-*jitter* para transformaciones, *spinners*, indicadores de pulso y *Skeleton Shimmer* para carga percibida.
+- **Conceptos:** Interpolación con `transition`, curvas `cubic-bezier()`, transformaciones 2D/3D aceleradas por GPU (`translate`, `scale`, `rotate`), secuencias con `@keyframes`, rendimiento a 60fps (GPU Composite vs. CPU Reflow) y accesibilidad mediante `@media (prefers-reduced-motion: reduce)`.
+- **Laboratorios:** Pista comparativa sincronizada de curvas de aceleración con regla porcentual (25%, 50%, 75%), escenarios táctiles y por teclado para transformaciones 2D, *spinners*, indicadores de pulso, *Skeleton Shimmer* y comparativa en vivo entre composición GPU y reflow en CPU.
 </details>
 
 ---
@@ -322,11 +322,11 @@ Este proyecto no requiere compilación ni instalación de paquetes.
    ```
 
 2. **Abrir con Live Server (Recomendado):**
-   - Abre la carpeta en **Visual Studio Code**.
-   - Haz clic derecho sobre cualquier archivo `index.html` (por ejemplo, `Advanced/A08-Native-Dialogs-Scroll-Snap/index.html`) y selecciona **Open with Live Server**.
+- Abre la carpeta en **Visual Studio Code**.
+  - Haz clic derecho sobre cualquier archivo `index.html` (por ejemplo, `Advanced/A08-Native-Dialogs-Scroll-Snap/index.html`) y selecciona **Open with Live Server**.
 
 3. **Apertura directa:**
-   - También puedes abrir cualquier archivo `index.html` directamente en tu navegador web.
+- También puedes abrir cualquier archivo `index.html` directamente en tu navegador web.
 
 ---
 
